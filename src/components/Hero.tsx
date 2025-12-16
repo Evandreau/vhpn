@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Search, MapPin } from "lucide-react";
+import { Search, MapPin, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import heroImage from "@/assets/hero-property.jpg";
@@ -11,10 +11,23 @@ const Hero = () => {
       <div className="absolute inset-0">
         <img
           src={heroImage}
-          alt="Luxury modern home"
+          alt="Luxury rental interior"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 hero-overlay" />
+      </div>
+
+      {/* Watermark Brand */}
+      <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="watermark-text text-[12vw] md:text-[15vw] leading-none tracking-wider text-center select-none"
+          style={{ marginBottom: '-0.1em' }}
+        >
+          RENTALS
+        </motion.div>
       </div>
 
       {/* Content */}
@@ -25,24 +38,15 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="max-w-3xl mx-auto text-center"
         >
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="inline-block px-4 py-2 mb-6 text-sm font-body font-medium text-primary-foreground/90 bg-primary-foreground/10 backdrop-blur-sm rounded-full border border-primary-foreground/20"
-          >
-            Find Your Dream Home
-          </motion.span>
-
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-semibold text-primary-foreground mb-6 leading-tight">
-            Discover Exceptional
+          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-light text-primary-foreground mb-6 leading-tight tracking-tight">
+            Find Your Perfect
             <br />
-            <span className="text-gradient-gold">Properties</span>
+            <span className="font-medium italic">Rental Home</span>
           </h1>
 
-          <p className="font-body text-lg md:text-xl text-primary-foreground/80 mb-10 max-w-xl mx-auto">
-            Explore curated listings of premium homes, apartments, and estates
-            in the most desirable locations.
+          <p className="font-body text-base md:text-lg text-primary-foreground/80 mb-10 max-w-lg mx-auto font-light">
+            Discover curated rental properties in the most desirable locations.
+            Premium apartments, houses, and studios awaiting you.
           </p>
 
           {/* Search Bar */}
@@ -50,45 +54,38 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="bg-card/95 backdrop-blur-md rounded-2xl p-2 shadow-2xl max-w-2xl mx-auto"
+            className="bg-card/95 backdrop-blur-md rounded-full p-1.5 shadow-2xl max-w-xl mx-auto"
           >
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex items-center gap-2">
               <div className="flex-1 relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Enter location, city, or ZIP code"
-                  className="pl-12 h-14 border-0 bg-transparent font-body text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                  placeholder="Enter location or neighborhood"
+                  className="pl-10 h-12 border-0 bg-transparent font-body text-sm focus-visible:ring-0 focus-visible:ring-offset-0 rounded-full"
                 />
               </div>
-              <Button className="h-14 px-8 bg-accent hover:bg-accent/90 text-accent-foreground font-body font-medium text-base rounded-xl">
-                <Search className="h-5 w-5 mr-2" />
+              <Button className="h-12 px-6 bg-accent hover:bg-accent/90 text-accent-foreground font-body font-medium text-sm rounded-full">
+                <Search className="h-4 w-4 mr-2" />
                 Search
               </Button>
             </div>
           </motion.div>
 
-          {/* Stats */}
+          {/* CTA Link */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.8 }}
-            className="flex flex-wrap justify-center gap-8 md:gap-16 mt-12"
+            className="mt-8"
           >
-            {[
-              { value: "2,500+", label: "Properties Listed" },
-              { value: "1,800+", label: "Happy Clients" },
-              { value: "150+", label: "Expert Agents" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="font-display text-3xl md:text-4xl font-semibold text-primary-foreground">
-                  {stat.value}
-                </div>
-                <div className="font-body text-sm text-primary-foreground/70 mt-1">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+            <a 
+              href="#properties" 
+              className="inline-flex items-center gap-2 font-body text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors group"
+            >
+              Browse all rentals
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </a>
           </motion.div>
         </motion.div>
       </div>
@@ -98,13 +95,13 @@ const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        className="absolute bottom-24 left-1/2 -translate-x-1/2"
       >
-        <div className="w-6 h-10 rounded-full border-2 border-primary-foreground/30 flex justify-center pt-2">
+        <div className="w-5 h-8 rounded-full border border-primary-foreground/30 flex justify-center pt-1.5">
           <motion.div
-            animate={{ y: [0, 8, 0] }}
+            animate={{ y: [0, 6, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-1.5 h-1.5 rounded-full bg-primary-foreground/60"
+            className="w-1 h-1 rounded-full bg-primary-foreground/60"
           />
         </div>
       </motion.div>
