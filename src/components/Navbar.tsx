@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const navLinks = [
-    { label: "Apartments", href: "#properties" },
-    { label: "Houses", href: "#properties" },
-    { label: "Studios", href: "#properties" },
-    { label: "About", href: "#" },
+    { label: "Rentals", href: "/listings" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
   ];
 
   return (
@@ -23,36 +25,37 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <span className="font-display text-2xl font-medium tracking-tight text-foreground">
               Haven
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.label}
-                href={link.href}
-                className="font-body text-sm font-normal text-muted-foreground hover:text-foreground transition-colors duration-200"
+                to={link.href}
+                className={cn(
+                  "font-body text-sm font-normal transition-colors duration-200",
+                  location.pathname === link.href
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <Search className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" className="font-body text-sm font-normal">
-              Sign In
-            </Button>
-            <Button className="font-body text-sm font-normal bg-accent hover:bg-accent/90 text-accent-foreground rounded-full px-5">
-              List Property
-            </Button>
+            <Link to="/listings">
+              <Button className="font-body text-sm font-normal bg-foreground hover:bg-foreground/90 text-background rounded-full px-5">
+                View Rentals
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -79,22 +82,26 @@ const Navbar = () => {
           >
             <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.label}
-                  href={link.href}
-                  className="font-body text-base font-normal text-muted-foreground hover:text-foreground transition-colors py-2"
+                  to={link.href}
+                  className={cn(
+                    "font-body text-base font-normal transition-colors py-2",
+                    location.pathname === link.href
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
-              <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                <Button variant="ghost" className="font-body justify-start font-normal">
-                  Sign In
-                </Button>
-                <Button className="font-body bg-accent hover:bg-accent/90 text-accent-foreground rounded-full">
-                  List Property
-                </Button>
+              <div className="pt-4 border-t border-border">
+                <Link to="/listings" onClick={() => setIsOpen(false)}>
+                  <Button className="w-full font-body bg-foreground hover:bg-foreground/90 text-background rounded-full">
+                    View Rentals
+                  </Button>
+                </Link>
               </div>
             </div>
           </motion.div>
