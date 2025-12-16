@@ -1,36 +1,28 @@
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Mail, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   const footerLinks = {
+    rentals: [
+      { label: "Apartments", href: "#" },
+      { label: "Houses", href: "#" },
+      { label: "Studios", href: "#" },
+      { label: "Luxury Rentals", href: "#" },
+    ],
     company: [
       { label: "About Us", href: "#" },
-      { label: "Our Team", href: "#" },
       { label: "Careers", href: "#" },
+      { label: "Contact", href: "#" },
       { label: "Press", href: "#" },
     ],
     support: [
       { label: "Help Center", href: "#" },
-      { label: "Contact Us", href: "#" },
       { label: "Privacy Policy", href: "#" },
       { label: "Terms of Service", href: "#" },
     ],
-    properties: [
-      { label: "Houses for Sale", href: "#" },
-      { label: "Apartments for Rent", href: "#" },
-      { label: "Luxury Estates", href: "#" },
-      { label: "Commercial", href: "#" },
-    ],
   };
-
-  const socialLinks = [
-    { icon: Facebook, href: "#" },
-    { icon: Twitter, href: "#" },
-    { icon: Instagram, href: "#" },
-    { icon: Linkedin, href: "#" },
-  ];
 
   return (
     <footer className="bg-foreground text-background">
@@ -42,22 +34,22 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-2xl mx-auto text-center"
+            className="max-w-xl"
           >
-            <h3 className="font-display text-2xl md:text-3xl font-semibold mb-4">
-              Stay Updated with New Listings
+            <h3 className="font-display text-2xl md:text-3xl font-light mb-4">
+              Stay in the loop
             </h3>
-            <p className="font-body text-background/70 mb-6">
-              Subscribe to our newsletter and never miss a perfect property.
+            <p className="font-body text-background/60 mb-6 text-sm">
+              Subscribe to get notified about new rental listings in your area.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <div className="flex gap-2 max-w-sm">
               <Input
                 type="email"
-                placeholder="Enter your email"
-                className="h-12 bg-background/10 border-background/20 text-background placeholder:text-background/50 font-body"
+                placeholder="Your email"
+                className="h-11 bg-background/10 border-background/20 text-background placeholder:text-background/40 font-body text-sm rounded-full"
               />
-              <Button className="h-12 px-6 bg-accent hover:bg-accent/90 text-accent-foreground font-body font-medium">
-                Subscribe
+              <Button className="h-11 px-5 bg-accent hover:bg-accent/90 text-accent-foreground font-body font-medium rounded-full">
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           </motion.div>
@@ -65,46 +57,45 @@ const Footer = () => {
       </div>
 
       {/* Main Footer */}
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
+      <div className="container mx-auto px-6 py-14">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
-          <div className="lg:col-span-2">
-            <a href="/" className="inline-block mb-6">
-              <span className="font-display text-3xl font-semibold">
-                Estate<span className="text-accent">.</span>
+          <div className="col-span-2 md:col-span-1">
+            <a href="/" className="inline-block mb-4">
+              <span className="font-display text-2xl font-medium">
+                Haven
               </span>
             </a>
-            <p className="font-body text-background/70 mb-6 max-w-sm">
-              Your trusted partner in finding exceptional properties. We connect
-              dreams with addresses since 2010.
+            <p className="font-body text-background/60 text-sm max-w-xs">
+              Your trusted partner in finding the perfect rental home.
             </p>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-background/70">
-                <MapPin className="h-5 w-5 text-accent" />
-                <span className="font-body text-sm">
-                  123 Estate Avenue, New York, NY 10001
-                </span>
-              </div>
-              <div className="flex items-center gap-3 text-background/70">
-                <Phone className="h-5 w-5 text-accent" />
-                <span className="font-body text-sm">+1 (555) 123-4567</span>
-              </div>
-              <div className="flex items-center gap-3 text-background/70">
-                <Mail className="h-5 w-5 text-accent" />
-                <span className="font-body text-sm">hello@estate.com</span>
-              </div>
-            </div>
           </div>
 
           {/* Links */}
           <div>
-            <h4 className="font-display text-lg font-semibold mb-6">Company</h4>
-            <ul className="space-y-3">
+            <h4 className="font-body text-sm font-medium mb-4 text-background/80">Rentals</h4>
+            <ul className="space-y-2">
+              {footerLinks.rentals.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="font-body text-sm text-background/50 hover:text-background transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-body text-sm font-medium mb-4 text-background/80">Company</h4>
+            <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="font-body text-sm text-background/70 hover:text-accent transition-colors"
+                    className="font-body text-sm text-background/50 hover:text-background transition-colors"
                   >
                     {link.label}
                   </a>
@@ -114,29 +105,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-display text-lg font-semibold mb-6">Properties</h4>
-            <ul className="space-y-3">
-              {footerLinks.properties.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="font-body text-sm text-background/70 hover:text-accent transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-display text-lg font-semibold mb-6">Support</h4>
-            <ul className="space-y-3">
+            <h4 className="font-body text-sm font-medium mb-4 text-background/80">Support</h4>
+            <ul className="space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="font-body text-sm text-background/70 hover:text-accent transition-colors"
+                    className="font-body text-sm text-background/50 hover:text-background transition-colors"
                   >
                     {link.label}
                   </a>
@@ -147,20 +122,13 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="flex flex-col md:flex-row justify-between items-center pt-12 mt-12 border-t border-background/10">
-          <p className="font-body text-sm text-background/60 mb-4 md:mb-0">
-            © 2024 Estate. All rights reserved.
+        <div className="flex flex-col md:flex-row justify-between items-center pt-10 mt-10 border-t border-background/10">
+          <p className="font-body text-xs text-background/40">
+            © 2024 Haven. All rights reserved.
           </p>
-          <div className="flex gap-4">
-            {socialLinks.map((social, index) => (
-              <a
-                key={index}
-                href={social.href}
-                className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-all duration-300"
-              >
-                <social.icon className="h-5 w-5" />
-              </a>
-            ))}
+          <div className="flex items-center gap-1 mt-4 md:mt-0">
+            <Mail className="h-4 w-4 text-background/40" />
+            <span className="font-body text-xs text-background/40">hello@haven.com</span>
           </div>
         </div>
       </div>
