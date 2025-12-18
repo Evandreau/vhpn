@@ -1,22 +1,38 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
-import { ArrowLeft, Bed, Bath, Square, Calendar, Euro, Clock, Check } from "lucide-react";
+import { ArrowLeft, Bed, Bath, Square, Calendar, Euro, Clock, Check, MapPin, Play, Shield, PawPrint, GraduationCap, Users, Car, Trees } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ImageSlider from "@/components/ImageSlider";
 import AmenityChip from "@/components/AmenityChip";
 import MapPlaceholder from "@/components/MapPlaceholder";
-import ViewingRequestForm from "@/components/ViewingRequestForm";
 import ListingCard from "@/components/ListingCard";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getListingById, getRelatedListings } from "@/data/listings";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useToast } from "@/hooks/use-toast";
 
 const ListingDetail = () => {
   const { id } = useParams();
+  const { t, language } = useLanguage();
+  const { toast } = useToast();
   const listing = getListingById(id || "");
   const relatedListings = getRelatedListings(id || "", 3);
+  
+  const [activeTab, setActiveTab] = useState("interest");
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+    preferredDate: '',
+  });
 
   if (!listing) {
     return (
@@ -25,15 +41,18 @@ const ListingDetail = () => {
         <main className="pt-[73px]">
           <div className="container mx-auto px-6 py-24 text-center">
             <h1 className="font-display text-3xl text-foreground mb-4">
-              Property not found
+              {language === 'nl' ? 'Woning niet gevonden' : 'Property not found'}
             </h1>
             <p className="font-body text-muted-foreground mb-8">
-              The listing you're looking for doesn't exist or has been removed.
+              {language === 'nl' 
+                ? 'De woning die u zoekt bestaat niet of is verwijderd.'
+                : "The listing you're looking for doesn't exist or has been removed."
+              }
             </p>
             <Link to="/listings">
               <Button variant="outline" className="rounded-full">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to listings
+                {t('detail.backToListings')}
               </Button>
             </Link>
           </div>
@@ -56,13 +75,38 @@ const ListingDetail = () => {
     return format(parseISO(dateString), "d MMMM yyyy");
   };
 
+  const getAvailabilityText = () => {
+    if (listing.availableType === 'immediately') {
+      return t('listings.availableNow');
+    }
+    return `${t('listings.availableFrom')} ${formatDate(listing.availableFromDate || '')}`;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: t('form.success'),
+      description: t('form.successMessage'),
+    });
+    setFormData({ name: '', email: '', phone: '', message: '', preferredDate: '' });
+  };
+
+  const quickSpecs = [
+    { icon: PawPrint, label: language === 'nl' ? 'Huisdieren' : 'Pets', value: listing.petsAllowed },
+    { icon: GraduationCap, label: language === 'nl' ? 'Studenten' : 'Students', value: listing.studentsAllowed },
+    { icon: Users, label: language === 'nl' ? 'Delen' : 'Sharing', value: listing.homeSharingAllowed },
+    { icon: Car, label: language === 'nl' ? 'Parkeren' : 'Parking', value: listing.parking },
+    { icon: Trees, label: language === 'nl' ? 'Buiten' : 'Outdoor', value: listing.outdoorSpace },
+  ].filter(spec => spec.value);
+
   return (
     <>
       <Helmet>
+        <html lang={language} />
         <title>{listing.title} — Haven</title>
         <meta
           name="description"
-          content={`${listing.title} in ${listing.neighborhood}, ${listing.city}. ${listing.beds === 0 ? "Studio" : `${listing.beds} bedroom`} furnished rental for ${formatPrice(listing.priceMonthly)}/month.`}
+          content={listing.descriptionShort}
         />
       </Helmet>
 
@@ -77,18 +121,31 @@ const ListingDetail = () => {
               className="inline-flex items-center gap-2 font-body text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to listings
+              {t('detail.backToListings')}
             </Link>
           </div>
 
           {/* Image Slider */}
           <div className="container mx-auto px-6 mb-10">
-            <ImageSlider
-              images={listing.images}
-              title={listing.title}
-              aspectRatio="wide"
-              className="rounded-sm overflow-hidden"
-            />
+            <div className="relative">
+              <ImageSlider
+                images={listing.images}
+                title={listing.title}
+                aspectRatio="wide"
+                className="rounded-sm overflow-hidden"
+              />
+              {listing.videoTourUrl && (
+                <a
+                  href={listing.videoTourUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute bottom-4 left-4 flex items-center gap-2 px-4 py-2 bg-background/90 backdrop-blur-sm rounded-full font-body text-sm text-foreground hover:bg-background transition-colors"
+                >
+                  <Play className="h-4 w-4" />
+                  {language === 'nl' ? 'Bekijk video tour' : 'Watch video tour'}
+                </a>
+              )}
+            </div>
           </div>
 
           {/* Content */}
@@ -103,48 +160,55 @@ const ListingDetail = () => {
                   transition={{ duration: 0.5 }}
                 >
                   <div className="flex flex-wrap items-center gap-3 mb-4">
+                    {listing.verified && (
+                      <span className="font-body text-xs font-medium px-3 py-1.5 bg-accent/10 text-accent rounded-sm flex items-center gap-1.5">
+                        <Shield className="h-3.5 w-3.5" />
+                        {t('trust.verifiedListings')}
+                      </span>
+                    )}
                     {listing.featured && (
                       <span className="font-body text-xs font-medium px-3 py-1.5 bg-foreground text-background rounded-sm">
-                        Featured
+                        {t('listings.featured')}
                       </span>
                     )}
-                    {listing.furnished && (
-                      <span className="font-body text-xs px-3 py-1.5 bg-secondary text-foreground rounded-sm">
-                        Furnished
-                      </span>
-                    )}
+                    <span className="font-body text-xs px-3 py-1.5 bg-secondary text-foreground rounded-sm">
+                      {listing.furnished ? t('listings.furnished') : t('listings.unfurnished')}
+                    </span>
                   </div>
 
                   <h1 className="font-display text-3xl md:text-4xl font-light text-foreground mb-3">
                     {listing.title}
                   </h1>
 
-                  <p className="font-body text-base text-muted-foreground mb-6">
-                    {listing.neighborhood}, {listing.city}
-                  </p>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-6">
+                    <MapPin className="h-4 w-4" />
+                    <span className="font-body text-base">
+                      {listing.neighborhood}, {listing.city}
+                    </span>
+                  </div>
 
                   <div className="flex items-baseline gap-2 mb-8">
                     <span className="font-display text-4xl font-medium text-foreground">
                       {formatPrice(listing.priceMonthly)}
                     </span>
-                    <span className="font-body text-base text-muted-foreground">/month</span>
+                    <span className="font-body text-base text-muted-foreground">{t('listings.perMonth')}</span>
                   </div>
 
-                  {/* Specs Row */}
+                  {/* Facts Bar */}
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 py-6 border-y border-border">
                     <div className="flex items-center gap-2">
                       <Bed className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="font-body text-sm text-muted-foreground">Beds</p>
+                        <p className="font-body text-xs text-muted-foreground">{language === 'nl' ? 'Slaapkamers' : 'Beds'}</p>
                         <p className="font-body text-base font-medium text-foreground">
-                          {listing.beds === 0 ? "Studio" : listing.beds}
+                          {listing.beds === 0 ? t('listings.studio') : listing.beds}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Bath className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="font-body text-sm text-muted-foreground">Baths</p>
+                        <p className="font-body text-xs text-muted-foreground">{language === 'nl' ? 'Badkamers' : 'Baths'}</p>
                         <p className="font-body text-base font-medium text-foreground">
                           {listing.baths}
                         </p>
@@ -153,36 +217,40 @@ const ListingDetail = () => {
                     <div className="flex items-center gap-2">
                       <Square className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="font-body text-sm text-muted-foreground">Size</p>
+                        <p className="font-body text-xs text-muted-foreground">{language === 'nl' ? 'Oppervlakte' : 'Size'}</p>
                         <p className="font-body text-base font-medium text-foreground">
                           {listing.sqm} m²
                         </p>
                       </div>
                     </div>
+                    {listing.deposit && (
+                      <div className="flex items-center gap-2">
+                        <Euro className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="font-body text-xs text-muted-foreground">{t('detail.deposit')}</p>
+                          <p className="font-body text-base font-medium text-foreground">
+                            {formatPrice(listing.deposit)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    {listing.minRentalPeriodMonths && (
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="font-body text-xs text-muted-foreground">{t('detail.minStay')}</p>
+                          <p className="font-body text-base font-medium text-foreground">
+                            {listing.minRentalPeriodMonths} {t('detail.months')}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2">
                       <Check className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="font-body text-sm text-muted-foreground">Furnished</p>
+                        <p className="font-body text-xs text-muted-foreground">{t('listings.furnished')}</p>
                         <p className="font-body text-base font-medium text-foreground">
-                          {listing.furnished ? "Yes" : "No"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Euro className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-body text-sm text-muted-foreground">Deposit</p>
-                        <p className="font-body text-base font-medium text-foreground">
-                          {formatPrice(listing.deposit)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-body text-sm text-muted-foreground">Min stay</p>
-                        <p className="font-body text-base font-medium text-foreground">
-                          {listing.minStayMonths} months
+                          {listing.furnished ? (language === 'nl' ? 'Ja' : 'Yes') : (language === 'nl' ? 'Nee' : 'No')}
                         </p>
                       </div>
                     </div>
@@ -198,9 +266,26 @@ const ListingDetail = () => {
                 >
                   <Calendar className="h-5 w-5 text-accent" />
                   <p className="font-body text-sm text-foreground">
-                    Available from <span className="font-medium">{formatDate(listing.availableFrom)}</span>
+                    {getAvailabilityText()}
                   </p>
                 </motion.div>
+
+                {/* Quick Specs Chips */}
+                {quickSpecs.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.12 }}
+                    className="flex flex-wrap gap-2"
+                  >
+                    {quickSpecs.map((spec) => (
+                      <span key={spec.label} className="flex items-center gap-1.5 px-3 py-1.5 bg-secondary/50 text-foreground rounded-full text-xs font-body">
+                        <spec.icon className="h-3.5 w-3.5" />
+                        {spec.label}
+                      </span>
+                    ))}
+                  </motion.div>
+                )}
 
                 {/* Description */}
                 <motion.div
@@ -209,10 +294,10 @@ const ListingDetail = () => {
                   transition={{ duration: 0.5, delay: 0.15 }}
                 >
                   <h2 className="font-display text-2xl font-light text-foreground mb-4">
-                    About this property
+                    {t('detail.description')}
                   </h2>
                   <p className="font-body text-base text-muted-foreground leading-relaxed whitespace-pre-line">
-                    {listing.description}
+                    {listing.descriptionLong}
                   </p>
                 </motion.div>
 
@@ -223,7 +308,7 @@ const ListingDetail = () => {
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
                   <h2 className="font-display text-2xl font-light text-foreground mb-4">
-                    Amenities
+                    {t('detail.features')}
                   </h2>
                   <div className="flex flex-wrap gap-2">
                     {listing.amenities.map((amenity) => (
@@ -238,9 +323,14 @@ const ListingDetail = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.25 }}
                 >
-                  <h2 className="font-display text-2xl font-light text-foreground mb-4">
-                    Location
+                  <h2 className="font-display text-2xl font-light text-foreground mb-2">
+                    {t('detail.location')}
                   </h2>
+                  {listing.addressDisclosure === 'approx' && (
+                    <p className="font-body text-xs text-muted-foreground mb-4">
+                      {t('detail.approximateLocation')}
+                    </p>
+                  )}
                   <MapPlaceholder city={listing.city} neighborhood={listing.neighborhood} />
                 </motion.div>
               </div>
@@ -248,7 +338,102 @@ const ListingDetail = () => {
               {/* Sidebar */}
               <div className="lg:col-span-1">
                 <div className="lg:sticky lg:top-24">
-                  <ViewingRequestForm listingTitle={listing.title} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="bg-card border border-border rounded-sm p-6"
+                  >
+                    <Tabs value={activeTab} onValueChange={setActiveTab}>
+                      <TabsList className="grid w-full grid-cols-2 mb-6">
+                        <TabsTrigger value="interest" className="text-xs">
+                          {t('form.expressInterest')}
+                        </TabsTrigger>
+                        <TabsTrigger value="viewing" className="text-xs">
+                          {t('form.requestViewing')}
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="interest">
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                          <Input
+                            placeholder={t('form.name')}
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            required
+                            className="rounded-sm"
+                          />
+                          <Input
+                            type="email"
+                            placeholder={t('form.email')}
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            required
+                            className="rounded-sm"
+                          />
+                          <Input
+                            placeholder={t('form.phone')}
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            className="rounded-sm"
+                          />
+                          <Textarea
+                            placeholder={t('form.message')}
+                            value={formData.message}
+                            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                            rows={3}
+                            className="rounded-sm resize-none"
+                          />
+                          <Button type="submit" className="w-full rounded-full">
+                            {t('form.submit')}
+                          </Button>
+                          <p className="font-body text-xs text-muted-foreground text-center">
+                            {t('form.privacy')} <a href="/privacy" className="underline">{t('form.privacyPolicy')}</a>
+                          </p>
+                        </form>
+                      </TabsContent>
+
+                      <TabsContent value="viewing">
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                          <Input
+                            placeholder={t('form.name')}
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            required
+                            className="rounded-sm"
+                          />
+                          <Input
+                            type="email"
+                            placeholder={t('form.email')}
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            required
+                            className="rounded-sm"
+                          />
+                          <Input
+                            placeholder={t('form.phone')}
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            required
+                            className="rounded-sm"
+                          />
+                          <Input
+                            type="date"
+                            placeholder={t('form.preferredDate')}
+                            value={formData.preferredDate}
+                            onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
+                            className="rounded-sm"
+                          />
+                          <Button type="submit" className="w-full rounded-full">
+                            {t('form.requestViewing')}
+                          </Button>
+                          <p className="font-body text-xs text-muted-foreground text-center">
+                            {t('form.privacy')} <a href="/privacy" className="underline">{t('form.privacyPolicy')}</a>
+                          </p>
+                        </form>
+                      </TabsContent>
+                    </Tabs>
+                  </motion.div>
                 </div>
               </div>
             </div>
@@ -259,7 +444,7 @@ const ListingDetail = () => {
             <section className="py-20 mt-16 bg-secondary">
               <div className="container mx-auto px-6">
                 <h2 className="font-display text-2xl md:text-3xl font-light text-foreground mb-10">
-                  Similar properties
+                  {t('detail.similarProperties')}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
                   {relatedListings.map((relatedListing, index) => (
