@@ -45,6 +45,7 @@ const translations: Record<Language, Record<string, string>> = {
     'listings.loadMore': 'Meer laden',
     'listings.results': 'woningen gevonden',
     'listings.result': 'woning gevonden',
+    'listings.readMore': 'Lees verder',
     
     // Filters
     'filters.search': 'Zoeken',
@@ -216,6 +217,7 @@ const translations: Record<Language, Record<string, string>> = {
     'listings.loadMore': 'Load more',
     'listings.results': 'properties found',
     'listings.result': 'property found',
+    'listings.readMore': 'Read more',
     
     // Filters
     'filters.search': 'Search',

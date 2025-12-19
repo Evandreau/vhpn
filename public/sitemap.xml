@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Home Page -->
+  <url>
+    <loc>https://haven-rentals.nl/</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/"/>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Listings Page -->
+  <url>
+    <loc>https://haven-rentals.nl/listings</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings"/>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- About Page -->
+  <url>
+    <loc>https://haven-rentals.nl/about</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/about"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Landlords Page -->
+  <url>
+    <loc>https://haven-rentals.nl/landlords</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/landlords"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/landlords"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Contact Page -->
+  <url>
+    <loc>https://haven-rentals.nl/contact</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/contact"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Individual Listing Pages -->
+  <url>
+    <loc>https://haven-rentals.nl/listings/1</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/1"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/1"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://haven-rentals.nl/listings/2</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/2"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/2"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://haven-rentals.nl/listings/3</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/3"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/3"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://haven-rentals.nl/listings/4</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/4"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/4"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://haven-rentals.nl/listings/5</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/5"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/5"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://haven-rentals.nl/listings/6</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/6"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/6"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://haven-rentals.nl/listings/7</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/7"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/7"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://haven-rentals.nl/listings/8</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/8"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/8"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://haven-rentals.nl/listings/9</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/9"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/9"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://haven-rentals.nl/listings/10</loc>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://haven-rentals.nl/nl/listings/10"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://haven-rentals.nl/en/listings/10"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+</urlset>

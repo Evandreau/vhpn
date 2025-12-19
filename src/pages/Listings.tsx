@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { MessageSquare } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ListingCard from "@/components/ListingCard";
 import ListingFilters, { FilterState } from "@/components/ListingFilters";
+import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -137,18 +138,31 @@ const Listings = () => {
     setLeadForm({ name: '', email: '', phone: '', budget: '', moveInDate: '', preferredArea: '' });
   };
 
+  const seoTitle = language === 'nl' 
+    ? 'Huurwoningen in Nederland | Gemeubileerde Appartementen & Huizen | Haven Rentals'
+    : 'Rentals in the Netherlands | Furnished Apartments & Houses | Haven Rentals';
+  
+  const seoDescription = language === 'nl'
+    ? 'Bekijk gemeubileerde appartementen en huizen te huur in Amsterdam, Rotterdam, Den Haag, Utrecht en andere Nederlandse steden. Direct beschikbaar.'
+    : 'Browse furnished apartments and houses for rent in Amsterdam, Rotterdam, The Hague, Utrecht, and other Dutch cities. Available now.';
+
+  const breadcrumbItems = [
+    { name: 'Home', url: 'https://haven-rentals.nl/' },
+    { name: language === 'nl' ? 'Huurwoningen' : 'Rentals', url: 'https://haven-rentals.nl/listings' },
+  ];
+
   return (
     <>
+      <SEO 
+        title={seoTitle}
+        description={seoDescription}
+        url="/listings"
+      />
+      
       <Helmet>
-        <html lang={language} />
-        <title>{language === 'nl' ? 'Huurwoningen — Haven' : 'Browse Rentals — Haven'}</title>
-        <meta
-          name="description"
-          content={language === 'nl' 
-            ? 'Bekijk gemeubileerde appartementen en huizen te huur in Amsterdam, Rotterdam, Den Haag, Utrecht en andere Nederlandse steden.'
-            : 'Browse furnished apartments and houses for rent in Amsterdam, Rotterdam, The Hague, Utrecht, and other Dutch cities.'
-          }
-        />
+        <script type="application/ld+json">
+          {JSON.stringify(generateBreadcrumbSchema(breadcrumbItems))}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background">

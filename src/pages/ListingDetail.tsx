@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { ArrowLeft, Bed, Bath, Square, Calendar, Euro, Clock, Check, MapPin, Play, Shield, PawPrint, GraduationCap, Users, Car, Trees } from "lucide-react";
 import { format, parseISO } from "date-fns";
@@ -10,6 +9,8 @@ import ImageSlider from "@/components/ImageSlider";
 import AmenityChip from "@/components/AmenityChip";
 import MapPlaceholder from "@/components/MapPlaceholder";
 import ListingCard from "@/components/ListingCard";
+import KeyFactsBlock from "@/components/KeyFactsBlock";
+import SEO, { generateBreadcrumbSchema, generateListingSchema } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getListingById, getRelatedListings } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet-async";
 
 const ListingDetail = () => {
   const { id } = useParams();
@@ -99,15 +101,35 @@ const ListingDetail = () => {
     { icon: Trees, label: language === 'nl' ? 'Buiten' : 'Outdoor', value: listing.outdoorSpace },
   ].filter(spec => spec.value);
 
+  // Breadcrumb schema for structured data
+  const breadcrumbItems = [
+    { name: language === 'nl' ? 'Home' : 'Home', url: 'https://haven-rentals.nl/' },
+    { name: language === 'nl' ? 'Huurwoningen' : 'Rentals', url: 'https://haven-rentals.nl/listings' },
+    { name: listing.title, url: `https://haven-rentals.nl/listings/${listing.id}` },
+  ];
+
+  const seoTitle = language === 'nl' 
+    ? `${listing.title} | ${formatPrice(listing.priceMonthly)}/maand | Haven Rentals`
+    : `${listing.title} | ${formatPrice(listing.priceMonthly)}/month | Haven Rentals`;
+  
+  const seoDescription = listing.descriptionShort;
+
   return (
     <>
+      <SEO 
+        title={seoTitle}
+        description={seoDescription}
+        url={`/listings/${listing.id}`}
+        image={listing.images[0]}
+        type="product"
+        listing={listing}
+      />
+      
+      {/* Breadcrumb Schema */}
       <Helmet>
-        <html lang={language} />
-        <title>{listing.title} — Haven</title>
-        <meta
-          name="description"
-          content={listing.descriptionShort}
-        />
+        <script type="application/ld+json">
+          {JSON.stringify(generateBreadcrumbSchema(breadcrumbItems))}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -194,67 +216,8 @@ const ListingDetail = () => {
                     <span className="font-body text-base text-muted-foreground">{t('listings.perMonth')}</span>
                   </div>
 
-                  {/* Facts Bar */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 py-6 border-y border-border">
-                    <div className="flex items-center gap-2">
-                      <Bed className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-body text-xs text-muted-foreground">{language === 'nl' ? 'Slaapkamers' : 'Beds'}</p>
-                        <p className="font-body text-base font-medium text-foreground">
-                          {listing.beds === 0 ? t('listings.studio') : listing.beds}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Bath className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-body text-xs text-muted-foreground">{language === 'nl' ? 'Badkamers' : 'Baths'}</p>
-                        <p className="font-body text-base font-medium text-foreground">
-                          {listing.baths}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Square className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-body text-xs text-muted-foreground">{language === 'nl' ? 'Oppervlakte' : 'Size'}</p>
-                        <p className="font-body text-base font-medium text-foreground">
-                          {listing.sqm} m²
-                        </p>
-                      </div>
-                    </div>
-                    {listing.deposit && (
-                      <div className="flex items-center gap-2">
-                        <Euro className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                          <p className="font-body text-xs text-muted-foreground">{t('detail.deposit')}</p>
-                          <p className="font-body text-base font-medium text-foreground">
-                            {formatPrice(listing.deposit)}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    {listing.minRentalPeriodMonths && (
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                          <p className="font-body text-xs text-muted-foreground">{t('detail.minStay')}</p>
-                          <p className="font-body text-base font-medium text-foreground">
-                            {listing.minRentalPeriodMonths} {t('detail.months')}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <Check className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-body text-xs text-muted-foreground">{t('listings.furnished')}</p>
-                        <p className="font-body text-base font-medium text-foreground">
-                          {listing.furnished ? (language === 'nl' ? 'Ja' : 'Yes') : (language === 'nl' ? 'Nee' : 'No')}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Key Facts Block - Consistent machine-readable summary */}
+                  <KeyFactsBlock listing={listing} />
                 </motion.div>
 
                 {/* Availability */}
