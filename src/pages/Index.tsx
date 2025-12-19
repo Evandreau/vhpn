@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { ArrowRight, Search, Home, FileCheck, Key, Building, Camera, Users, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ListingCard from "@/components/ListingCard";
 import { getFeaturedListings } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
+import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
 import heroImage from "@/assets/hero-property.jpg";
 
 const Index = () => {
@@ -29,12 +29,30 @@ const Index = () => {
     { icon: Users, title: t('howItWorks.landlord.step4.title'), desc: t('howItWorks.landlord.step4.desc') },
   ];
 
+  const seoTitle = language === 'nl' 
+    ? 'Haven Rentals — Premium Huurwoningen in Nederland | Amsterdam, Rotterdam, Den Haag'
+    : 'Haven Rentals — Premium Furnished Rentals in the Netherlands | Amsterdam, Rotterdam, The Hague';
+  
+  const seoDescription = language === 'nl'
+    ? 'Ontdek premium gemeubileerde huurwoningen in Amsterdam, Rotterdam, Den Haag en Utrecht. Direct beschikbaar, geverifieerde woningen voor expats en professionals.'
+    : 'Discover premium furnished rentals in Amsterdam, Rotterdam, The Hague and Utrecht. Move in ready, verified properties for expats and professionals.';
+
+  const breadcrumbItems = [
+    { name: 'Home', url: 'https://haven-rentals.nl/' },
+  ];
+
   return (
     <>
+      <SEO 
+        title={seoTitle}
+        description={seoDescription}
+        url="/"
+      />
+      
       <Helmet>
-        <html lang={language} />
-        <title>{language === 'nl' ? 'Haven — Gemeubileerde Huurwoningen in Nederland' : 'Haven — Furnished Rentals in the Netherlands'}</title>
-        <meta name="description" content={t('hero.subtitle')} />
+        <script type="application/ld+json">
+          {JSON.stringify(generateBreadcrumbSchema(breadcrumbItems))}
+        </script>
       </Helmet>
       
       <div className="min-h-screen bg-background">
