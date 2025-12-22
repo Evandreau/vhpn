@@ -44,20 +44,19 @@ const About = () => {
   ];
 
   const serviceAreas = [
-    "Amsterdam", "Rotterdam", "Den Haag", "Utrecht", "Eindhoven", 
-    "Groningen", "Tilburg", "Almere", "Breda", "Nijmegen"
+    "Rotterdam", "Amsterdam", "Den Haag", "Schiedam", "Vlaardingen"
   ];
 
   const stats = language === 'nl' ? [
     { value: "500+", label: "Woningen verhuurd" },
     { value: "98%", label: "Tevreden huurders" },
     { value: "24u", label: "Gemiddelde reactietijd" },
-    { value: "10+", label: "Steden in Nederland" },
+    { value: "5", label: "Steden in Nederland" },
   ] : [
     { value: "500+", label: "Properties rented" },
     { value: "98%", label: "Satisfied tenants" },
     { value: "24h", label: "Average response time" },
-    { value: "10+", label: "Cities in Netherlands" },
+    { value: "5", label: "Cities in Netherlands" },
   ];
 
   return (
