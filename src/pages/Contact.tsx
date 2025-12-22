@@ -45,8 +45,7 @@ const Contact = () => {
   };
 
   const cities = [
-    "Amsterdam", "Rotterdam", "Den Haag", "Utrecht", "Eindhoven",
-    "Groningen", "Tilburg", "Almere", "Breda", "Nijmegen"
+    "Rotterdam", "Amsterdam", "Den Haag", "Schiedam", "Vlaardingen"
   ];
 
   return (

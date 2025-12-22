@@ -9,10 +9,7 @@ const Footer = () => {
     {
       title: t('footer.properties'),
       links: [
-        { label: t('footer.apartments'), href: "/listings?type=apartment" },
-        { label: t('footer.houses'), href: "/listings?type=house" },
-        { label: t('footer.studios'), href: "/listings?type=studio" },
-        { label: t('footer.luxury'), href: "/listings?featured=true" },
+        { label: t('nav.rentals'), href: "/listings" },
       ],
     },
     {
