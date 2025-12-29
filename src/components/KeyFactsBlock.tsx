@@ -1,7 +1,8 @@
-import { Bed, Bath, Square, Calendar, Euro, Clock, Home, MapPin } from "lucide-react";
+import { Bed, Bath, Square, Calendar, Euro, Clock, Home, MapPin, Zap, Car, Trees } from "lucide-react";
 import { Listing } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { format, parseISO } from "date-fns";
+import { nl, enUS } from "date-fns/locale";
 
 interface KeyFactsBlockProps {
   listing: Listing;
@@ -20,7 +21,30 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
   };
 
   const formatDate = (dateString: string) => {
-    return format(parseISO(dateString), "d MMMM yyyy");
+    return format(parseISO(dateString), "d MMMM yyyy", { 
+      locale: language === 'nl' ? nl : enUS 
+    });
+  };
+
+  const getOutdoorSpaceLabel = (type?: string) => {
+    if (!type) return language === 'nl' ? 'Buitenruimte' : 'Outdoor space';
+    const labels: Record<string, { nl: string; en: string }> = {
+      balcony: { nl: 'Balkon', en: 'Balcony' },
+      terrace: { nl: 'Terras', en: 'Terrace' },
+      garden: { nl: 'Tuin', en: 'Garden' },
+      rooftop: { nl: 'Dakterras', en: 'Rooftop' },
+    };
+    return labels[type]?.[language] || type;
+  };
+
+  const getParkingLabel = (type?: string) => {
+    if (!type) return language === 'nl' ? 'Parkeren' : 'Parking';
+    const labels: Record<string, { nl: string; en: string }> = {
+      permit: { nl: 'Parkeervergunning', en: 'Parking permit' },
+      garage: { nl: 'Parkeergarage', en: 'Parking garage' },
+      private: { nl: 'Eigen parkeerplaats', en: 'Private parking' },
+    };
+    return labels[type]?.[language] || type;
   };
 
   const getAvailabilityText = () => {
@@ -80,6 +104,42 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
   ];
 
   // Add optional facts
+  if (listing.energyLabel) {
+    facts.push({
+      icon: Zap,
+      label: language === 'nl' ? 'Energielabel' : 'Energy Label',
+      value: listing.energyLabel,
+      ariaLabel: `${language === 'nl' ? 'Energielabel' : 'Energy Label'}: ${listing.energyLabel}`
+    });
+  }
+
+  if (listing.serviceCostsMonthly) {
+    facts.push({
+      icon: Euro,
+      label: language === 'nl' ? 'Servicekosten' : 'Service Costs',
+      value: `${formatPrice(listing.serviceCostsMonthly)}${t('listings.perMonth')}`,
+      ariaLabel: `${language === 'nl' ? 'Servicekosten' : 'Service Costs'}: ${formatPrice(listing.serviceCostsMonthly)} per month`
+    });
+  }
+
+  if (listing.outdoorSpace && listing.outdoorSpaceType) {
+    facts.push({
+      icon: Trees,
+      label: getOutdoorSpaceLabel(listing.outdoorSpaceType),
+      value: listing.outdoorSpaceSqm ? `${listing.outdoorSpaceSqm} m²` : (language === 'nl' ? 'Ja' : 'Yes'),
+      ariaLabel: `${getOutdoorSpaceLabel(listing.outdoorSpaceType)}: ${listing.outdoorSpaceSqm ? `${listing.outdoorSpaceSqm} m²` : 'Yes'}`
+    });
+  }
+
+  if (listing.parking) {
+    facts.push({
+      icon: Car,
+      label: getParkingLabel(listing.parkingType),
+      value: language === 'nl' ? 'Ja' : 'Yes',
+      ariaLabel: `${getParkingLabel(listing.parkingType)}: Yes`
+    });
+  }
+
   if (listing.minRentalPeriodMonths) {
     facts.push({
       icon: Clock,

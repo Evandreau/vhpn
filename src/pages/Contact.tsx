@@ -355,9 +355,9 @@ const Contact = () => {
                               <SelectValue placeholder={language === 'nl' ? 'Selecteer periode' : 'Select period'} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="3-6">{language === 'nl' ? '3-6 maanden' : '3-6 months'}</SelectItem>
                               <SelectItem value="6-12">{language === 'nl' ? '6-12 maanden' : '6-12 months'}</SelectItem>
-                              <SelectItem value="12+">{language === 'nl' ? '12+ maanden' : '12+ months'}</SelectItem>
+                              <SelectItem value="12-24">{language === 'nl' ? '12-24 maanden' : '12-24 months'}</SelectItem>
+                              <SelectItem value="24+">{language === 'nl' ? '24+ maanden' : '24+ months'}</SelectItem>
                               <SelectItem value="indefinite">{language === 'nl' ? 'Onbepaalde tijd' : 'Indefinite'}</SelectItem>
                             </SelectContent>
                           </Select>
