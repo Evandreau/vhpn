@@ -11,10 +11,10 @@ interface LanguageContextType {
 const translations: Record<Language, Record<string, string>> = {
   nl: {
     // Navigation
-    'nav.rentals': 'Huurwoningen',
+    'nav.rentals': 'Huren',
     'nav.about': 'Over ons',
     'nav.contact': 'Contact',
-    'nav.landlords': 'Verhuurders',
+    'nav.landlords': 'Verhuren',
     'nav.viewRentals': 'Bekijk aanbod',
     
     // Hero
