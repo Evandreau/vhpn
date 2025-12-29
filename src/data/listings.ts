@@ -19,7 +19,12 @@ export interface Listing {
   studentsAllowed?: boolean;
   petsAllowed?: boolean;
   outdoorSpace?: boolean;
+  outdoorSpaceType?: 'balcony' | 'terrace' | 'garden' | 'rooftop';
+  outdoorSpaceSqm?: number;
   parking?: boolean;
+  parkingType?: 'permit' | 'garage' | 'private';
+  energyLabel?: 'A++' | 'A+' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
+  serviceCostsMonthly?: number;
   images: string[];
   videoTourUrl?: string;
   latitude: number;
@@ -69,7 +74,11 @@ export const listings: Listing[] = [
     studentsAllowed: false,
     homeSharingAllowed: false,
     outdoorSpace: true,
+    outdoorSpaceType: 'balcony',
+    outdoorSpaceSqm: 8,
     parking: false,
+    energyLabel: 'B',
+    serviceCostsMonthly: 150,
     createdAt: "2025-01-10"
   },
   {
@@ -107,7 +116,12 @@ export const listings: Listing[] = [
     studentsAllowed: true,
     homeSharingAllowed: false,
     outdoorSpace: true,
+    outdoorSpaceType: 'rooftop',
+    outdoorSpaceSqm: 25,
     parking: false,
+    parkingType: 'permit',
+    energyLabel: 'A',
+    serviceCostsMonthly: 200,
     createdAt: "2025-01-08"
   },
   {
@@ -146,7 +160,11 @@ export const listings: Listing[] = [
     studentsAllowed: false,
     homeSharingAllowed: false,
     outdoorSpace: true,
+    outdoorSpaceType: 'garden',
+    outdoorSpaceSqm: 350,
     parking: true,
+    parkingType: 'private',
+    energyLabel: 'C',
     createdAt: "2025-01-05"
   },
   {
@@ -184,7 +202,11 @@ export const listings: Listing[] = [
     studentsAllowed: true,
     homeSharingAllowed: false,
     outdoorSpace: true,
+    outdoorSpaceType: 'terrace',
+    outdoorSpaceSqm: 12,
     parking: false,
+    parkingType: 'permit',
+    energyLabel: 'A+',
     createdAt: "2025-01-12"
   },
   {
@@ -223,7 +245,12 @@ export const listings: Listing[] = [
     studentsAllowed: false,
     homeSharingAllowed: false,
     outdoorSpace: true,
+    outdoorSpaceType: 'terrace',
+    outdoorSpaceSqm: 45,
     parking: true,
+    parkingType: 'garage',
+    energyLabel: 'A',
+    serviceCostsMonthly: 350,
     createdAt: "2025-01-03"
   },
   {
@@ -263,6 +290,9 @@ export const listings: Listing[] = [
     homeSharingAllowed: true,
     outdoorSpace: false,
     parking: false,
+    parkingType: 'permit',
+    energyLabel: 'C',
+    serviceCostsMonthly: 75,
     createdAt: "2025-01-09"
   },
   {
@@ -302,6 +332,8 @@ export const listings: Listing[] = [
     homeSharingAllowed: false,
     outdoorSpace: false,
     parking: false,
+    parkingType: 'permit',
+    energyLabel: 'D',
     createdAt: "2025-01-07"
   },
   {
@@ -340,6 +372,9 @@ export const listings: Listing[] = [
     homeSharingAllowed: false,
     outdoorSpace: false,
     parking: true,
+    parkingType: 'garage',
+    energyLabel: 'A+',
+    serviceCostsMonthly: 275,
     createdAt: "2025-01-11"
   },
   {
@@ -378,7 +413,11 @@ export const listings: Listing[] = [
     studentsAllowed: false,
     homeSharingAllowed: false,
     outdoorSpace: true,
+    outdoorSpaceType: 'garden',
+    outdoorSpaceSqm: 60,
     parking: false,
+    parkingType: 'permit',
+    energyLabel: 'B',
     createdAt: "2025-01-04"
   },
   {
@@ -418,6 +457,9 @@ export const listings: Listing[] = [
     homeSharingAllowed: false,
     outdoorSpace: false,
     parking: true,
+    parkingType: 'garage',
+    energyLabel: 'A++',
+    serviceCostsMonthly: 450,
     createdAt: "2025-01-06"
   }
 ];

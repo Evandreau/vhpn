@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Bed, Bath, Square, Calendar, Euro, Clock, Check, MapPin, Play, Shield, PawPrint, GraduationCap, Users, Car, Trees } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import { nl, enUS } from "date-fns/locale";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ImageSlider from "@/components/ImageSlider";
@@ -34,6 +35,14 @@ const ListingDetail = () => {
     phone: '',
     message: '',
     preferredDate: '',
+    preferredDate1: '',
+    preferredDate2: '',
+    preferredDate3: '',
+    timeSlot1: '',
+    timeSlot2: '',
+    timeSlot3: '',
+    grossMonthlyIncome: '',
+    partnerGrossMonthlyIncome: '',
   });
 
   if (!listing) {
@@ -74,7 +83,9 @@ const ListingDetail = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return format(parseISO(dateString), "d MMMM yyyy");
+    return format(parseISO(dateString), "d MMMM yyyy", {
+      locale: language === 'nl' ? nl : enUS
+    });
   };
 
   const getAvailabilityText = () => {
@@ -90,7 +101,21 @@ const ListingDetail = () => {
       title: t('form.success'),
       description: t('form.successMessage'),
     });
-    setFormData({ name: '', email: '', phone: '', message: '', preferredDate: '' });
+    setFormData({ 
+      name: '', 
+      email: '', 
+      phone: '', 
+      message: '', 
+      preferredDate: '',
+      preferredDate1: '',
+      preferredDate2: '',
+      preferredDate3: '',
+      timeSlot1: '',
+      timeSlot2: '',
+      timeSlot3: '',
+      grossMonthlyIncome: '',
+      partnerGrossMonthlyIncome: '',
+    });
   };
 
   const quickSpecs = [
@@ -380,13 +405,98 @@ const ListingDetail = () => {
                             required
                             className="rounded-sm"
                           />
-                          <Input
-                            type="date"
-                            placeholder={t('form.preferredDate')}
-                            value={formData.preferredDate}
-                            onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
-                            className="rounded-sm"
-                          />
+                          
+                          {/* Viewing dates with time slots */}
+                          <div className="space-y-3">
+                            <p className="font-body text-xs text-muted-foreground">
+                              {language === 'nl' ? 'Selecteer tot 3 voorkeursdata:' : 'Select up to 3 preferred dates:'}
+                            </p>
+                            
+                            {/* Date 1 */}
+                            <div className="grid grid-cols-2 gap-2">
+                              <Input
+                                type="date"
+                                value={formData.preferredDate1}
+                                onChange={(e) => setFormData({ ...formData, preferredDate1: e.target.value })}
+                                className="rounded-sm"
+                                required
+                              />
+                              <select
+                                value={formData.timeSlot1}
+                                onChange={(e) => setFormData({ ...formData, timeSlot1: e.target.value })}
+                                className="h-10 rounded-sm border border-border bg-background px-3 font-body text-sm"
+                                required
+                              >
+                                <option value="">{t('form.timeSlot')}</option>
+                                <option value="morning">{t('form.morning')}</option>
+                                <option value="afternoon">{t('form.afternoon')}</option>
+                                <option value="evening">{t('form.evening')}</option>
+                              </select>
+                            </div>
+                            
+                            {/* Date 2 */}
+                            <div className="grid grid-cols-2 gap-2">
+                              <Input
+                                type="date"
+                                value={formData.preferredDate2}
+                                onChange={(e) => setFormData({ ...formData, preferredDate2: e.target.value })}
+                                className="rounded-sm"
+                              />
+                              <select
+                                value={formData.timeSlot2}
+                                onChange={(e) => setFormData({ ...formData, timeSlot2: e.target.value })}
+                                className="h-10 rounded-sm border border-border bg-background px-3 font-body text-sm"
+                              >
+                                <option value="">{t('form.timeSlot')}</option>
+                                <option value="morning">{t('form.morning')}</option>
+                                <option value="afternoon">{t('form.afternoon')}</option>
+                                <option value="evening">{t('form.evening')}</option>
+                              </select>
+                            </div>
+                            
+                            {/* Date 3 */}
+                            <div className="grid grid-cols-2 gap-2">
+                              <Input
+                                type="date"
+                                value={formData.preferredDate3}
+                                onChange={(e) => setFormData({ ...formData, preferredDate3: e.target.value })}
+                                className="rounded-sm"
+                              />
+                              <select
+                                value={formData.timeSlot3}
+                                onChange={(e) => setFormData({ ...formData, timeSlot3: e.target.value })}
+                                className="h-10 rounded-sm border border-border bg-background px-3 font-body text-sm"
+                              >
+                                <option value="">{t('form.timeSlot')}</option>
+                                <option value="morning">{t('form.morning')}</option>
+                                <option value="afternoon">{t('form.afternoon')}</option>
+                                <option value="evening">{t('form.evening')}</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          {/* Income fields */}
+                          <div className="space-y-3 pt-2 border-t border-border">
+                            <p className="font-body text-xs text-muted-foreground pt-2">
+                              {language === 'nl' ? 'Inkomensgegevens:' : 'Income details:'}
+                            </p>
+                            <Input
+                              type="number"
+                              placeholder={t('form.grossMonthlyIncome')}
+                              value={formData.grossMonthlyIncome}
+                              onChange={(e) => setFormData({ ...formData, grossMonthlyIncome: e.target.value })}
+                              required
+                              className="rounded-sm"
+                            />
+                            <Input
+                              type="number"
+                              placeholder={t('form.partnerGrossMonthlyIncome')}
+                              value={formData.partnerGrossMonthlyIncome}
+                              onChange={(e) => setFormData({ ...formData, partnerGrossMonthlyIncome: e.target.value })}
+                              className="rounded-sm"
+                            />
+                          </div>
+
                           <Button type="submit" className="w-full rounded-full">
                             {t('form.requestViewing')}
                           </Button>
