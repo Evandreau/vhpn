@@ -57,12 +57,7 @@ export const listings: Listing[] = [
     descriptionLong: "A beautifully restored apartment overlooking one of Amsterdam's most picturesque canals. Original wooden beams and floors meet contemporary comfort. The living space flows naturally into a modern kitchen with high-end appliances. Two generous bedrooms, both with canal views. The location is unbeatable—steps from boutiques, galleries, and the city's best cafés.\n\nThe apartment features a spacious living room with large windows that flood the space with natural light. The kitchen is fully equipped with premium appliances including a dishwasher, induction cooktop, and combination oven. Both bedrooms offer ample closet space and the bathroom has been recently renovated with high-quality fixtures.",
     amenities: ["Canal View", "Washing Machine", "Dishwasher", "Balcony", "Bicycle Storage", "Central Heating", "Wood Floors"],
     images: [
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80",
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80",
-      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80",
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
-      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1200&q=80",
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&q=80"
+      "/src/assets/listing-1-jordaan.jpg"
     ],
     featured: true,
     verified: true,
@@ -99,12 +94,7 @@ export const listings: Listing[] = [
     descriptionLong: "Industrial-chic loft in the heart of Rotterdam's vibrant city centre. High ceilings, exposed brick, and floor-to-ceiling windows flood the space with natural light. The open-plan layout maximizes every square metre, with a mezzanine bedroom and a designer kitchen below. Walking distance to Markthal and Central Station.\n\nThis unique property combines historical industrial architecture with modern luxury. The building offers shared amenities including a rooftop terrace with city views and a fitness center. Perfect for young professionals who appreciate design and urban living.",
     amenities: ["High Ceilings", "Exposed Brick", "Air Conditioning", "Gym Access", "Concierge", "Rooftop Terrace"],
     images: [
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80"
+      "/src/assets/listing-2-rotterdam-loft.jpg"
     ],
     featured: true,
     verified: true,
@@ -143,12 +133,7 @@ export const listings: Listing[] = [
     descriptionLong: "Elegant detached villa in one of the Netherlands' most prestigious residential areas. Surrounded by mature gardens, this family home offers tranquility minutes from The Hague. Spacious living areas with garden access, a modern eat-in kitchen, and four well-proportioned bedrooms. Excellent international schools nearby.\n\nThe property features a large living room with fireplace, a separate dining room, and a modern kitchen with island. The master bedroom has an ensuite bathroom. The garden is beautifully landscaped with a terrace perfect for outdoor entertaining.",
     amenities: ["Garden", "Parking", "Study Room", "Guest Toilet", "Storage", "Pet Friendly", "Near International Schools"],
     images: [
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80"
+      "/src/assets/listing-3-wassenaar-villa.jpg"
     ],
     featured: true,
     verified: true,
@@ -185,12 +170,7 @@ export const listings: Listing[] = [
     descriptionLong: "Compact yet perfectly formed studio in Amsterdam's leafy Oud-Zuid. Recently renovated with quality finishes throughout. Clever built-in storage, a Murphy bed, and a small private terrace. Vondelpark is at your doorstep for morning runs, and the museums are a short stroll away.\n\nThis studio is ideal for singles or couples who appreciate quality over quantity. The space has been thoughtfully designed to maximize functionality while maintaining an airy, open feel. The kitchen area includes high-end appliances and there is a separate bathroom with walk-in shower.",
     amenities: ["Terrace", "Built-in Storage", "Washing Machine", "Near Vondelpark", "Quiet Street"],
     images: [
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80",
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80",
-      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80",
-      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1200&q=80",
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&q=80"
+      "/src/assets/listing-4-vondelpark-studio.jpg"
     ],
     featured: false,
     verified: true,
@@ -228,12 +208,7 @@ export const listings: Listing[] = [
     descriptionLong: "Stunning top-floor penthouse with panoramic views over The Hague and the North Sea. Floor-to-ceiling windows wrap around the living space, blurring the line between indoors and out. Three bedrooms, two bathrooms, and a wraparound terrace ideal for entertaining. Beach life and city conveniences combined.\n\nThis exceptional penthouse offers the best of both worlds: beachside living with all the amenities of city life. The open-plan living area is perfect for entertaining, while the private terrace offers sunset views over the sea. Building amenities include parking, sauna, and 24-hour security.",
     amenities: ["Sea View", "Terrace", "Elevator", "Parking Space", "Air Conditioning", "Sauna", "Storage"],
     images: [
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200&q=80"
+      "/src/assets/listing-5-scheveningen-penthouse.jpg"
     ],
     featured: true,
     verified: true,
@@ -272,12 +247,7 @@ export const listings: Listing[] = [
     descriptionLong: "Charming one-bedroom in the heart of De Pijp, Amsterdam's most vibrant neighbourhood. Just steps from Albert Cuyp Market. The apartment has been thoughtfully updated while retaining period details. A bright living room, separate bedroom, and galley kitchen with everything you need.\n\nDe Pijp offers an unmatched lifestyle with its mix of trendy restaurants, cozy cafes, and the famous Albert Cuyp Market right on your doorstep. This apartment is perfect for those who want to experience authentic Amsterdam living.",
     amenities: ["Near Market", "Washing Machine", "Wood Floors", "Central Location", "Bicycle Storage"],
     images: [
-      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1200&q=80",
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&q=80",
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80",
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80",
-      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80"
+      "/src/assets/listing-6-de-pijp.jpg"
     ],
     featured: false,
     verified: true,
@@ -314,12 +284,7 @@ export const listings: Listing[] = [
     descriptionLong: "Live in a piece of Dutch history. This apartment occupies the upper floors of a 17th-century canal house in Utrecht's medieval centre. High ceilings, large windows overlooking the unique wharf-level canals, and abundant natural light. Unfurnished, allowing you to make it your own.\n\nUtrecht's unique wharf cellars create a charming streetscape unlike any other Dutch city. This apartment offers the opportunity to live in the heart of this historic city while enjoying modern conveniences. Near Utrecht University and excellent public transport.",
     amenities: ["Canal View", "Historic Building", "High Ceilings", "City Centre", "Near University"],
     images: [
-      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80",
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80",
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80",
-      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1200&q=80",
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&q=80"
+      "/src/assets/listing-7-utrecht-canalhouse.jpg"
     ],
     featured: false,
     verified: true,
@@ -354,12 +319,7 @@ export const listings: Listing[] = [
     descriptionLong: "Contemporary apartment in Rotterdam's iconic Kop van Zuid district, surrounded by striking architecture. Views of the Erasmus Bridge from the living room. Open-plan living with a sleek kitchen, two bedrooms, and a bathroom with both tub and walk-in shower. Building amenities include a gym and underground parking.\n\nKop van Zuid represents the best of modern Rotterdam living. This apartment offers stunning views of the city's most famous landmark and easy access to both the city centre and waterfront. Building amenities include a fitness center, concierge service, and secure underground parking.",
     amenities: ["Harbour View", "Gym", "Parking", "Concierge", "Elevator", "Near Metro"],
     images: [
-      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80"
+      "/src/assets/listing-8-kop-van-zuid.jpg"
     ],
     featured: true,
     verified: true,
@@ -396,12 +356,7 @@ export const listings: Listing[] = [
     descriptionLong: "A rare find: a maisonette with its own private garden in central Haarlem. Spread over two floors with a living area that opens directly onto a sunny south-facing garden. Two bedrooms upstairs, both with built-in wardrobes. Haarlem's charming shops and cafés are at your doorstep.\n\nHaarlem offers the perfect balance of historic charm and modern convenience. This maisonette is ideal for those who want garden space without sacrificing city center living. The private garden is fully enclosed and perfect for outdoor dining or relaxation.",
     amenities: ["Private Garden", "Two Floors", "Quiet Location", "Near Shops", "Storage", "Pet Friendly"],
     images: [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80"
+      "/src/assets/listing-9-haarlem-maisonette.jpg"
     ],
     featured: false,
     verified: true,
@@ -439,12 +394,7 @@ export const listings: Listing[] = [
     descriptionLong: "Sleek executive apartment in Amsterdam's business district. Ideal for professionals seeking proximity to corporate headquarters and excellent transport links. Two ensuite bedrooms, a spacious living area, and a fully equipped kitchen. Building features 24/7 security, fitness centre, and meeting rooms.\n\nZuidas is the premier business district in the Netherlands, home to major international companies and excellent connections to Schiphol Airport. This apartment offers the ultimate in executive living with premium finishes throughout and world-class building amenities.",
     amenities: ["24/7 Security", "Fitness Centre", "Meeting Rooms", "Parking", "Near Train Station", "Concierge"],
     images: [
-      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80"
+      "/src/assets/listing-10-zuidas.jpg"
     ],
     featured: true,
     verified: true,
