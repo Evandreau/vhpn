@@ -33,7 +33,7 @@ const Navbar = () => {
             to="/" 
             className="font-display text-2xl md:text-3xl font-medium text-foreground tracking-tight"
           >
-            Haven
+            VHPN
           </Link>
 
           {/* Desktop Navigation */}
