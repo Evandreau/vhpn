@@ -1,9 +1,14 @@
+export type District = 'Centrum' | 'Noord' | 'Zuid' | 'West' | 'Oost' | 'Overig';
+export type InteriorType = 'kaal' | 'gestoffeerd' | 'gemeubileerd';
+
 export interface Listing {
   id: string;
   slug: string;
   title: string;
   city: string;
   neighborhood: string;
+  district?: District;
+  interiorType: InteriorType;
   descriptionShort: string;
   descriptionLong: string;
   availableType: 'immediately' | 'fromDate';
@@ -44,6 +49,8 @@ export const listings: Listing[] = [
     title: "Canal-View Apartment in Jordaan",
     city: "Amsterdam",
     neighborhood: "Jordaan",
+    district: "Centrum",
+    interiorType: "gemeubileerd",
     priceMonthly: 2850,
     beds: 2,
     baths: 1,
@@ -82,6 +89,8 @@ export const listings: Listing[] = [
     title: "Modern Loft in Rotterdam Centre",
     city: "Rotterdam",
     neighborhood: "Centrum",
+    district: "Centrum",
+    interiorType: "gemeubileerd",
     priceMonthly: 2200,
     beds: 1,
     baths: 1,
@@ -120,6 +129,8 @@ export const listings: Listing[] = [
     title: "Spacious Family Home in Wassenaar",
     city: "Wassenaar",
     neighborhood: "Wassenaar Village",
+    district: "Overig",
+    interiorType: "gemeubileerd",
     priceMonthly: 4500,
     beds: 4,
     baths: 2,
@@ -158,6 +169,8 @@ export const listings: Listing[] = [
     title: "Design Studio near Vondelpark",
     city: "Amsterdam",
     neighborhood: "Oud-Zuid",
+    district: "Zuid",
+    interiorType: "gemeubileerd",
     priceMonthly: 1650,
     beds: 0,
     baths: 1,
@@ -195,6 +208,8 @@ export const listings: Listing[] = [
     title: "Penthouse with City Views",
     city: "The Hague",
     neighborhood: "Scheveningen",
+    district: "Overig",
+    interiorType: "gemeubileerd",
     priceMonthly: 3800,
     beds: 3,
     baths: 2,
@@ -234,6 +249,8 @@ export const listings: Listing[] = [
     title: "Cozy Apartment in De Pijp",
     city: "Amsterdam",
     neighborhood: "De Pijp",
+    district: "Zuid",
+    interiorType: "gemeubileerd",
     priceMonthly: 1950,
     beds: 1,
     baths: 1,
@@ -271,6 +288,8 @@ export const listings: Listing[] = [
     title: "Historic Canal House Apartment",
     city: "Utrecht",
     neighborhood: "Binnenstad",
+    district: "Centrum",
+    interiorType: "kaal",
     priceMonthly: 2100,
     beds: 2,
     baths: 1,
@@ -307,6 +326,8 @@ export const listings: Listing[] = [
     title: "Harbour Apartment Kop van Zuid",
     city: "Rotterdam",
     neighborhood: "Kop van Zuid",
+    district: "Zuid",
+    interiorType: "gemeubileerd",
     priceMonthly: 2650,
     beds: 2,
     baths: 1,
@@ -343,6 +364,8 @@ export const listings: Listing[] = [
     title: "Garden Maisonette in Haarlem",
     city: "Haarlem",
     neighborhood: "Centrum",
+    district: "Overig",
+    interiorType: "gestoffeerd",
     priceMonthly: 2400,
     beds: 2,
     baths: 1,
@@ -381,6 +404,8 @@ export const listings: Listing[] = [
     title: "Executive Suite Zuidas",
     city: "Amsterdam",
     neighborhood: "Zuidas",
+    district: "Zuid",
+    interiorType: "gemeubileerd",
     priceMonthly: 3200,
     beds: 2,
     baths: 2,

@@ -22,6 +22,9 @@ const Listings = () => {
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     city: "",
+    district: "",
+    interiorType: "",
+    minSqm: "",
     minPrice: "",
     maxPrice: "",
     beds: "",
@@ -77,6 +80,22 @@ const Listings = () => {
     if (filters.beds && filters.beds !== "any") {
       const bedsNum = parseInt(filters.beds);
       result = result.filter((l) => l.beds >= bedsNum);
+    }
+
+    // District filter
+    if (filters.district && filters.district !== "all") {
+      result = result.filter((l) => l.district === filters.district);
+    }
+
+    // Interior type filter
+    if (filters.interiorType && filters.interiorType !== "all") {
+      result = result.filter((l) => l.interiorType === filters.interiorType);
+    }
+
+    // Min living area filter
+    if (filters.minSqm && filters.minSqm !== "all") {
+      const minSqm = parseInt(filters.minSqm);
+      result = result.filter((l) => l.sqm >= minSqm);
     }
 
     // Furnished filter

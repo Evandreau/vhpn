@@ -18,6 +18,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 export interface FilterState {
   search: string;
   city: string;
+  district: string;
+  interiorType: string;
+  minSqm: string;
   minPrice: string;
   maxPrice: string;
   beds: string;
@@ -49,6 +52,9 @@ const ListingFilters = ({ filters, onFilterChange, resultsCount }: ListingFilter
     onFilterChange({
       search: "",
       city: "",
+      district: "",
+      interiorType: "",
+      minSqm: "",
       minPrice: "",
       maxPrice: "",
       beds: "",
@@ -62,7 +68,8 @@ const ListingFilters = ({ filters, onFilterChange, resultsCount }: ListingFilter
     });
   };
 
-  const hasActiveFilters = filters.search || filters.city || filters.minPrice || 
+  const hasActiveFilters = filters.search || filters.city || filters.district ||
+    filters.interiorType || filters.minSqm || filters.minPrice || 
     filters.maxPrice || filters.beds || filters.furnished !== null || 
     filters.parking || filters.petFriendly || filters.outdoorSpace || 
     filters.studentsAllowed || filters.homeSharingAllowed;
@@ -137,6 +144,48 @@ const ListingFilters = ({ filters, onFilterChange, resultsCount }: ListingFilter
                 <SelectItem value="1">1+</SelectItem>
                 <SelectItem value="2">2+</SelectItem>
                 <SelectItem value="3">3+</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* District */}
+            <Select value={filters.district} onValueChange={(v) => updateFilter("district", v)}>
+              <SelectTrigger className="w-32 h-10 font-body text-sm border-border rounded-sm">
+                <SelectValue placeholder={t('filters.district')} />
+              </SelectTrigger>
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="all">{t('filters.allDistricts')}</SelectItem>
+                <SelectItem value="Centrum">Centrum</SelectItem>
+                <SelectItem value="Noord">Noord</SelectItem>
+                <SelectItem value="Zuid">Zuid</SelectItem>
+                <SelectItem value="West">West</SelectItem>
+                <SelectItem value="Oost">Oost</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Interior Type */}
+            <Select value={filters.interiorType} onValueChange={(v) => updateFilter("interiorType", v)}>
+              <SelectTrigger className="w-36 h-10 font-body text-sm border-border rounded-sm">
+                <SelectValue placeholder={t('filters.interior')} />
+              </SelectTrigger>
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="all">{t('filters.allInterior')}</SelectItem>
+                <SelectItem value="kaal">{t('filters.interiorBare')}</SelectItem>
+                <SelectItem value="gestoffeerd">{t('filters.interiorUpholstered')}</SelectItem>
+                <SelectItem value="gemeubileerd">{t('filters.interiorFurnished')}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Living Area */}
+            <Select value={filters.minSqm} onValueChange={(v) => updateFilter("minSqm", v)}>
+              <SelectTrigger className="w-28 h-10 font-body text-sm border-border rounded-sm">
+                <SelectValue placeholder={t('filters.livingArea')} />
+              </SelectTrigger>
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="all">{t('filters.anyArea')}</SelectItem>
+                <SelectItem value="25">25+ m²</SelectItem>
+                <SelectItem value="50">50+ m²</SelectItem>
+                <SelectItem value="75">75+ m²</SelectItem>
+                <SelectItem value="100">100+ m²</SelectItem>
               </SelectContent>
             </Select>
 
@@ -266,6 +315,45 @@ const ListingFilters = ({ filters, onFilterChange, resultsCount }: ListingFilter
                   <SelectItem value="1">1+</SelectItem>
                   <SelectItem value="2">2+</SelectItem>
                   <SelectItem value="3">3+</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filters.district} onValueChange={(v) => updateFilter("district", v)}>
+                <SelectTrigger className="h-10 font-body text-sm border-border rounded-sm">
+                  <SelectValue placeholder={t('filters.district')} />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-border">
+                  <SelectItem value="all">{t('filters.allDistricts')}</SelectItem>
+                  <SelectItem value="Centrum">Centrum</SelectItem>
+                  <SelectItem value="Noord">Noord</SelectItem>
+                  <SelectItem value="Zuid">Zuid</SelectItem>
+                  <SelectItem value="West">West</SelectItem>
+                  <SelectItem value="Oost">Oost</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filters.interiorType} onValueChange={(v) => updateFilter("interiorType", v)}>
+                <SelectTrigger className="h-10 font-body text-sm border-border rounded-sm">
+                  <SelectValue placeholder={t('filters.interior')} />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-border">
+                  <SelectItem value="all">{t('filters.allInterior')}</SelectItem>
+                  <SelectItem value="kaal">{t('filters.interiorBare')}</SelectItem>
+                  <SelectItem value="gestoffeerd">{t('filters.interiorUpholstered')}</SelectItem>
+                  <SelectItem value="gemeubileerd">{t('filters.interiorFurnished')}</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filters.minSqm} onValueChange={(v) => updateFilter("minSqm", v)}>
+                <SelectTrigger className="h-10 font-body text-sm border-border rounded-sm">
+                  <SelectValue placeholder={t('filters.livingArea')} />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-border">
+                  <SelectItem value="all">{t('filters.anyArea')}</SelectItem>
+                  <SelectItem value="25">25+ m²</SelectItem>
+                  <SelectItem value="50">50+ m²</SelectItem>
+                  <SelectItem value="75">75+ m²</SelectItem>
+                  <SelectItem value="100">100+ m²</SelectItem>
                 </SelectContent>
               </Select>
 

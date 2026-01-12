@@ -68,6 +68,15 @@ const translations: Record<Language, Record<string, string>> = {
     'filters.sizeLargest': 'Grootste',
     'filters.clearAll': 'Wis filters',
     'filters.moreFilters': 'Meer filters',
+    'filters.district': 'Stadsdeel',
+    'filters.allDistricts': 'Alle stadsdelen',
+    'filters.interior': 'Interieur',
+    'filters.allInterior': 'Alle interieurs',
+    'filters.interiorBare': 'Kaal',
+    'filters.interiorUpholstered': 'Gestoffeerd',
+    'filters.interiorFurnished': 'Gemeubileerd',
+    'filters.livingArea': 'Oppervlakte',
+    'filters.anyArea': 'Alle',
     
     // Listing Detail
     'detail.backToListings': 'Terug naar aanbod',
@@ -253,6 +262,15 @@ const translations: Record<Language, Record<string, string>> = {
     'filters.sizeLargest': 'Largest',
     'filters.clearAll': 'Clear filters',
     'filters.moreFilters': 'More filters',
+    'filters.district': 'District',
+    'filters.allDistricts': 'All districts',
+    'filters.interior': 'Interior',
+    'filters.allInterior': 'All interiors',
+    'filters.interiorBare': 'Bare',
+    'filters.interiorUpholstered': 'Upholstered',
+    'filters.interiorFurnished': 'Furnished',
+    'filters.livingArea': 'Living area',
+    'filters.anyArea': 'Any',
     
     // Listing Detail
     'detail.backToListings': 'Back to listings',
