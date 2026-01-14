@@ -91,22 +91,22 @@ const About = () => {
                 <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-light text-foreground mb-6 leading-[1.1]">
                   {language === 'nl' ? (
                     <>
-                      Thuis vinden,
+                      Snelheid, duidelijkheid
                       <br />
-                      <span className="italic">moeiteloos gemaakt</span>
+                      <span className="italic">en smaak</span>
                     </>
                   ) : (
                     <>
-                      Making home
+                      Speed, clarity
                       <br />
-                      <span className="italic">feel effortless</span>
+                      <span className="italic">and taste</span>
                     </>
                   )}
                 </h1>
                 <p className="font-body text-lg text-muted-foreground leading-relaxed">
                   {language === 'nl' 
-                    ? 'Haven is opgericht vanuit een simpele overtuiging: het vinden van een huurwoning zou geen tweede baan moeten zijn.'
-                    : 'Haven was founded with a simple belief: finding a rental shouldn\'t feel like a second job.'
+                    ? 'Ons bureau is actief in de Randstad, voor klanten die snelheid, duidelijkheid en smaak verwachten. Met een urban signatuur, uitgesproken waar het mag en luxe waar het telt. Klantgericht, omdat we niet anders kunnen.'
+                    : 'Our agency operates in the Randstad, for clients who expect speed, clarity and taste. With an urban signature, bold where appropriate and luxurious where it counts. Client-focused, because we know no other way.'
                   }
                 </p>
               </motion.div>
@@ -152,24 +152,36 @@ const About = () => {
                 >
                   <div>
                     <h2 className="font-display text-2xl font-light text-foreground mb-4">
-                      {language === 'nl' ? 'De uitdaging' : 'The Challenge'}
+                      {language === 'nl' ? 'Lokale scherpte' : 'Local expertise'}
                     </h2>
                     <p className="font-body text-base text-muted-foreground leading-relaxed">
                       {language === 'nl' 
-                        ? 'De Nederlandse huurmarkt is notoir competitief. Internationale professionals, expats en studenten navigeren vaak door een gefragmenteerd landschap van advertenties, verouderde foto\'s en onresponsieve verhuurders. Wij kennen dit uit eigen ervaring.'
-                        : 'The Dutch rental market is notoriously competitive. International professionals, expats, and students often find themselves navigating a fragmented landscape of listings, outdated photos, and unresponsive landlords. We\'ve been there ourselves.'
+                        ? 'We kennen het ritme van de straten, het DNA van de wijken en het prijsniveau van de steden, van Rotterdam en Schiedam tot Den Haag, Amsterdam en alles daartussen. Die lokale scherpte maakt het verschil: betere matches, minder frictie en strakkere afspraken.'
+                        : 'We know the rhythm of the streets, the DNA of the neighborhoods and the price levels of the cities, from Rotterdam and Schiedam to The Hague, Amsterdam and everything in between. This local sharpness makes the difference: better matches, less friction and tighter agreements.'
                       }
                     </p>
                   </div>
 
                   <div>
                     <h2 className="font-display text-2xl font-light text-foreground mb-4">
-                      {t('about.approach')}
+                      {language === 'nl' ? 'Voor huurders' : 'For tenants'}
                     </h2>
                     <p className="font-body text-base text-muted-foreground leading-relaxed">
                       {language === 'nl' 
-                        ? 'Elke woning op Haven wordt persoonlijk gekeurd. Wij fotograferen elke ruimte, ontmoeten de verhuurders en zorgen ervoor dat de advertentie overeenkomt met de werkelijkheid. Geen misleidende informatie. Alleen eerlijke, zorgvuldig geselecteerde huurwoningen.'
-                        : 'Every property on Haven is personally vetted. We photograph each space, meet the landlords, and ensure the listing matches reality. No bait-and-switch. No outdated information. Just honest, curated rentals ready for you to call home.'
+                        ? 'Heldere communicatie, realistische verwachtingen, snelle terugkoppeling en begeleiding tot en met sleuteloverdracht. Discreet, professioneel en zonder ruis. Soms vragen we extra voorbereiding en documentatie, juist om snelheid en kwaliteit te garanderen.'
+                        : 'Clear communication, realistic expectations, quick feedback and guidance up to and including key handover. Discreet, professional and without noise. Sometimes we ask for extra preparation and documentation, precisely to guarantee speed and quality.'
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h2 className="font-display text-2xl font-light text-foreground mb-4">
+                      {language === 'nl' ? 'Voor verhuurders' : 'For landlords'}
+                    </h2>
+                    <p className="font-body text-base text-muted-foreground leading-relaxed">
+                      {language === 'nl' 
+                        ? 'Verhuurders ontzorgen we in het gehele verhuurproces. Dat betekent regie, rust en overzicht. We sturen op kwaliteit in selectie, communicatie en oplevering — discreet waar het moet en direct waar het kan.'
+                        : 'We take care of landlords throughout the entire rental process. That means control, peace of mind and overview. We focus on quality in selection, communication and delivery — discreet where needed and direct where possible.'
                       }
                     </p>
                   </div>
