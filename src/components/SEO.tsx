@@ -15,9 +15,9 @@ interface SEOProps {
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "RealEstateAgent",
-  "name": "Haven Rentals",
-  "url": "https://haven-rentals.nl",
-  "logo": "https://haven-rentals.nl/logo.png",
+  "name": "VHPN",
+  "url": "https://vhpn.nl",
+  "logo": "https://vhpn.nl/logo.png",
   "description": "Premium rental properties across the Netherlands. Furnished apartments, houses and studios for expats and professionals.",
   "address": {
     "@type": "PostalAddress",
@@ -28,13 +28,12 @@ export const organizationSchema = {
     { "@type": "City", "name": "Amsterdam" },
     { "@type": "City", "name": "Rotterdam" },
     { "@type": "City", "name": "The Hague" },
-    { "@type": "City", "name": "Utrecht" },
-    { "@type": "City", "name": "Haarlem" },
-    { "@type": "City", "name": "Amstelveen" }
+    { "@type": "City", "name": "Schiedam" },
+    { "@type": "City", "name": "Vlaardingen" }
   ],
   "sameAs": [
-    "https://www.linkedin.com/company/haven-rentals",
-    "https://www.instagram.com/havenrentals"
+    "https://www.linkedin.com/company/vhpn",
+    "https://www.instagram.com/vhpn"
   ],
   "contactPoint": {
     "@type": "ContactPoint",
@@ -48,13 +47,13 @@ export const organizationSchema = {
 export const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Haven Rentals",
-  "url": "https://haven-rentals.nl",
+  "name": "VHPN",
+  "url": "https://vhpn.nl",
   "potentialAction": {
     "@type": "SearchAction",
     "target": {
       "@type": "EntryPoint",
-      "urlTemplate": "https://haven-rentals.nl/listings?search={search_term_string}"
+      "urlTemplate": "https://vhpn.nl/listings?search={search_term_string}"
     },
     "query-input": "required name=search_term_string"
   }
@@ -71,7 +70,7 @@ export const generateListingSchema = (listing: Listing, language: 'nl' | 'en') =
     "@type": "Apartment",
     "name": listing.title,
     "description": listing.descriptionShort,
-    "url": `https://haven-rentals.nl/listings/${listing.id}`,
+    "url": `https://vhpn.nl/listings/${listing.id}`,
     "image": listing.images,
     "address": {
       "@type": "PostalAddress",
@@ -124,7 +123,7 @@ export const generateBreadcrumbSchema = (items: Array<{ name: string; url: strin
 
 const SEO = ({ title, description, image, url, type = "website", listing }: SEOProps) => {
   const { language } = useLanguage();
-  const baseUrl = "https://haven-rentals.nl";
+  const baseUrl = "https://vhpn.nl";
   const fullUrl = url ? `${baseUrl}${url}` : baseUrl;
   const ogImage = image || `${baseUrl}/og-image.jpg`;
   
@@ -150,7 +149,7 @@ const SEO = ({ title, description, image, url, type = "website", listing }: SEOP
       <meta property="og:url" content={fullUrl} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:locale" content={language === 'nl' ? 'nl_NL' : 'en_US'} />
-      <meta property="og:site_name" content="Haven Rentals" />
+      <meta property="og:site_name" content="VHPN" />
       
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />

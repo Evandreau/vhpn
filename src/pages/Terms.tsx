@@ -11,19 +11,19 @@ const Terms = () => {
     nl: {
       title: "Algemene Voorwaarden",
       lastUpdated: "Laatst bijgewerkt: januari 2025",
-      intro: "Deze algemene voorwaarden zijn van toepassing op alle diensten van Haven, verhuurmakelaar gevestigd te Nederland. Door gebruik te maken van onze diensten gaat u akkoord met deze voorwaarden.",
+      intro: "Deze algemene voorwaarden zijn van toepassing op alle diensten van VHPN, verhuurmakelaar gevestigd te Nederland. Door gebruik te maken van onze diensten gaat u akkoord met deze voorwaarden.",
       sections: [
         {
           title: "1. Definities",
-          content: "• Haven: de verhuurmakelaar die bemiddelt bij de verhuur van woningen\n• Opdrachtgever: de verhuurder die Haven opdracht geeft tot bemiddeling\n• Kandidaat-huurder: de partij die via Haven een woning zoekt\n• Woning: het gehuurde object\n• Bemiddelingsovereenkomst: de overeenkomst tussen Haven en de opdrachtgever"
+          content: "• VHPN: de verhuurmakelaar die bemiddelt bij de verhuur van woningen\n• Opdrachtgever: de verhuurder die VHPN opdracht geeft tot bemiddeling\n• Kandidaat-huurder: de partij die via VHPN een woning zoekt\n• Woning: het gehuurde object\n• Bemiddelingsovereenkomst: de overeenkomst tussen VHPN en de opdrachtgever"
         },
         {
           title: "2. Dienstverlening",
-          content: "Haven biedt de volgende diensten aan:\n\n• Bemiddeling bij verhuur van woningen\n• Huurderscreening en selectie\n• Professionele vastgoedfotografie\n• Marketing en promotie van huurwoningen\n• Opstellen van huurovereenkomsten\n• Begeleiding bij oplevering\n\nOnze diensten zijn gericht op de regio's Rotterdam, Amsterdam, Den Haag, Schiedam en Vlaardingen."
+          content: "VHPN biedt de volgende diensten aan:\n\n• Bemiddeling bij verhuur van woningen\n• Huurderscreening en selectie\n• Professionele vastgoedfotografie\n• Marketing en promotie van huurwoningen\n• Opstellen van huurovereenkomsten\n• Begeleiding bij oplevering\n\nOnze diensten zijn gericht op de regio's Rotterdam, Amsterdam, Den Haag, Schiedam en Vlaardingen."
         },
         {
           title: "3. Bemiddelingskosten",
-          content: "Haven brengt bemiddelingskosten uitsluitend in rekening bij de verhuurder, conform de Wet doorberekening huurdersbemiddelingskosten. Aan kandidaat-huurders worden geen bemiddelingskosten in rekening gebracht.\n\nDe exacte tarieven worden vooraf in de bemiddelingsovereenkomst vastgelegd."
+          content: "VHPN brengt bemiddelingskosten uitsluitend in rekening bij de verhuurder, conform de Wet doorberekening huurdersbemiddelingskosten. Aan kandidaat-huurders worden geen bemiddelingskosten in rekening gebracht.\n\nDe exacte tarieven worden vooraf in de bemiddelingsovereenkomst vastgelegd."
         },
         {
           title: "4. Huurderscreening",
@@ -31,15 +31,15 @@ const Terms = () => {
         },
         {
           title: "5. Geen garantie",
-          content: "Haven spant zich in om geschikte huurders te vinden, maar garandeert niet:\n\n• Dat een woning binnen een bepaalde termijn wordt verhuurd\n• Dat een huurder gedurende de gehele huurperiode aan alle verplichtingen voldoet\n• De juistheid van door kandidaat-huurders verstrekte informatie\n\nHaven is niet aansprakelijk voor schade door wanbetaling of wangedrag van huurders."
+          content: "VHPN spant zich in om geschikte huurders te vinden, maar garandeert niet:\n\n• Dat een woning binnen een bepaalde termijn wordt verhuurd\n• Dat een huurder gedurende de gehele huurperiode aan alle verplichtingen voldoet\n• De juistheid van door kandidaat-huurders verstrekte informatie\n\nVHPN is niet aansprakelijk voor schade door wanbetaling of wangedrag van huurders."
         },
         {
           title: "6. Aansprakelijkheid",
-          content: "Haven is slechts aansprakelijk voor directe schade die het gevolg is van opzet of grove nalatigheid. De aansprakelijkheid is beperkt tot het bedrag van de bemiddelingsvergoeding.\n\nHaven is niet aansprakelijk voor:\n• Indirecte schade, gevolgschade of gederfde winst\n• Schade door handelen of nalaten van derden\n• Schade door onjuiste of onvolledige informatieverstrekking door partijen"
+          content: "VHPN is slechts aansprakelijk voor directe schade die het gevolg is van opzet of grove nalatigheid. De aansprakelijkheid is beperkt tot het bedrag van de bemiddelingsvergoeding.\n\nVHPN is niet aansprakelijk voor:\n• Indirecte schade, gevolgschade of gederfde winst\n• Schade door handelen of nalaten van derden\n• Schade door onjuiste of onvolledige informatieverstrekking door partijen"
         },
         {
           title: "7. Verplichtingen verhuurder",
-          content: "De verhuurder verplicht zich om:\n\n• Correcte en volledige informatie over de woning te verstrekken\n• De woning in goede staat op te leveren\n• Haven direct te informeren over wijzigingen in beschikbaarheid\n• Zich te houden aan geldende wet- en regelgeving (waaronder het Besluit Huurprijzen Woonruimte indien van toepassing)"
+          content: "De verhuurder verplicht zich om:\n\n• Correcte en volledige informatie over de woning te verstrekken\n• De woning in goede staat op te leveren\n• VHPN direct te informeren over wijzigingen in beschikbaarheid\n• Zich te houden aan geldende wet- en regelgeving (waaronder het Besluit Huurprijzen Woonruimte indien van toepassing)"
         },
         {
           title: "8. Verplichtingen kandidaat-huurder",
@@ -47,11 +47,11 @@ const Terms = () => {
         },
         {
           title: "9. Intellectueel eigendom",
-          content: "Alle door Haven gemaakte foto's, teksten en overige content blijven eigendom van Haven. Gebruik is slechts toegestaan met uitdrukkelijke schriftelijke toestemming."
+          content: "Alle door VHPN gemaakte foto's, teksten en overige content blijven eigendom van VHPN. Gebruik is slechts toegestaan met uitdrukkelijke schriftelijke toestemming."
         },
         {
           title: "10. Klachten",
-          content: "Klachten over onze dienstverlening kunt u indienen via info@haven.nl. Wij behandelen uw klacht binnen 14 werkdagen. Indien u niet tevreden bent met de afhandeling, kunt u zich wenden tot de Huurcommissie of de bevoegde rechtbank."
+          content: "Klachten over onze dienstverlening kunt u indienen via info@vhpn.nl. Wij behandelen uw klacht binnen 14 werkdagen. Indien u niet tevreden bent met de afhandeling, kunt u zich wenden tot de Huurcommissie of de bevoegde rechtbank."
         },
         {
           title: "11. Toepasselijk recht",
@@ -59,22 +59,22 @@ const Terms = () => {
         },
         {
           title: "12. Wijzigingen",
-          content: "Haven behoudt zich het recht voor deze algemene voorwaarden te wijzigen. Wijzigingen treden in werking 30 dagen na publicatie op de website."
+          content: "VHPN behoudt zich het recht voor deze algemene voorwaarden te wijzigen. Wijzigingen treden in werking 30 dagen na publicatie op de website."
         }
       ]
     },
     en: {
       title: "Terms of Service",
       lastUpdated: "Last updated: January 2025",
-      intro: "These general terms and conditions apply to all services of Haven, a rental agency based in the Netherlands. By using our services, you agree to these terms.",
+      intro: "These general terms and conditions apply to all services of VHPN, a rental agency based in the Netherlands. By using our services, you agree to these terms.",
       sections: [
         {
           title: "1. Definitions",
-          content: "• Haven: the rental agency that mediates in the rental of properties\n• Client: the landlord who commissions Haven to mediate\n• Prospective tenant: the party looking for a property through Haven\n• Property: the rented object\n• Mediation agreement: the agreement between Haven and the client"
+          content: "• VHPN: the rental agency that mediates in the rental of properties\n• Client: the landlord who commissions VHPN to mediate\n• Prospective tenant: the party looking for a property through VHPN\n• Property: the rented object\n• Mediation agreement: the agreement between VHPN and the client"
         },
         {
           title: "2. Services",
-          content: "Haven offers the following services:\n\n• Mediation in property rentals\n• Tenant screening and selection\n• Professional real estate photography\n• Marketing and promotion of rental properties\n• Drafting of rental agreements\n• Assistance with handover\n\nOur services are focused on the regions of Rotterdam, Amsterdam, The Hague, Schiedam and Vlaardingen."
+          content: "VHPN offers the following services:\n\n• Mediation in property rentals\n• Tenant screening and selection\n• Professional real estate photography\n• Marketing and promotion of rental properties\n• Drafting of rental agreements\n• Assistance with handover\n\nOur services are focused on the regions of Rotterdam, Amsterdam, The Hague, Schiedam and Vlaardingen."
         },
         {
           title: "3. Mediation fees",
@@ -102,11 +102,11 @@ const Terms = () => {
         },
         {
           title: "9. Intellectual property",
-          content: "All photos, texts and other content created by Haven remain the property of Haven. Use is only permitted with explicit written permission."
+          content: "All photos, texts and other content created by VHPN remain the property of VHPN. Use is only permitted with explicit written permission."
         },
         {
           title: "10. Complaints",
-          content: "Complaints about our services can be submitted via info@haven.nl. We will handle your complaint within 14 working days. If you are not satisfied with the handling, you can contact the Rent Tribunal or the competent court."
+          content: "Complaints about our services can be submitted via info@vhpn.nl. We will handle your complaint within 14 working days. If you are not satisfied with the handling, you can contact the Rent Tribunal or the competent court."
         },
         {
           title: "11. Applicable law",
@@ -114,7 +114,7 @@ const Terms = () => {
         },
         {
           title: "12. Changes",
-          content: "Haven reserves the right to change these general terms and conditions. Changes take effect 30 days after publication on the website."
+          content: "VHPN reserves the right to change these general terms and conditions. Changes take effect 30 days after publication on the website."
         }
       ]
     }
@@ -125,10 +125,10 @@ const Terms = () => {
   return (
     <>
       <Helmet>
-        <title>{t.title} — Haven</title>
+        <title>{t.title} — VHPN</title>
         <meta name="description" content={language === 'nl' 
-          ? 'Algemene voorwaarden van Haven verhuurmakelaar.' 
-          : 'Terms of service of Haven rental agency.'
+          ? 'Algemene voorwaarden van VHPN verhuurmakelaar.' 
+          : 'Terms of service of VHPN rental agency.'
         } />
       </Helmet>
 

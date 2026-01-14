@@ -128,14 +128,14 @@ const ListingDetail = () => {
 
   // Breadcrumb schema for structured data
   const breadcrumbItems = [
-    { name: language === 'nl' ? 'Home' : 'Home', url: 'https://haven-rentals.nl/' },
-    { name: language === 'nl' ? 'Huurwoningen' : 'Rentals', url: 'https://haven-rentals.nl/listings' },
-    { name: listing.title, url: `https://haven-rentals.nl/listings/${listing.id}` },
+    { name: language === 'nl' ? 'Home' : 'Home', url: 'https://vhpn.nl/' },
+    { name: language === 'nl' ? 'Huurwoningen' : 'Rentals', url: 'https://vhpn.nl/listings' },
+    { name: listing.title, url: `https://vhpn.nl/listings/${listing.id}` },
   ];
 
   const seoTitle = language === 'nl' 
-    ? `${listing.title} | ${formatPrice(listing.priceMonthly)}/maand | Haven Rentals`
-    : `${listing.title} | ${formatPrice(listing.priceMonthly)}/month | Haven Rentals`;
+    ? `${listing.title} | ${formatPrice(listing.priceMonthly)}/maand | VHPN`
+    : `${listing.title} | ${formatPrice(listing.priceMonthly)}/month | VHPN`;
   
   const seoDescription = listing.descriptionShort;
 

@@ -62,12 +62,12 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>{language === 'nl' ? 'Over ons — Haven' : 'About — Haven'}</title>
+        <title>{language === 'nl' ? 'Over ons — VHPN' : 'About — VHPN'}</title>
         <meta
           name="description"
           content={language === 'nl' 
-            ? 'Haven selecteert premium huurwoningen door heel Nederland. Ontdek ons verhaal en onze aanpak.'
-            : 'Haven curates premium rentals across the Netherlands. Learn about our mission and approach.'
+            ? 'VHPN selecteert premium huurwoningen door heel Nederland. Ontdek ons verhaal en onze aanpak.'
+            : 'VHPN curates premium rentals across the Netherlands. Learn about our mission and approach.'
           }
         />
       </Helmet>

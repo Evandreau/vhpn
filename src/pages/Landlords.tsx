@@ -34,7 +34,7 @@ const Landlords = () => {
     <>
       <Helmet>
         <html lang={language} />
-        <title>{t('landlords.title')} — Haven</title>
+        <title>{t('landlords.title')} — VHPN</title>
         <meta name="description" content={t('landlords.subtitle')} />
       </Helmet>
 

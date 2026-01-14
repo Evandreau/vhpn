@@ -51,12 +51,12 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>{language === 'nl' ? 'Contact — Haven' : 'Contact — Haven'}</title>
+        <title>{language === 'nl' ? 'Contact — VHPN' : 'Contact — VHPN'}</title>
         <meta
           name="description"
           content={language === 'nl'
-            ? 'Neem contact op met Haven. Vragen over onze huurwoningen? Wij helpen u graag.'
-            : 'Get in touch with Haven. Questions about our rentals? We are here to help.'
+            ? 'Neem contact op met VHPN. Vragen over onze huurwoningen? Wij helpen u graag.'
+            : 'Get in touch with VHPN. Questions about our rentals? We are here to help.'
           }
         />
       </Helmet>
@@ -125,10 +125,10 @@ const Contact = () => {
                             {t('form.email')}
                           </p>
                           <a
-                            href="mailto:info@haven.nl"
+                            href="mailto:info@vhpn.nl"
                             className="font-body text-base text-foreground hover:text-accent transition-colors"
                           >
-                            info@haven.nl
+                            info@vhpn.nl
                           </a>
                         </div>
                       </div>

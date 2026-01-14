@@ -30,15 +30,15 @@ const Index = () => {
   ];
 
   const seoTitle = language === 'nl' 
-    ? 'Haven Rentals — Premium Huurwoningen in Nederland | Amsterdam, Rotterdam, Den Haag'
-    : 'Haven Rentals — Premium Furnished Rentals in the Netherlands | Amsterdam, Rotterdam, The Hague';
+    ? 'VHPN — Premium Huurwoningen in Nederland | Amsterdam, Rotterdam, Den Haag'
+    : 'VHPN — Premium Furnished Rentals in the Netherlands | Amsterdam, Rotterdam, The Hague';
   
   const seoDescription = language === 'nl'
     ? 'Ontdek premium gemeubileerde huurwoningen in Amsterdam, Rotterdam, Den Haag en Utrecht. Direct beschikbaar, geverifieerde woningen voor expats en professionals.'
     : 'Discover premium furnished rentals in Amsterdam, Rotterdam, The Hague and Utrecht. Move in ready, verified properties for expats and professionals.';
 
   const breadcrumbItems = [
-    { name: 'Home', url: 'https://haven-rentals.nl/' },
+    { name: 'Home', url: 'https://vhpn.nl/' },
   ];
 
   return (
