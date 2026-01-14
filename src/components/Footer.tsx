@@ -40,7 +40,7 @@ const Footer = () => {
               to="/" 
               className="font-display text-3xl font-medium text-foreground tracking-tight"
             >
-              Haven
+              VHPN
             </Link>
             <p className="mt-4 font-body text-sm text-muted-foreground max-w-sm leading-relaxed">
               {t('hero.subtitle')}
@@ -73,7 +73,7 @@ const Footer = () => {
         <div className="mt-16 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="font-body text-xs text-muted-foreground">
-              © {currentYear} Haven. {t('footer.rights')}
+              © {currentYear} VHPN. {t('footer.rights')}
             </p>
             <div className="flex items-center gap-6">
               <a 

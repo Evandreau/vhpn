@@ -158,16 +158,16 @@ const Listings = () => {
   };
 
   const seoTitle = language === 'nl' 
-    ? 'Huurwoningen in Nederland | Gemeubileerde Appartementen & Huizen | Haven Rentals'
-    : 'Rentals in the Netherlands | Furnished Apartments & Houses | Haven Rentals';
+    ? 'Huurwoningen in Nederland | Gemeubileerde Appartementen & Huizen | VHPN'
+    : 'Rentals in the Netherlands | Furnished Apartments & Houses | VHPN';
   
   const seoDescription = language === 'nl'
     ? 'Bekijk gemeubileerde appartementen en huizen te huur in Amsterdam, Rotterdam, Den Haag, Utrecht en andere Nederlandse steden. Direct beschikbaar.'
     : 'Browse furnished apartments and houses for rent in Amsterdam, Rotterdam, The Hague, Utrecht, and other Dutch cities. Available now.';
 
   const breadcrumbItems = [
-    { name: 'Home', url: 'https://haven-rentals.nl/' },
-    { name: language === 'nl' ? 'Huurwoningen' : 'Rentals', url: 'https://haven-rentals.nl/listings' },
+    { name: 'Home', url: 'https://vhpn.nl/' },
+    { name: language === 'nl' ? 'Huurwoningen' : 'Rentals', url: 'https://vhpn.nl/listings' },
   ];
 
   return (

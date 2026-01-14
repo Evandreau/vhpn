@@ -11,11 +11,11 @@ const PrivacyPolicy = () => {
     nl: {
       title: "Privacyverklaring",
       lastUpdated: "Laatst bijgewerkt: januari 2025",
-      intro: "Haven hecht groot belang aan de bescherming van uw persoonsgegevens. Deze privacyverklaring legt uit hoe wij uw gegevens verzamelen, gebruiken en beschermen in overeenstemming met de Algemene Verordening Gegevensbescherming (AVG/GDPR) en de Nederlandse privacywetgeving.",
+      intro: "VHPN hecht groot belang aan de bescherming van uw persoonsgegevens. Deze privacyverklaring legt uit hoe wij uw gegevens verzamelen, gebruiken en beschermen in overeenstemming met de Algemene Verordening Gegevensbescherming (AVG/GDPR) en de Nederlandse privacywetgeving.",
       sections: [
         {
           title: "1. Wie zijn wij?",
-          content: "Haven is een verhuurmakelaar gevestigd in Nederland. Wij bemiddelen bij de verhuur van woningen in Rotterdam, Amsterdam, Den Haag, Schiedam en Vlaardingen. Voor vragen over uw privacy kunt u contact opnemen via info@haven.nl."
+          content: "VHPN is een verhuurmakelaar gevestigd in Nederland. Wij bemiddelen bij de verhuur van woningen in Rotterdam, Amsterdam, Den Haag, Schiedam en Vlaardingen. Voor vragen over uw privacy kunt u contact opnemen via info@vhpn.nl."
         },
         {
           title: "2. Welke gegevens verzamelen wij?",
@@ -51,18 +51,18 @@ const PrivacyPolicy = () => {
         },
         {
           title: "10. Klachten",
-          content: "Heeft u een klacht over de verwerking van uw persoonsgegevens? Neem dan contact met ons op via info@haven.nl. U heeft ook het recht om een klacht in te dienen bij de Autoriteit Persoonsgegevens (www.autoriteitpersoonsgegevens.nl)."
+          content: "Heeft u een klacht over de verwerking van uw persoonsgegevens? Neem dan contact met ons op via info@vhpn.nl. U heeft ook het recht om een klacht in te dienen bij de Autoriteit Persoonsgegevens (www.autoriteitpersoonsgegevens.nl)."
         }
       ]
     },
     en: {
       title: "Privacy Policy",
       lastUpdated: "Last updated: January 2025",
-      intro: "Haven attaches great importance to the protection of your personal data. This privacy policy explains how we collect, use and protect your data in accordance with the General Data Protection Regulation (GDPR) and Dutch privacy legislation.",
+      intro: "VHPN attaches great importance to the protection of your personal data. This privacy policy explains how we collect, use and protect your data in accordance with the General Data Protection Regulation (GDPR) and Dutch privacy legislation.",
       sections: [
         {
           title: "1. Who are we?",
-          content: "Haven is a rental agency based in the Netherlands. We mediate in the rental of properties in Rotterdam, Amsterdam, The Hague, Schiedam and Vlaardingen. For questions about your privacy, you can contact us at info@haven.nl."
+          content: "VHPN is a rental agency based in the Netherlands. We mediate in the rental of properties in Rotterdam, Amsterdam, The Hague, Schiedam and Vlaardingen. For questions about your privacy, you can contact us at info@vhpn.nl."
         },
         {
           title: "2. What data do we collect?",
@@ -98,7 +98,7 @@ const PrivacyPolicy = () => {
         },
         {
           title: "10. Complaints",
-          content: "Do you have a complaint about the processing of your personal data? Please contact us at info@haven.nl. You also have the right to file a complaint with the Dutch Data Protection Authority (www.autoriteitpersoonsgegevens.nl)."
+          content: "Do you have a complaint about the processing of your personal data? Please contact us at info@vhpn.nl. You also have the right to file a complaint with the Dutch Data Protection Authority (www.autoriteitpersoonsgegevens.nl)."
         }
       ]
     }
@@ -109,10 +109,10 @@ const PrivacyPolicy = () => {
   return (
     <>
       <Helmet>
-        <title>{t.title} — Haven</title>
+        <title>{t.title} — VHPN</title>
         <meta name="description" content={language === 'nl' 
-          ? 'Lees hoe Haven uw persoonsgegevens beschermt volgens de AVG.' 
-          : 'Read how Haven protects your personal data according to GDPR.'
+          ? 'Lees hoe VHPN uw persoonsgegevens beschermt volgens de AVG.' 
+          : 'Read how VHPN protects your personal data according to GDPR.'
         } />
       </Helmet>
 
