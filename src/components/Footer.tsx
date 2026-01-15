@@ -45,6 +45,10 @@ const Footer = () => {
             <p className="mt-4 font-body text-sm text-muted-foreground max-w-sm leading-relaxed">
               {t('hero.subtitle')}
             </p>
+            <div className="mt-6 font-body text-sm text-muted-foreground">
+              <p>Saftlevenstraat 8B</p>
+              <p>3015 BM Rotterdam</p>
+            </div>
           </div>
 
           {/* Links */}

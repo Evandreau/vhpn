@@ -150,21 +150,6 @@ const Contact = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-                          <MapPin className="h-4 w-4 text-foreground" />
-                        </div>
-                        <div>
-                          <p className="font-body text-sm text-muted-foreground mb-1">
-                            {language === 'nl' ? 'Kantoor' : 'Office'}
-                          </p>
-                          <p className="font-body text-base text-foreground">
-                            Saftlevenstraat 8B<br />
-                            3015 BM Rotterdam<br />
-                            {language === 'nl' ? 'Nederland' : 'Netherlands'}
-                          </p>
-                        </div>
-                      </div>
                     </div>
                   </div>
 
