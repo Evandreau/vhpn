@@ -142,10 +142,10 @@ const Contact = () => {
                             {t('form.phone')}
                           </p>
                           <a
-                            href="tel:+31201234567"
+                            href="tel:+31107600761"
                             className="font-body text-base text-foreground hover:text-accent transition-colors"
                           >
-                            +31 20 123 4567
+                            +31 10 7600 761
                           </a>
                         </div>
                       </div>
@@ -159,8 +159,8 @@ const Contact = () => {
                             {language === 'nl' ? 'Kantoor' : 'Office'}
                           </p>
                           <p className="font-body text-base text-foreground">
-                            Herengracht 182<br />
-                            1016 BR Amsterdam<br />
+                            Saftlevenstraat 8B<br />
+                            3015 BM Rotterdam<br />
                             {language === 'nl' ? 'Nederland' : 'Netherlands'}
                           </p>
                         </div>
@@ -175,14 +175,10 @@ const Contact = () => {
                     <div className="space-y-2">
                       <div className="flex justify-between font-body text-sm">
                         <span className="text-muted-foreground">{t('contact.mondayFriday')}</span>
-                        <span className="text-foreground">9:00 – 18:00</span>
+                        <span className="text-foreground">9:00 – 17:00</span>
                       </div>
                       <div className="flex justify-between font-body text-sm">
-                        <span className="text-muted-foreground">{t('contact.saturday')}</span>
-                        <span className="text-foreground">10:00 – 15:00</span>
-                      </div>
-                      <div className="flex justify-between font-body text-sm">
-                        <span className="text-muted-foreground">{t('contact.sunday')}</span>
+                        <span className="text-muted-foreground">{language === 'nl' ? 'Zaterdag en zondag' : 'Saturday & Sunday'}</span>
                         <span className="text-foreground">{t('contact.closed')}</span>
                       </div>
                     </div>
