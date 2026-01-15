@@ -26,7 +26,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Listings
     'listings.title': 'Huurwoningen',
-    'listings.subtitle': 'Ontdek ons zorgvuldig samengestelde aanbod van huurwoningen in Nederland.',
+    'listings.subtitle': 'Ontdek ons zorgvuldig samengestelde aanbod van huurwoningen in de Randstad.',
     'listings.featured': 'Uitgelicht',
     'listings.furnished': 'Gemeubileerd',
     'listings.unfurnished': 'Ongemeubileerd',
@@ -220,7 +220,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Listings
     'listings.title': 'Rentals',
-    'listings.subtitle': 'Discover our carefully curated collection of rental properties in the Netherlands.',
+    'listings.subtitle': 'Discover our carefully curated collection of rental properties in the Randstad.',
     'listings.featured': 'Featured',
     'listings.furnished': 'Furnished',
     'listings.unfurnished': 'Unfurnished',
