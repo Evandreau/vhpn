@@ -93,20 +93,20 @@ const About = () => {
                     <>
                       Snelheid, duidelijkheid
                       <br />
-                      <span className="italic">en regie</span>
+                      <span className="italic">en vertrouwen</span>
                     </>
                   ) : (
                     <>
                       Speed, clarity
                       <br />
-                      <span className="italic">and control</span>
+                      <span className="italic">and confidence.</span>
                     </>
                   )}
                 </h1>
                 <p className="font-body text-lg text-muted-foreground leading-relaxed">
                   {language === 'nl' 
-                    ? 'Ons bureau is actief in de Randstad, voor klanten die snelheid, duidelijkheid en regie verwachten. Met een urban signatuur, uitgesproken waar het mag en luxe waar het telt. Klantgericht, omdat we niet anders kunnen.'
-                    : 'Our agency operates in the Randstad, for clients who expect speed, clarity and control. With an urban signature, bold where appropriate and luxurious where it counts. Client-focused, because we know no other way.'
+                    ? 'Wij zijn actief in Amsterdam, Rotterdam, Den Haag en geselecteerde omliggende steden. Gebouwd voor klanten die snelheid, duidelijkheid en regie verwachten. Onze signatuur is urban en verfijnd, uitgesproken waar het past, luxe waar het telt. Altijd klantgericht, simpelweg omdat we niet anders werken.'
+                    : "We operate across Amsterdam, Rotterdam, The Hague and select nearby cities. Built for clients who value speed, clarity and control. Our signature is urban and refined, bold where it suits, luxurious where it matters. Always client-focused, simply because that's how we work."
                   }
                 </p>
               </motion.div>
