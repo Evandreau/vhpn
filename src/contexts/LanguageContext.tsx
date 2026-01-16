@@ -214,7 +214,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Hero
     'hero.title': 'We match the right people',
     'hero.titleAccent': 'with the right properties.',
-    'hero.subtitle': 'Premium rentals in the Randstad.',
+    'hero.subtitle': 'Premium rentals across Rotterdam, The Hague and Amsterdam.',
     'hero.cta': 'View rentals',
     'hero.searchPlaceholder': 'Search by city or neighborhood...',
     
