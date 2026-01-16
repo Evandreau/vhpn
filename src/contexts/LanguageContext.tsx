@@ -332,7 +332,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // About
     'about.title': 'About us',
-    'about.subtitle': 'We specialize in premium rental properties for discerning tenants.',
+    'about.subtitle': 'Our agency operates across Rotterdam, The Hague and Amsterdam, for clients who expect speed, clarity and control.',
     'about.story': 'Our story',
     'about.approach': 'Our approach',
     'about.serviceAreas': 'Service areas',
