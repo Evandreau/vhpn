@@ -5,6 +5,7 @@ import { CheckCircle, Users, Home, Shield, Award, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import aboutOfficeImage from "@/assets/about-office.jpg";
 
 const About = () => {
   const { language, t } = useLanguage();
@@ -196,8 +197,8 @@ const About = () => {
                   className="aspect-[4/5] rounded-sm overflow-hidden"
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80"
-                    alt={language === 'nl' ? 'Modern Nederlands interieur' : 'Modern Dutch interior'}
+                    src={aboutOfficeImage}
+                    alt={language === 'nl' ? 'Luxe kantoorruimte met eiken bibliotheek' : 'Luxury office space with oak library'}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
