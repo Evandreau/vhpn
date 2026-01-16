@@ -18,8 +18,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.viewRentals': 'Bekijk aanbod',
     
     // Hero
-    'hero.title': 'Gemeubileerde woningen,',
-    'hero.titleAccent': 'zorgvuldig geselecteerd',
+    'hero.title': 'We match the right people',
+    'hero.titleAccent': 'with the right properties.',
     'hero.subtitle': 'Premium huurwoningen in de Randstad.',
     'hero.cta': 'Bekijk aanbod',
     'hero.searchPlaceholder': 'Zoek op stad of wijk...',
@@ -212,8 +212,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.viewRentals': 'View rentals',
     
     // Hero
-    'hero.title': 'Furnished homes,',
-    'hero.titleAccent': 'thoughtfully curated',
+    'hero.title': 'We match the right people',
+    'hero.titleAccent': 'with the right properties.',
     'hero.subtitle': 'Premium rentals in the Randstad.',
     'hero.cta': 'View rentals',
     'hero.searchPlaceholder': 'Search by city or neighborhood...',
