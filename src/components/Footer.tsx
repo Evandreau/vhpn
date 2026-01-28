@@ -1,9 +1,17 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 const Footer = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const currentYear = new Date().getFullYear();
+  const [addressOpen, setAddressOpen] = useState(false);
 
   const footerSections = [
     {
@@ -45,10 +53,6 @@ const Footer = () => {
             <p className="mt-4 font-body text-sm text-muted-foreground max-w-sm leading-relaxed">
               {t('hero.subtitle')}
             </p>
-            <div className="mt-6 font-body text-sm text-muted-foreground">
-              <p>Saftlevenstraat 8B</p>
-              <p>3015 BM Rotterdam</p>
-            </div>
           </div>
 
           {/* Links */}
@@ -73,8 +77,25 @@ const Footer = () => {
           ))}
         </div>
 
+        {/* Office Address - Collapsible */}
+        <div className="mt-12 pt-8 border-t border-border">
+          <Collapsible open={addressOpen} onOpenChange={setAddressOpen}>
+            <CollapsibleTrigger className="flex items-center gap-2 font-body text-xs text-muted-foreground hover:text-foreground transition-colors group">
+              <span>{t('footer.officeAddress')}</span>
+              <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${addressOpen ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-3">
+              <div className="font-body text-xs text-muted-foreground/80 space-y-2">
+                <p className="font-medium text-muted-foreground">{t('footer.correspondenceAddress')}</p>
+                <p>Saftlevenstraat 8B</p>
+                <p>3015 BM Rotterdam</p>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+
         {/* Bottom */}
-        <div className="mt-16 pt-8 border-t border-border">
+        <div className="mt-8 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="font-body text-xs text-muted-foreground">
               © {currentYear} VHPN. {t('footer.rights')}
