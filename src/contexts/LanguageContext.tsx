@@ -202,6 +202,8 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.privacyPolicy': 'Privacyverklaring',
     'footer.terms': 'Algemene voorwaarden',
     'footer.rights': 'Alle rechten voorbehouden.',
+    'footer.officeAddress': 'Vestigingsadres',
+    'footer.correspondenceAddress': 'Correspondentie / Postadres',
   },
   en: {
     // Navigation
@@ -396,6 +398,8 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.privacyPolicy': 'Privacy policy',
     'footer.terms': 'Terms of service',
     'footer.rights': 'All rights reserved.',
+    'footer.officeAddress': 'Office address',
+    'footer.correspondenceAddress': 'Correspondence / Postal address',
   },
 };
 
