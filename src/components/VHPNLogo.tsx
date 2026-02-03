@@ -30,40 +30,85 @@ const VHPNLogo = ({ variant = "full", size = "md", className }: VHPNLogoProps) =
 
   const { monogram: monogramSize, wordmark: wordmarkClass, gap } = sizes[size];
 
-  // Monogram: Abstract geometric "V" shape that suggests both V and architecture
-  // Designed on 8×8 grid (32px base), strokes are 4px (1 unit = 4px at base size)
+  // Monogram: All four letters V-H-P-N visible in geometric arrangement
+  // Designed on 8×8 grid (64px viewbox), architectural precision
   const Monogram = () => (
     <svg
       width={monogramSize}
       height={monogramSize}
-      viewBox="0 0 32 32"
+      viewBox="0 0 64 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="flex-shrink-0"
       aria-hidden="true"
     >
-      {/* Geometric V-shape with architectural precision */}
-      {/* Left stroke of V */}
+      {/* V - left diagonal strokes */}
       <path
-        d="M4 4L16 28"
+        d="M4 8L14 40"
         stroke="currentColor"
-        strokeWidth="3.5"
+        strokeWidth="4"
         strokeLinecap="square"
-        strokeLinejoin="miter"
       />
-      {/* Right stroke of V */}
       <path
-        d="M28 4L16 28"
+        d="M24 8L14 40"
         stroke="currentColor"
-        strokeWidth="3.5"
+        strokeWidth="4"
         strokeLinecap="square"
-        strokeLinejoin="miter"
       />
-      {/* Horizontal bar at top - suggests "H" and architectural lintel */}
+      
+      {/* H - two verticals with crossbar */}
       <path
-        d="M6 8H26"
+        d="M20 8V40"
         stroke="currentColor"
-        strokeWidth="2.5"
+        strokeWidth="4"
+        strokeLinecap="square"
+      />
+      <path
+        d="M32 8V40"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="square"
+      />
+      <path
+        d="M20 24H32"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="square"
+      />
+      
+      {/* P - vertical with bowl */}
+      <path
+        d="M38 8V40"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="square"
+      />
+      <path
+        d="M38 8H46C50 8 52 12 52 16C52 20 50 24 46 24H38"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="square"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      
+      {/* N - two verticals with diagonal */}
+      <path
+        d="M4 48V56"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="square"
+      />
+      <path
+        d="M4 48L16 56"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="square"
+      />
+      <path
+        d="M16 48V56"
+        stroke="currentColor"
+        strokeWidth="4"
         strokeLinecap="square"
       />
     </svg>
