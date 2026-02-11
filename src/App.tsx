@@ -14,6 +14,7 @@ import Landlords from "./pages/Landlords";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import LLMSummary from "./pages/LLMSummary";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/landlords" element={<Landlords />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/llm" element={<LLMSummary />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

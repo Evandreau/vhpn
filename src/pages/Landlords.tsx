@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Building, CheckCircle, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -10,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
 
 const Landlords = () => {
   const { t, language } = useLanguage();
@@ -30,12 +31,60 @@ const Landlords = () => {
     ? ['Professionele fotografie', 'Breed bereik via alle platforms', 'Zorgvuldige huurderscreening', 'Juridische ondersteuning']
     : ['Professional photography', 'Wide reach across platforms', 'Careful tenant screening', 'Legal support'];
 
+  const seoTitle = language === 'nl'
+    ? 'Voor Verhuurders — Uw Woning Verhuren via VHPN'
+    : 'For Landlords — List Your Property with VHPN';
+
+  const seoDescription = language === 'nl'
+    ? 'Maximaliseer uw huurrendement met VHPN. Professionele fotografie, huurderscreening en volledige ontzorging. Geen kosten voor huurders.'
+    : 'Maximize your rental returns with VHPN. Professional photography, tenant screening and full-service management. No tenant fees.';
+
+  const breadcrumbItems = [
+    { name: 'Home', url: 'https://vhpn.nl/' },
+    { name: language === 'nl' ? 'Verhuurders' : 'Landlords', url: 'https://vhpn.nl/landlords' },
+  ];
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": language === 'nl' ? "Wat kost het om mijn woning te verhuren via VHPN?" : "What does it cost to list my property with VHPN?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": language === 'nl'
+            ? "De tarieven worden vooraf vastgelegd in een bemiddelingsovereenkomst. Huurders betalen geen bemiddelingskosten."
+            : "Rates are agreed upon in advance in a mediation agreement. Tenants pay no mediation fees."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": language === 'nl' ? "Welke diensten biedt VHPN voor verhuurders?" : "What services does VHPN offer landlords?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": language === 'nl'
+            ? "Professionele fotografie, marketing op alle platforms, huurderscreening, juridische ondersteuning en begeleiding bij oplevering."
+            : "Professional photography, marketing across all platforms, tenant screening, legal support and handover guidance."
+        }
+      }
+    ]
+  };
+
   return (
     <>
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        url="/landlords"
+      />
       <Helmet>
-        <html lang={language} />
-        <title>{t('landlords.title')} — VHPN</title>
-        <meta name="description" content={t('landlords.subtitle')} />
+        <script type="application/ld+json">
+          {JSON.stringify(generateBreadcrumbSchema(breadcrumbItems))}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background">

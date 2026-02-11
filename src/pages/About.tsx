@@ -1,10 +1,11 @@
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { CheckCircle, Users, Home, Shield, Award, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
 import aboutOfficeImage from "@/assets/about-office.jpg";
 
 const About = () => {
@@ -60,17 +61,70 @@ const About = () => {
     { value: "5", label: "Cities in Netherlands" },
   ];
 
+  const seoTitle = language === 'nl'
+    ? 'Over VHPN — Premium Verhuurmakelaar Nederland'
+    : 'About VHPN — Premium Rental Agency Netherlands';
+
+  const seoDescription = language === 'nl'
+    ? 'VHPN selecteert premium huurwoningen in Amsterdam, Rotterdam en Den Haag. Snelheid, duidelijkheid en vertrouwen — ontdek ons verhaal en aanpak.'
+    : 'VHPN curates premium rentals across Amsterdam, Rotterdam and The Hague. Speed, clarity and confidence — discover our story and approach.';
+
+  const breadcrumbItems = [
+    { name: 'Home', url: 'https://vhpn.nl/' },
+    { name: language === 'nl' ? 'Over ons' : 'About', url: 'https://vhpn.nl/about' },
+  ];
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": language === 'nl' ? "In welke steden is VHPN actief?" : "In which cities does VHPN operate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": language === 'nl'
+            ? "VHPN is actief in Rotterdam, Amsterdam, Den Haag, Schiedam en Vlaardingen."
+            : "VHPN operates in Rotterdam, Amsterdam, The Hague, Schiedam and Vlaardingen."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": language === 'nl' ? "Brengt VHPN kosten in rekening bij huurders?" : "Does VHPN charge tenants fees?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": language === 'nl'
+            ? "Nee, VHPN brengt bemiddelingskosten uitsluitend in rekening bij verhuurders, conform de Nederlandse wetgeving."
+            : "No, VHPN charges mediation fees exclusively to landlords, in accordance with Dutch law."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": language === 'nl' ? "Hoe snel reageert VHPN?" : "How quickly does VHPN respond?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": language === 'nl'
+            ? "Wij reageren gemiddeld binnen 24 uur op werkdagen."
+            : "We respond on average within 24 hours on business days."
+        }
+      }
+    ]
+  };
+
   return (
     <>
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        url="/about"
+      />
       <Helmet>
-        <title>{language === 'nl' ? 'Over ons — VHPN' : 'About — VHPN'}</title>
-        <meta
-          name="description"
-          content={language === 'nl' 
-            ? 'VHPN selecteert premium huurwoningen door heel Nederland. Ontdek ons verhaal en onze aanpak.'
-            : 'VHPN curates premium rentals across the Netherlands. Learn about our mission and approach.'
-          }
-        />
+        <script type="application/ld+json">
+          {JSON.stringify(generateBreadcrumbSchema(breadcrumbItems))}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -143,7 +197,6 @@ const About = () => {
           <section className="py-24">
             <div className="container mx-auto px-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-                {/* Left Column */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -162,7 +215,6 @@ const About = () => {
                       }
                     </p>
                   </div>
-
                   <div>
                     <h2 className="font-display text-2xl font-light text-foreground mb-4">
                       {language === 'nl' ? 'Voor huurders' : 'For tenants'}
@@ -174,7 +226,6 @@ const About = () => {
                       }
                     </p>
                   </div>
-
                   <div>
                     <h2 className="font-display text-2xl font-light text-foreground mb-4">
                       {language === 'nl' ? 'Voor verhuurders' : 'For landlords'}
@@ -188,7 +239,6 @@ const About = () => {
                   </div>
                 </motion.div>
 
-                {/* Right Column - Image */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -198,7 +248,7 @@ const About = () => {
                 >
                   <img
                     src={aboutOfficeImage}
-                    alt={language === 'nl' ? 'Luxe kantoorruimte met eiken bibliotheek' : 'Luxury office space with oak library'}
+                    alt={language === 'nl' ? 'VHPN kantoor — luxe kantoorruimte met eiken bibliotheek in Rotterdam' : 'VHPN office — luxury office space with oak library in Rotterdam'}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
