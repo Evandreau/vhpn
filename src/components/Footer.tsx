@@ -26,12 +26,12 @@ const Footer = () => {
       links: [
         { label: t('footer.aboutUs'), href: "/about" },
         { label: t('footer.contact'), href: "/contact" },
-        { label: t('footer.landlords'), href: "/landlords" },
       ],
     },
     {
       title: t('footer.support'),
       links: [
+        { label: t('footer.landlords'), href: "/landlords" },
         { label: t('footer.helpCenter'), href: "/contact" },
         { label: t('footer.privacyPolicy'), href: "/privacy" },
         { label: t('footer.terms'), href: "/terms" },
