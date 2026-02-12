@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import VHPNLogo from "./VHPNLogo";
+
 
 const Footer = () => {
   const { t, language } = useLanguage();
@@ -46,7 +46,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block">
-              <VHPNLogo variant="full" size="md" />
+              <span className="font-display text-2xl font-semibold tracking-[0.08em] text-foreground">VHPN</span>
             </Link>
             <p className="mt-4 font-body text-sm text-muted-foreground max-w-sm leading-relaxed">
               {t('hero.subtitle')}

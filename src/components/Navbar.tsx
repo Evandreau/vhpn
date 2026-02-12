@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageToggle from "./LanguageToggle";
-import VHPNLogo from "./VHPNLogo";
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +31,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <VHPNLogo variant="full" size="sm" />
+            <span className="font-display text-xl font-semibold tracking-[0.08em] text-foreground">VHPN</span>
           </Link>
 
           {/* Desktop Navigation */}
