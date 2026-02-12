@@ -19,6 +19,7 @@ const Footer = () => {
       title: t('footer.properties'),
       links: [
         { label: t('nav.rentals'), href: "/listings" },
+        { label: t('footer.landlords'), href: "/landlords" },
       ],
     },
     {
@@ -31,7 +32,6 @@ const Footer = () => {
     {
       title: t('footer.support'),
       links: [
-        { label: t('footer.landlords'), href: "/landlords" },
         { label: t('footer.helpCenter'), href: "/contact" },
         { label: t('footer.privacyPolicy'), href: "/privacy" },
         { label: t('footer.terms'), href: "/terms" },
