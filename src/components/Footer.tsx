@@ -19,7 +19,7 @@ const Footer = () => {
       title: t('footer.properties'),
       links: [
         { label: t('nav.rentals'), href: "/listings" },
-        { label: t('footer.landlords'), href: "/landlords" },
+        { label: t('nav.landlords'), href: "/landlords" },
       ],
     },
     {
