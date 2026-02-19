@@ -34,3 +34,6 @@ Allow: /
 
 # Sitemap
 Sitemap: https://vhpn.nl/sitemap.xml
+
+# LLMs.txt
+LLMsTxt: https://vhpn.nl/llms.txt

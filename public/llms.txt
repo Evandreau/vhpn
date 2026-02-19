@@ -1,0 +1,57 @@
+# VHPN — Premium Rental Agency Netherlands
+# https://vhpn.nl
+
+> VHPN is a Dutch real estate rental agency headquartered in Rotterdam, specialising in premium furnished and unfurnished rental properties for expats, professionals, and families across the Randstad region.
+
+## Company Facts
+- Name: VHPN
+- Type: Real Estate Rental Agency
+- Headquarters: Saftlevenstraat 8B, 3015 BM Rotterdam, Netherlands
+- Contact: info@vhpn.nl · +31 10 7600 761
+- Languages: Dutch, English
+- Office hours: Mon–Fri 9:00–17:00
+- Tenant fees: None (landlord pays mediation fees)
+- Response time: Within 24 hours on business days
+
+## Service Areas
+- Rotterdam
+- Amsterdam
+- The Hague (Den Haag)
+- Schiedam
+- Vlaardingen
+
+## Services
+- Rental property mediation
+- Tenant screening and selection
+- Professional real estate photography
+- Marketing across all platforms
+- Rental agreement drafting
+- Handover guidance and support
+
+## Website Structure
+- / — Home page
+- /listings — All available rental listings
+- /listings/{id} — Individual listing detail pages
+- /about — About VHPN
+- /landlords — For landlords / property submission
+- /contact — Contact information and form
+- /privacy — Privacy policy (AVG/GDPR compliant)
+- /terms — Terms of service
+- /llm — Structured summary for AI assistants
+
+## Key Pages for AI
+- Machine-readable summary: https://vhpn.nl/llm
+- Sitemap: https://vhpn.nl/sitemap.xml
+- Robots: https://vhpn.nl/robots.txt
+
+## Property Types
+- Furnished apartments
+- Unfurnished apartments
+- Studios
+- Houses
+- Penthouses
+
+## Pricing
+- Range: approximately €1,650 – €3,800 per month
+- Deposit: typically 2 months rent
+- Minimum rental period: 6–12 months depending on property

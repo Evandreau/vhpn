@@ -58,6 +58,29 @@ const Contact = () => {
     { name: 'Contact', url: 'https://vhpn.nl/contact' },
   ];
 
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "VHPN",
+    "url": "https://vhpn.nl",
+    "telephone": "+31-10-7600-761",
+    "email": "info@vhpn.nl",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Saftlevenstraat 8B",
+      "postalCode": "3015 BM",
+      "addressLocality": "Rotterdam",
+      "addressCountry": "NL"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "17:00"
+    },
+    "areaServed": ["Rotterdam", "Amsterdam", "The Hague", "Schiedam", "Vlaardingen"]
+  };
+
   return (
     <>
       <SEO
@@ -68,6 +91,9 @@ const Contact = () => {
       <Helmet>
         <script type="application/ld+json">
           {JSON.stringify(generateBreadcrumbSchema(breadcrumbItems))}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(localBusinessSchema)}
         </script>
       </Helmet>
 
