@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import VHPNLogo from "./VHPNLogo";
 import {
   Collapsible,
   CollapsibleContent,
@@ -46,7 +47,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block">
-              <span className="font-display text-2xl font-semibold tracking-[0.08em] text-foreground">VHPN</span>
+              <VHPNLogo variant="wordmark" size="md" />
             </Link>
             <p className="mt-4 font-body text-sm text-muted-foreground max-w-sm leading-relaxed">
               {t('hero.subtitle')}

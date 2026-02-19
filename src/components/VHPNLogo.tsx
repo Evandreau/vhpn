@@ -1,153 +1,236 @@
 import { cn } from "@/lib/utils";
 
 interface VHPNLogoProps {
-  variant?: "full" | "wordmark" | "monogram";
-  size?: "sm" | "md" | "lg" | "xl";
+  variant?: "wordmark" | "compact" | "stacked";
+  weight?: "semibold" | "bold";
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+  inverted?: boolean;
   className?: string;
 }
 
 /**
- * VHPN Logo Component
- * 
+ * VHPN Wordmark Logo
+ *
+ * A premium geometric sans wordmark inspired by DSTRCT-style modern grotesk.
+ * Hand-crafted SVG with optically balanced letter spacing.
+ *
  * Lockups:
- * - full: Monogram + Wordmark (primary horizontal lockup)
- * - wordmark: Only "VHPN" text
- * - monogram: Only the geometric mark (for favicon/app/social)
- * 
- * Design System:
- * - Built on 8×8 grid for architectural precision
- * - Stroke weight: 1-2 units for optical balance
- * - Sharp corners with minimal functional curves
- * - Works in monochrome (essential for documents)
+ * - wordmark: Primary horizontal wordmark (default, for navbar/footer/hero)
+ * - compact: Tight version for small spaces (badges, favicons area)
+ * - stacked: Wordmark with tagline below (for about page / footer brand block)
+ *
+ * Weights:
+ * - semibold: Default, elegant, editorial
+ * - bold: Confident, impactful (hero / large display)
+ *
+ * Usage rules:
+ * - Minimum clear space: 1× cap-height on all sides
+ * - Minimum width: 64px (compact), 80px (wordmark)
+ * - Always use on solid backgrounds (no photo overlays without contrast scrim)
+ * - No gradients, shadows, outlines, or decorative elements
+ * - Inverted (white on dark) for dark backgrounds only
  */
-const VHPNLogo = ({ variant = "full", size = "md", className }: VHPNLogoProps) => {
-  const sizes = {
-    sm: { monogram: 24, wordmark: "text-lg", gap: "gap-2" },
-    md: { monogram: 32, wordmark: "text-2xl", gap: "gap-2.5" },
-    lg: { monogram: 40, wordmark: "text-3xl", gap: "gap-3" },
-    xl: { monogram: 56, wordmark: "text-4xl", gap: "gap-4" },
+const VHPNLogo = ({
+  variant = "wordmark",
+  weight = "semibold",
+  size = "md",
+  inverted = false,
+  className,
+}: VHPNLogoProps) => {
+  const sizeMap = {
+    xs: { width: 64, height: 16 },
+    sm: { width: 80, height: 20 },
+    md: { width: 100, height: 25 },
+    lg: { width: 130, height: 32 },
+    xl: { width: 170, height: 42 },
+    "2xl": { width: 220, height: 55 },
   };
 
-  const { monogram: monogramSize, wordmark: wordmarkClass, gap } = sizes[size];
+  const { width, height } = sizeMap[size];
 
-  // Monogram: All four letters V-H-P-N visible in geometric arrangement
-  // Designed on 8×8 grid (64px viewbox), architectural precision
-  const Monogram = () => (
+  // Stroke width controls weight: semibold vs bold
+  const sw = weight === "bold" ? 5.5 : 4.2;
+
+  // The wordmark is drawn on a 200×50 viewBox for precision.
+  // Letters V, H, P, N are optically spaced with custom kerning.
+  // V–H pair has tighter spacing to compensate for V's diagonal white space.
+  const WordmarkSVG = () => (
     <svg
-      width={monogramSize}
-      height={monogramSize}
-      viewBox="0 0 64 64"
+      width={width}
+      height={height}
+      viewBox="0 0 200 50"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="flex-shrink-0"
-      aria-hidden="true"
+      role="img"
+      aria-label="VHPN"
     >
-      {/* V - left diagonal strokes */}
+      {/* V — two diagonals meeting at baseline center */}
       <path
-        d="M4 8L14 40"
+        d={`M4 8 L20 42`}
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth={sw}
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
+      <path
+        d={`M36 8 L20 42`}
+        stroke="currentColor"
+        strokeWidth={sw}
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
+
+      {/* H — two verticals + crossbar at optical center (slightly above midpoint) */}
+      <path
+        d={`M52 8 L52 42`}
+        stroke="currentColor"
+        strokeWidth={sw}
         strokeLinecap="square"
       />
       <path
-        d="M24 8L14 40"
+        d={`M72 8 L72 42`}
         stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="square"
-      />
-      
-      {/* H - two verticals with crossbar */}
-      <path
-        d="M20 8V40"
-        stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth={sw}
         strokeLinecap="square"
       />
       <path
-        d="M32 8V40"
+        d={`M52 24 L72 24`}
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth={sw}
+        strokeLinecap="square"
+      />
+
+      {/* P — vertical + geometric bowl (flat junction, square terminal) */}
+      <path
+        d={`M90 8 L90 42`}
+        stroke="currentColor"
+        strokeWidth={sw}
         strokeLinecap="square"
       />
       <path
-        d="M20 24H32"
+        d={`M90 8 L104 8 Q112 8 112 16.5 Q112 25 104 25 L90 25`}
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth={sw}
         strokeLinecap="square"
-      />
-      
-      {/* P - vertical with bowl */}
-      <path
-        d="M38 8V40"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="square"
-      />
-      <path
-        d="M38 8H46C50 8 52 12 52 16C52 20 50 24 46 24H38"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="square"
-        strokeLinejoin="round"
+        strokeLinejoin="miter"
         fill="none"
       />
-      
-      {/* N - two verticals with diagonal */}
+
+      {/* N — two verticals + diagonal */}
       <path
-        d="M4 48V56"
+        d={`M130 42 L130 8`}
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth={sw}
         strokeLinecap="square"
       />
       <path
-        d="M4 48L16 56"
+        d={`M130 8 L152 42`}
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth={sw}
         strokeLinecap="square"
+        strokeLinejoin="miter"
       />
       <path
-        d="M16 48V56"
+        d={`M152 42 L152 8`}
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth={sw}
         strokeLinecap="square"
       />
     </svg>
   );
 
-  // Wordmark uses the display font with tight tracking
-  const Wordmark = () => (
-    <span
-      className={cn(
-        "font-display font-semibold tracking-[0.08em] text-foreground",
-        wordmarkClass
-      )}
-      style={{ fontFeatureSettings: "'ss01' on, 'liga' on" }}
+  // Compact: tighter spacing for small applications
+  const CompactSVG = () => (
+    <svg
+      width={Math.round(width * 0.7)}
+      height={height}
+      viewBox="0 0 160 50"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="flex-shrink-0"
+      role="img"
+      aria-label="VHPN"
     >
-      VHPN
-    </span>
+      <path d={`M4 8 L17 42`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" strokeLinejoin="miter" />
+      <path d={`M30 8 L17 42`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" strokeLinejoin="miter" />
+
+      <path d={`M42 8 L42 42`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+      <path d={`M58 8 L58 42`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+      <path d={`M42 24 L58 24`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+
+      <path d={`M72 8 L72 42`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+      <path d={`M72 8 L83 8 Q90 8 90 16.5 Q90 25 83 25 L72 25`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" strokeLinejoin="miter" fill="none" />
+
+      <path d={`M104 42 L104 8`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+      <path d={`M104 8 L122 42`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" strokeLinejoin="miter" />
+      <path d={`M122 42 L122 8`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+    </svg>
   );
 
-  if (variant === "monogram") {
+  // Stacked: wordmark + tagline
+  const StackedSVG = () => (
+    <svg
+      width={width}
+      height={Math.round(height * 1.6)}
+      viewBox="0 0 200 72"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="flex-shrink-0"
+      role="img"
+      aria-label="VHPN — Premium Rentals"
+    >
+      {/* Main wordmark */}
+      <path d={`M30 8 L46 38`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" strokeLinejoin="miter" />
+      <path d={`M62 8 L46 38`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" strokeLinejoin="miter" />
+      <path d={`M76 8 L76 38`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+      <path d={`M94 8 L94 38`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+      <path d={`M76 22 L94 22`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+      <path d={`M110 8 L110 38`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+      <path d={`M110 8 L122 8 Q130 8 130 15 Q130 22 122 22 L110 22`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" strokeLinejoin="miter" fill="none" />
+      <path d={`M146 38 L146 8`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+      <path d={`M146 8 L166 38`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" strokeLinejoin="miter" />
+      <path d={`M166 38 L166 8`} stroke="currentColor" strokeWidth={sw} strokeLinecap="square" />
+
+      {/* Tagline: thin rule + text rendered as paths for consistency */}
+      <line x1="30" y1="48" x2="166" y2="48" stroke="currentColor" strokeWidth="0.8" opacity="0.3" />
+      <text
+        x="98"
+        y="64"
+        textAnchor="middle"
+        fill="currentColor"
+        fontSize="7"
+        fontFamily="Outfit, sans-serif"
+        fontWeight="400"
+        letterSpacing="3"
+        opacity="0.55"
+      >
+        PREMIUM RENTALS
+      </text>
+    </svg>
+  );
+
+  const colorClass = inverted ? "text-primary-foreground" : "text-foreground";
+
+  if (variant === "compact") {
     return (
-      <div className={cn("text-foreground", className)}>
-        <Monogram />
+      <div className={cn(colorClass, className)}>
+        <CompactSVG />
       </div>
     );
   }
 
-  if (variant === "wordmark") {
+  if (variant === "stacked") {
     return (
-      <div className={className}>
-        <Wordmark />
+      <div className={cn(colorClass, className)}>
+        <StackedSVG />
       </div>
     );
   }
 
-  // Full lockup: monogram + wordmark, vertically centered on cap-height
   return (
-    <div className={cn("flex items-center", gap, className)}>
-      <Monogram />
-      <Wordmark />
+    <div className={cn(colorClass, className)}>
+      <WordmarkSVG />
     </div>
   );
 };
