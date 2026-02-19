@@ -21,12 +21,14 @@ export const organizationSchema = {
   "description": "Premium rental properties across the Netherlands. Furnished apartments, houses and studios for expats and professionals.",
   "address": {
     "@type": "PostalAddress",
-    "addressLocality": "Amsterdam",
+    "streetAddress": "Saftlevenstraat 8B",
+    "postalCode": "3015 BM",
+    "addressLocality": "Rotterdam",
     "addressCountry": "NL"
   },
   "areaServed": [
-    { "@type": "City", "name": "Amsterdam" },
     { "@type": "City", "name": "Rotterdam" },
+    { "@type": "City", "name": "Amsterdam" },
     { "@type": "City", "name": "The Hague" },
     { "@type": "City", "name": "Schiedam" },
     { "@type": "City", "name": "Vlaardingen" }
@@ -37,9 +39,16 @@ export const organizationSchema = {
   ],
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+31-20-123-4567",
+    "telephone": "+31-10-7600-761",
+    "email": "info@vhpn.nl",
     "contactType": "customer service",
     "availableLanguage": ["Dutch", "English"]
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    "opens": "09:00",
+    "closes": "17:00"
   }
 };
 

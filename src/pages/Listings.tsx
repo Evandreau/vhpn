@@ -170,6 +170,37 @@ const Listings = () => {
     { name: language === 'nl' ? 'Huurwoningen' : 'Rentals', url: 'https://vhpn.nl/listings' },
   ];
 
+  // ItemList schema for the listings collection
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": language === 'nl' ? 'Huurwoningen in Nederland' : 'Rentals in the Netherlands',
+    "description": seoDescription,
+    "numberOfItems": filteredListings.length,
+    "itemListElement": filteredListings.slice(0, 10).map((listing, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": `https://vhpn.nl/listings/${listing.id}`,
+      "name": listing.title,
+      "item": {
+        "@type": "Apartment",
+        "name": listing.title,
+        "description": listing.descriptionShort,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": listing.city,
+          "addressRegion": listing.neighborhood,
+          "addressCountry": "NL"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": listing.priceMonthly,
+          "priceCurrency": "EUR"
+        }
+      }
+    }))
+  };
+
   return (
     <>
       <SEO 
@@ -181,6 +212,9 @@ const Listings = () => {
       <Helmet>
         <script type="application/ld+json">
           {JSON.stringify(generateBreadcrumbSchema(breadcrumbItems))}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(itemListSchema)}
         </script>
       </Helmet>
 
