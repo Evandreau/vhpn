@@ -1,1 +1,4 @@
 project_id = "coixvilvkdjrxuczzbsz"
+
+[functions.pararius-properties]
+verify_jwt = false
