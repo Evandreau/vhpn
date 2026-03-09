@@ -19,15 +19,27 @@ serve(async (req) => {
       );
     }
 
-    // Try the Pararius Office API endpoint
-    const apiUrl = `https://office.pararius.com/api/getproperties?key=${apiKey}`;
+    const { action = 'getproperties', lang = 'en', ...extraParams } = await req.json().catch(() => ({}));
+
+    const apiUrl = 'https://api.parariusoffice.nl/db.php';
     
-    console.log('Fetching from Pararius Office API...');
+    const params = new URLSearchParams({
+      key: apiKey,
+      action,
+      lang,
+      version: '3',
+      'client-version': '4.0.1',
+      ...extraParams,
+    });
+
+    console.log(`Fetching from Pararius Office API: action=${action}`);
     
     const response = await fetch(apiUrl, {
+      method: 'POST',
       headers: {
-        'Accept': 'application/xml, application/json, text/xml, */*',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
+      body: params.toString(),
     });
 
     const contentType = response.headers.get('content-type') || '';
