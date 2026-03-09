@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { getAvailableListings, Listing } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { useParariusListings } from "@/hooks/useParariusListings";
+import { useToast } from "@/hooks/use-toast";
 
 const ITEMS_PER_PAGE = 9;
 
