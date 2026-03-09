@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { getAvailableListings, Listing } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { useParariusListings } from "@/hooks/useParariusListings";
+
 
 const ITEMS_PER_PAGE = 9;
 
@@ -47,7 +49,9 @@ const Listings = () => {
     preferredArea: '',
   });
 
-  const listings = getAvailableListings();
+  const { data: liveListings, isLoading: isLoadingLive } = useParariusListings(language);
+  const mockListings = getAvailableListings();
+  const listings = liveListings && liveListings.length > 0 ? liveListings : mockListings;
 
   const filteredListings = useMemo(() => {
     let result = [...listings];
