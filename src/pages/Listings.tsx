@@ -49,7 +49,9 @@ const Listings = () => {
     preferredArea: '',
   });
 
-  const listings = getAvailableListings();
+  const { data: liveListings, isLoading: isLoadingLive } = useParariusListings(language);
+  const mockListings = getAvailableListings();
+  const listings = liveListings && liveListings.length > 0 ? liveListings : mockListings;
 
   const filteredListings = useMemo(() => {
     let result = [...listings];

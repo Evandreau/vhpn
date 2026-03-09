@@ -10,10 +10,15 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import heroImage from "@/assets/hero-property.jpg";
+import { useParariusListings } from "@/hooks/useParariusListings";
 
 const Index = () => {
   const { t, language } = useLanguage();
-  const featuredListings = getFeaturedListings().slice(0, 6);
+  const { data: liveListings } = useParariusListings(language);
+  const mockFeatured = getFeaturedListings().slice(0, 6);
+  const featuredListings = liveListings && liveListings.length > 0 
+    ? liveListings.slice(0, 6) 
+    : mockFeatured;
 
   const tenantSteps = [
     { icon: Search, title: t('howItWorks.tenant.step1.title'), desc: t('howItWorks.tenant.step1.desc') },

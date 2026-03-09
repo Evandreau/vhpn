@@ -20,13 +20,22 @@ import { getListingById, getRelatedListings } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
+import { useParariusListings } from "@/hooks/useParariusListings";
 
 const ListingDetail = () => {
   const { id } = useParams();
   const { t, language } = useLanguage();
   const { toast } = useToast();
-  const listing = getListingById(id || "");
-  const relatedListings = getRelatedListings(id || "", 3);
+  
+  // Try live data first, fall back to mock
+  const { data: liveListings, isLoading } = useParariusListings(language);
+  const liveListing = liveListings?.find(l => l.id === id);
+  const mockListing = getListingById(id || "");
+  const listing = liveListing || mockListing;
+  
+  const liveRelated = liveListings?.filter(l => l.id !== id).slice(0, 3) || [];
+  const mockRelated = getRelatedListings(id || "", 3);
+  const relatedListings = liveRelated.length > 0 ? liveRelated : mockRelated;
   
   const [activeTab, setActiveTab] = useState("interest");
   const [formData, setFormData] = useState({
