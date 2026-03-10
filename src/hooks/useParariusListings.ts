@@ -231,8 +231,7 @@ function transformProperty(prop: ParariusProperty): Listing {
   const sharing = (prop.pararius_delen || '').toLowerCase();
   const homeSharingAllowed = sharing.includes('meerdere personen') || sharing.includes('multiple tenants');
   
-  const serviceCosts = parseFloat(prop.utility_costs || '0') || 
-    (prop.forrent_inclusive_service === '1' ? undefined : undefined);
+  const serviceCosts = parseFloat(prop.utility_costs || '0') || extractServiceCostsFromDescription(prop.description);
 
   return {
     id: prop.house_id || prop.id,
