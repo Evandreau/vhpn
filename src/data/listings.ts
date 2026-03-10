@@ -27,7 +27,7 @@ export interface Listing {
   outdoorSpaceType?: 'balcony' | 'terrace' | 'garden' | 'rooftop';
   outdoorSpaceSqm?: number;
   parking?: boolean;
-  parkingType?: 'permit' | 'garage' | 'private';
+  parkingType?: 'permit' | 'garage' | 'private' | 'paid' | 'public' | 'enclosed' | 'bicycle';
   energyLabel?: 'A++' | 'A+' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
   serviceCostsMonthly?: number;
   images: string[];

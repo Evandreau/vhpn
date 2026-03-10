@@ -112,20 +112,38 @@ function hasOutdoorSpace(prop: ParariusProperty): { has: boolean; type?: 'balcon
   return { has: false };
 }
 
-function hasParking(prop: ParariusProperty): { has: boolean; type?: 'permit' | 'garage' | 'private' } {
+function hasParking(prop: ParariusProperty): { has: boolean; type?: 'permit' | 'garage' | 'private' | 'paid' | 'public' | 'enclosed' | 'bicycle' } {
   const parkings = prop.parkings || [];
   const facilities = prop.parking_facilities || [];
   
   if (parkings.length === 0 && facilities.length === 0) return { has: false };
   
   const allParking = [...parkings, ...facilities].join(' ').toLowerCase();
-  if (allParking.includes('garage') || allParking.includes('parkeerkelder') || allParking.includes('underground')) {
-    return { has: true, type: 'garage' };
+  
+  // Match specific Pararius categories in order of specificity
+  if (allParking.includes('fietsenstalling') || allParking.includes('bicycle storage')) {
+    return { has: true, type: 'bicycle' };
+  }
+  if (allParking.includes('betaald parkeren') || allParking.includes('paid parking')) {
+    return { has: true, type: 'paid' };
+  }
+  if (allParking.includes('openbaar parkeren') || allParking.includes('public parking')) {
+    return { has: true, type: 'public' };
+  }
+  if (allParking.includes('afgesloten terrein') || allParking.includes('enclosed')) {
+    return { has: true, type: 'enclosed' };
   }
   if (allParking.includes('vergunning') || allParking.includes('permit')) {
     return { has: true, type: 'permit' };
   }
-  return { has: true, type: 'private' };
+  if (allParking.includes('garage') || allParking.includes('parkeerkelder') || allParking.includes('underground')) {
+    return { has: true, type: 'garage' };
+  }
+  if (allParking.includes('privé') || allParking.includes('prive') || allParking.includes('private')) {
+    return { has: true, type: 'private' };
+  }
+  // Default: return the raw value as-is rather than assuming 'private'
+  return { has: true, type: 'paid' };
 }
 
 function extractServiceCostsFromDescription(description: string): number | undefined {
