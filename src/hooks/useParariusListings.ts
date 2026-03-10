@@ -128,6 +128,16 @@ function hasParking(prop: ParariusProperty): { has: boolean; type?: 'permit' | '
   return { has: true, type: 'private' };
 }
 
+function extractServiceCostsFromDescription(description: string): number | undefined {
+  if (!description) return undefined;
+  // Match patterns like "€ 48,00 servicekosten" or "€48 service costs"
+  const match = description.match(/€\s*(\d+[.,]?\d*)\s*(?:servicekosten|service\s*costs?)/i);
+  if (match) {
+    return parseFloat(match[1].replace(',', '.'));
+  }
+  return undefined;
+}
+
 function extractAmenities(prop: ParariusProperty): string[] {
   const amenities: string[] = [];
   const facilities = prop.facilities || [];
