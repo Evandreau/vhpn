@@ -137,7 +137,15 @@ const ListingDetail = () => {
     { icon: PawPrint, label: language === 'nl' ? 'Huisdieren' : 'Pets', value: listing.petsAllowed },
     { icon: GraduationCap, label: language === 'nl' ? 'Studenten' : 'Students', value: listing.studentsAllowed },
     { icon: Users, label: language === 'nl' ? 'Delen' : 'Sharing', value: listing.homeSharingAllowed },
-    { icon: Car, label: language === 'nl' ? 'Parkeren' : 'Parking', value: listing.parking },
+    { icon: Car, label: listing.parkingType ? ({
+      permit: language === 'nl' ? 'Parkeervergunning' : 'Parking permit',
+      garage: language === 'nl' ? 'Parkeergarage' : 'Parking garage',
+      private: language === 'nl' ? 'Privé terrein' : 'Private parking',
+      paid: language === 'nl' ? 'Betaald parkeren' : 'Paid parking',
+      public: language === 'nl' ? 'Openbaar parkeren' : 'Public parking',
+      enclosed: language === 'nl' ? 'Afgesloten terrein' : 'Enclosed lot',
+      bicycle: language === 'nl' ? 'Fietsenstalling' : 'Bicycle storage',
+    }[listing.parkingType] || (language === 'nl' ? 'Parkeren' : 'Parking')) : (language === 'nl' ? 'Parkeren' : 'Parking'), value: listing.parking },
     { icon: Trees, label: language === 'nl' ? 'Buiten' : 'Outdoor', value: listing.outdoorSpace },
   ].filter(spec => spec.value);
 
