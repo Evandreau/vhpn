@@ -92,16 +92,22 @@ const ListingDetail = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return format(parseISO(dateString), "d MMMM yyyy", {
-      locale: language === 'nl' ? nl : enUS
-    });
+    try {
+      const parsed = parseISO(dateString);
+      if (isNaN(parsed.getTime())) return dateString;
+      return format(parsed, "d MMMM yyyy", {
+        locale: language === 'nl' ? nl : enUS
+      });
+    } catch {
+      return dateString;
+    }
   };
 
   const getAvailabilityText = () => {
-    if (listing.availableType === 'immediately') {
+    if (listing.availableType === 'immediately' || !listing.availableFromDate || listing.availableFromDate === '0000-00-00') {
       return t('listings.availableNow');
     }
-    return `${t('listings.availableFrom')} ${formatDate(listing.availableFromDate || '')}`;
+    return `${t('listings.availableFrom')} ${formatDate(listing.availableFromDate)}`;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
