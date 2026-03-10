@@ -69,12 +69,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
     >
       <div className="block">
         {/* Image Slider - fixed aspect ratio for stable layout */}
-        <Link 
-          to={`/listings/${listing.id}`} 
-          className="block"
-          aria-label={`View ${listing.title}`}
-        >
-          <div className="relative rounded-sm mb-4 border border-transparent group-hover:border-border transition-all duration-300 aspect-video bg-secondary">
+        <div className="relative rounded-sm mb-4 border border-transparent group-hover:border-border transition-all duration-300 aspect-video bg-secondary">
             <ImageSlider
               images={cardImages}
               title={listing.title}
@@ -109,7 +104,6 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
               </span>
             </div>
           </div>
-        </Link>
 
         {/* Content */}
         <div className="space-y-2">
