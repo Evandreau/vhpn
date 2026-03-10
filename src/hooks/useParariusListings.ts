@@ -33,6 +33,7 @@ interface ParariusProperty {
   available_till: string;
   interior: string;
   surface_living: string;
+  surface: string;
   bedrooms: string;
   bathrooms: string;
   rooms: string;
