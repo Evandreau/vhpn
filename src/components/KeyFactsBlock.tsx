@@ -42,7 +42,11 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     const labels: Record<string, { nl: string; en: string }> = {
       permit: { nl: 'Parkeervergunning', en: 'Parking permit' },
       garage: { nl: 'Parkeergarage', en: 'Parking garage' },
-      private: { nl: 'Eigen parkeerplaats', en: 'Private parking' },
+      private: { nl: 'Privé terrein', en: 'Private parking' },
+      paid: { nl: 'Betaald parkeren', en: 'Paid parking' },
+      public: { nl: 'Openbaar parkeren', en: 'Public parking' },
+      enclosed: { nl: 'Afgesloten terrein', en: 'Enclosed lot' },
+      bicycle: { nl: 'Fietsenstalling', en: 'Bicycle storage' },
     };
     return labels[type]?.[language] || type;
   };
