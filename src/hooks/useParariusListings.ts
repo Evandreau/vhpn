@@ -33,6 +33,7 @@ interface ParariusProperty {
   available_till: string;
   interior: string;
   surface_living: string;
+  surface: string;
   bedrooms: string;
   bathrooms: string;
   rooms: string;
@@ -125,6 +126,16 @@ function hasParking(prop: ParariusProperty): { has: boolean; type?: 'permit' | '
     return { has: true, type: 'permit' };
   }
   return { has: true, type: 'private' };
+}
+
+function extractServiceCostsFromDescription(description: string): number | undefined {
+  if (!description) return undefined;
+  // Match patterns like "€ 48,00 servicekosten" or "€48 service costs"
+  const match = description.match(/€\s*(\d+[.,]?\d*)\s*(?:servicekosten|service\s*costs?)/i);
+  if (match) {
+    return parseFloat(match[1].replace(',', '.'));
+  }
+  return undefined;
 }
 
 function extractAmenities(prop: ParariusProperty): string[] {
@@ -230,8 +241,7 @@ function transformProperty(prop: ParariusProperty): Listing {
   const sharing = (prop.pararius_delen || '').toLowerCase();
   const homeSharingAllowed = sharing.includes('meerdere personen') || sharing.includes('multiple tenants');
   
-  const serviceCosts = parseFloat(prop.utility_costs || '0') || 
-    (prop.forrent_inclusive_service === '1' ? undefined : undefined);
+  const serviceCosts = parseFloat(prop.utility_costs || '0') || extractServiceCostsFromDescription(prop.description);
 
   return {
     id: prop.house_id || prop.id,
@@ -245,12 +255,12 @@ function transformProperty(prop: ParariusProperty): Listing {
     descriptionLong: prop.description || '',
     availableType: availability.type,
     availableFromDate: availability.date,
-    beds: parseInt(prop.bedrooms || '0') || 0,
-    baths: parseInt(prop.bathrooms || '0') || 0,
-    sqm: parseInt(prop.surface_living || '0') || 0,
+    beds: parseInt(String(prop.bedrooms || '0')) || 0,
+    baths: parseInt(String(prop.bathrooms || '0')) || 0,
+    sqm: parseInt(prop.surface || prop.surface_living || '0') || 0,
     furnished: mapFurnished(prop.interior),
-    priceMonthly: parseFloat(prop.price || '0') || 0,
-    deposit: parseFloat(prop.deposit || '0') || undefined,
+    priceMonthly: parseFloat(String(prop.price || '0')) || 0,
+    deposit: parseFloat(String(prop.deposit || '0')) > 0 ? parseFloat(String(prop.deposit)) : undefined,
     images: images.length > 0 ? images : ['/placeholder.svg'],
     latitude: parseFloat(prop.lat || '0') || 52.37,
     longitude: parseFloat(prop.lng || '0') || 4.89,
