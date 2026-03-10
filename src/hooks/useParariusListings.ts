@@ -288,18 +288,19 @@ async function fetchParariusProperties(lang: string): Promise<Listing[]> {
   }
 
   // Parse the raw JSON response
-  let parsed: { result: Record<string, ParariusProperty> };
+  let parsed: { result: { properties?: Record<string, ParariusProperty> } };
   try {
     parsed = typeof data.rawResponse === 'string' ? JSON.parse(data.rawResponse) : data.rawResponse;
   } catch {
     throw new Error('Failed to parse Pararius response');
   }
 
-  if (!parsed?.result) {
+  const propsMap = parsed?.result?.properties;
+  if (!propsMap) {
     return [];
   }
 
-  const properties = Object.values(parsed.result);
+  const properties = Object.values(propsMap);
   return properties
     .map(transformProperty)
     .filter(l => l.priceMonthly > 0 && l.status !== 'rented');
