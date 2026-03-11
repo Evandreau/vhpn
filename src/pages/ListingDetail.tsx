@@ -50,6 +50,27 @@ const ListingDetail = () => {
     partnerGrossMonthlyIncome: '',
   });
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-[73px]">
+          <div className="container mx-auto px-6 py-12 space-y-6">
+            <Skeleton className="w-full aspect-[16/9] rounded-lg" />
+            <Skeleton className="h-8 w-1/2" />
+            <Skeleton className="h-5 w-1/3" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-20 rounded-lg" />
+              ))}
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   if (!listing) {
     return (
       <div className="min-h-screen bg-background">
