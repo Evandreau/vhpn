@@ -64,9 +64,9 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
   if (listing.propertyType) {
     facts.push({
       icon: Building,
-      label: language === 'nl' ? 'Soort appartement' : 'Property Type',
+      label: 'Type',
       value: listing.propertyType,
-      ariaLabel: `${language === 'nl' ? 'Soort appartement' : 'Property Type'}: ${listing.propertyType}`
+      ariaLabel: `Type: ${listing.propertyType}`
     });
   }
 
