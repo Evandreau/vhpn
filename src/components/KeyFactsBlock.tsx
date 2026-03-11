@@ -117,7 +117,7 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
         : getAvailabilityText(),
       ariaLabel: `${language === 'nl' ? 'Beschikbaarheid' : 'Availability'}: ${getAvailabilityText()}`
     },
-  ];
+  );
 
   // Add optional facts
   if (listing.energyLabel) {

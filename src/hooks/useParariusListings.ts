@@ -264,6 +264,7 @@ function transformProperty(prop: ParariusProperty): Listing {
     id: prop.house_id || prop.id,
     slug: generateSlug(prop),
     title: generateTitle(prop),
+    propertyType: prop.property_type_2 || prop.property_type_1 || undefined,
     city: prop.city || '',
     neighborhood: prop.district || '',
     district: mapDistrict(prop.district),
