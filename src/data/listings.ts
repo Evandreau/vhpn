@@ -8,6 +8,7 @@ export interface Listing {
   city: string;
   neighborhood: string;
   district?: District;
+  propertyType?: string;
   interiorType: InteriorType;
   descriptionShort: string;
   descriptionLong: string;
