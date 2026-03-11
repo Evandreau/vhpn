@@ -10,7 +10,8 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { getAvailableListings, Listing } from "@/data/listings";
+import { Listing } from "@/data/listings";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useParariusListings } from "@/hooks/useParariusListings";
@@ -50,8 +51,7 @@ const Listings = () => {
   });
 
   const { data: liveListings, isLoading: isLoadingLive } = useParariusListings(language);
-  const mockListings = getAvailableListings();
-  const listings = liveListings && liveListings.length > 0 ? liveListings : mockListings;
+  const listings = liveListings && liveListings.length > 0 ? liveListings : [];
 
   const filteredListings = useMemo(() => {
     let result = [...listings];
@@ -247,7 +247,17 @@ const Listings = () => {
 
           {/* Listings Grid */}
           <div className="container mx-auto px-6 py-12">
-            {filteredListings.length === 0 ? (
+            {isLoadingLive ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <div key={i} className="space-y-4">
+                    <Skeleton className="w-full aspect-[4/3] rounded-lg" />
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : filteredListings.length === 0 ? (
               <div className="text-center py-16">
                 <p className="font-display text-2xl text-foreground mb-2">
                   {t('listings.noResults')}

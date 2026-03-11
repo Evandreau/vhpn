@@ -16,7 +16,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getListingById, getRelatedListings } from "@/data/listings";
+import { Listing } from "@/data/listings";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
@@ -27,15 +28,10 @@ const ListingDetail = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
   
-  // Try live data first, fall back to mock
+  // Use live data only — no mock fallback
   const { data: liveListings, isLoading } = useParariusListings(language);
-  const liveListing = liveListings?.find(l => l.id === id);
-  const mockListing = getListingById(id || "");
-  const listing = liveListing || mockListing;
-  
-  const liveRelated = liveListings?.filter(l => l.id !== id).slice(0, 3) || [];
-  const mockRelated = getRelatedListings(id || "", 3);
-  const relatedListings = liveRelated.length > 0 ? liveRelated : mockRelated;
+  const listing = liveListings?.find(l => l.id === id);
+  const relatedListings = liveListings?.filter(l => l.id !== id).slice(0, 3) || [];
   
   const [activeTab, setActiveTab] = useState("interest");
   const [formData, setFormData] = useState({
@@ -53,6 +49,27 @@ const ListingDetail = () => {
     grossMonthlyIncome: '',
     partnerGrossMonthlyIncome: '',
   });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-[73px]">
+          <div className="container mx-auto px-6 py-12 space-y-6">
+            <Skeleton className="w-full aspect-[16/9] rounded-lg" />
+            <Skeleton className="h-8 w-1/2" />
+            <Skeleton className="h-5 w-1/3" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-20 rounded-lg" />
+              ))}
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!listing) {
     return (

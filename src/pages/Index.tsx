@@ -5,27 +5,26 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ListingCard from "@/components/ListingCard";
-import { getFeaturedListings } from "@/data/listings";
+import { Listing } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
 import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import heroImage from "@/assets/hero-property.jpg";
 import { useParariusListings } from "@/hooks/useParariusListings";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Index = () => {
   const { t, language } = useLanguage();
-  const { data: liveListings } = useParariusListings(language);
-  const mockFeatured = getFeaturedListings().slice(0, 6);
-  const sortedLive = liveListings && liveListings.length > 0
+  const { data: liveListings, isLoading } = useParariusListings(language);
+  const sortedListings = liveListings && liveListings.length > 0
     ? [...liveListings].sort((a, b) => {
         const totalA = (a.priceMonthly || 0) + (a.serviceCostsMonthly || 0);
         const totalB = (b.priceMonthly || 0) + (b.serviceCostsMonthly || 0);
         if (!totalA && totalB) return 1;
         if (totalA && !totalB) return -1;
         return totalA - totalB;
-      })
+      }).slice(0, 6)
     : null;
-  const featuredListings = sortedLive ? sortedLive.slice(0, 6) : mockFeatured;
 
   const tenantSteps = [
     { icon: Search, title: t('howItWorks.tenant.step1.title'), desc: t('howItWorks.tenant.step1.desc') },
@@ -119,9 +118,19 @@ const Index = () => {
                 </Link>
               </motion.div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-                {featuredListings.map((listing, index) => (
-                  <ListingCard key={listing.id} listing={listing} index={index} />
-                ))}
+                {isLoading || !sortedListings ? (
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="space-y-4">
+                      <Skeleton className="w-full aspect-[4/3] rounded-lg" />
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-4 w-1/2" />
+                    </div>
+                  ))
+                ) : (
+                  sortedListings.map((listing, index) => (
+                    <ListingCard key={listing.id} listing={listing} index={index} />
+                  ))
+                )}
               </div>
             </div>
           </section>
