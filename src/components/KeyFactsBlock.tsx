@@ -1,4 +1,4 @@
-import { Bed, Bath, Square, Calendar, Euro, Clock, Home, MapPin, Zap, Car, Trees } from "lucide-react";
+import { Bed, Bath, Square, Calendar, Euro, Clock, Home, MapPin, Zap, Car, Trees, Building } from "lucide-react";
 import { Listing } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { format, parseISO } from "date-fns";
