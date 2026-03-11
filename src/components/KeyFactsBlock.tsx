@@ -58,7 +58,19 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     return formatDate(listing.availableFromDate || '');
   };
 
-  const facts = [
+  const facts: { icon: typeof MapPin; label: string; value: string; ariaLabel: string }[] = [];
+
+  // Property type first if available
+  if (listing.propertyType) {
+    facts.push({
+      icon: Building,
+      label: language === 'nl' ? 'Soort appartement' : 'Property Type',
+      value: listing.propertyType,
+      ariaLabel: `${language === 'nl' ? 'Soort appartement' : 'Property Type'}: ${listing.propertyType}`
+    });
+  }
+
+  facts.push(
     {
       icon: MapPin,
       label: language === 'nl' ? 'Locatie' : 'Location',
