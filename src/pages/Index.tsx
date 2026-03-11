@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ListingCard from "@/components/ListingCard";
-import { getFeaturedListings } from "@/data/listings";
+import { Listing } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
 import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
