@@ -16,9 +16,16 @@ const Index = () => {
   const { t, language } = useLanguage();
   const { data: liveListings } = useParariusListings(language);
   const mockFeatured = getFeaturedListings().slice(0, 6);
-  const featuredListings = liveListings && liveListings.length > 0 
-    ? liveListings.slice(0, 6) 
-    : mockFeatured;
+  const sortedLive = liveListings && liveListings.length > 0
+    ? [...liveListings].sort((a, b) => {
+        const totalA = (a.priceMonthly || 0) + (a.serviceCostsMonthly || 0);
+        const totalB = (b.priceMonthly || 0) + (b.serviceCostsMonthly || 0);
+        if (!totalA && totalB) return 1;
+        if (totalA && !totalB) return -1;
+        return totalA - totalB;
+      })
+    : null;
+  const featuredListings = sortedLive ? sortedLive.slice(0, 6) : mockFeatured;
 
   const tenantSteps = [
     { icon: Search, title: t('howItWorks.tenant.step1.title'), desc: t('howItWorks.tenant.step1.desc') },
