@@ -238,8 +238,7 @@ function generateSlug(prop: ParariusProperty): string {
 
 function generateTitle(prop: ParariusProperty): string {
   if (prop.title) return prop.title;
-  const type = prop.property_type_2 || prop.property_type_1 || 'Property';
-  return `${type} ${prop.street} ${prop.number}${prop.addition ? ` ${prop.addition}` : ''}, ${prop.city}`;
+  return `${prop.street} ${prop.number}${prop.addition ? ` ${prop.addition}` : ''}, ${prop.city}`;
 }
 
 function mapEnergyLabel(label: string): Listing['energyLabel'] {
@@ -265,6 +264,7 @@ function transformProperty(prop: ParariusProperty): Listing {
     id: prop.house_id || prop.id,
     slug: generateSlug(prop),
     title: generateTitle(prop),
+    propertyType: prop.property_type_2 || prop.property_type_1 || undefined,
     city: prop.city || '',
     neighborhood: prop.district || '',
     district: mapDistrict(prop.district),
