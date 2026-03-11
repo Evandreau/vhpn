@@ -11,21 +11,20 @@ import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import heroImage from "@/assets/hero-property.jpg";
 import { useParariusListings } from "@/hooks/useParariusListings";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Index = () => {
   const { t, language } = useLanguage();
-  const { data: liveListings } = useParariusListings(language);
-  const mockFeatured = getFeaturedListings().slice(0, 6);
-  const sortedLive = liveListings && liveListings.length > 0
+  const { data: liveListings, isLoading } = useParariusListings(language);
+  const sortedListings = liveListings && liveListings.length > 0
     ? [...liveListings].sort((a, b) => {
         const totalA = (a.priceMonthly || 0) + (a.serviceCostsMonthly || 0);
         const totalB = (b.priceMonthly || 0) + (b.serviceCostsMonthly || 0);
         if (!totalA && totalB) return 1;
         if (totalA && !totalB) return -1;
         return totalA - totalB;
-      })
+      }).slice(0, 6)
     : null;
-  const featuredListings = sortedLive ? sortedLive.slice(0, 6) : mockFeatured;
 
   const tenantSteps = [
     { icon: Search, title: t('howItWorks.tenant.step1.title'), desc: t('howItWorks.tenant.step1.desc') },

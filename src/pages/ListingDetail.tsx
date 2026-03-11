@@ -27,15 +27,10 @@ const ListingDetail = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
   
-  // Try live data first, fall back to mock
+  // Use live data only — no mock fallback
   const { data: liveListings, isLoading } = useParariusListings(language);
-  const liveListing = liveListings?.find(l => l.id === id);
-  const mockListing = getListingById(id || "");
-  const listing = liveListing || mockListing;
-  
-  const liveRelated = liveListings?.filter(l => l.id !== id).slice(0, 3) || [];
-  const mockRelated = getRelatedListings(id || "", 3);
-  const relatedListings = liveRelated.length > 0 ? liveRelated : mockRelated;
+  const listing = liveListings?.find(l => l.id === id);
+  const relatedListings = liveListings?.filter(l => l.id !== id).slice(0, 3) || [];
   
   const [activeTab, setActiveTab] = useState("interest");
   const [formData, setFormData] = useState({

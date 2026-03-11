@@ -50,8 +50,7 @@ const Listings = () => {
   });
 
   const { data: liveListings, isLoading: isLoadingLive } = useParariusListings(language);
-  const mockListings = getAvailableListings();
-  const listings = liveListings && liveListings.length > 0 ? liveListings : mockListings;
+  const listings = liveListings && liveListings.length > 0 ? liveListings : [];
 
   const filteredListings = useMemo(() => {
     let result = [...listings];
