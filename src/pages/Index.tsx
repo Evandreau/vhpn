@@ -118,9 +118,19 @@ const Index = () => {
                 </Link>
               </motion.div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-                {featuredListings.map((listing, index) => (
-                  <ListingCard key={listing.id} listing={listing} index={index} />
-                ))}
+                {isLoading || !sortedListings ? (
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="space-y-4">
+                      <Skeleton className="w-full aspect-[4/3] rounded-lg" />
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-4 w-1/2" />
+                    </div>
+                  ))
+                ) : (
+                  sortedListings.map((listing, index) => (
+                    <ListingCard key={listing.id} listing={listing} index={index} />
+                  ))
+                )}
               </div>
             </div>
           </section>
