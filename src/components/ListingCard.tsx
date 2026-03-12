@@ -58,6 +58,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
 
   // Show first 4 images in card slider
   const cardImages = listing.images.slice(0, 4);
+  const displayTitle = stripHouseNumber(listing.title);
 
   return (
     <motion.article
