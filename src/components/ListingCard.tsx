@@ -120,7 +120,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
           {/* Title */}
           <h3 className="font-display text-lg font-medium text-foreground line-clamp-1 group-hover:text-accent transition-colors">
             <Link to={`/listings/${listing.id}`}>
-              {listing.title}
+              {displayTitle}
             </Link>
           </h3>
 
