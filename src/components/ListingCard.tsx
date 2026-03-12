@@ -141,7 +141,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
           <Link 
             to={`/listings/${listing.id}`}
             className="inline-flex items-center gap-1 font-body text-sm font-medium text-accent hover:text-accent/80 transition-colors group/link"
-            aria-label={`${t('listings.readMore')} about ${listing.title}`}
+            aria-label={`${t('listings.readMore')} about ${displayTitle}`}
           >
             {t('listings.readMore')}
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" aria-hidden="true" />
