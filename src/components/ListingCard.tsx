@@ -5,6 +5,7 @@ import { Listing } from "@/data/listings";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { stripHouseNumber } from "@/lib/address";
 import ImageSlider from "./ImageSlider";
 
 interface ListingCardProps {
