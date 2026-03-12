@@ -67,7 +67,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       className={cn("group", className)}
-      aria-label={`${listing.title} - ${formatPrice(listing.priceMonthly)} per month`}
+      aria-label={`${displayTitle} - ${formatPrice(listing.priceMonthly)} per month`}
     >
       <div className="block">
         {/* Image Slider - fixed aspect ratio for stable layout */}
