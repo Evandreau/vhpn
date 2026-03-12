@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Listing } from "@/data/listings";
+import { stripHouseNumber } from "@/lib/address";
 
 interface SEOProps {
   title: string;
