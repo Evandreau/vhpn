@@ -191,7 +191,7 @@ const Listings = () => {
       "name": safeTitle,
       "item": {
         "@type": "Apartment",
-        "name": listing.title,
+        "name": safeTitle,
         "description": listing.descriptionShort,
         "address": {
           "@type": "PostalAddress",
@@ -205,7 +205,8 @@ const Listings = () => {
           "priceCurrency": "EUR"
         }
       }
-    }))
+    };
+    })
   };
 
   return (
