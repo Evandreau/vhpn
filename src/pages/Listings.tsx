@@ -182,11 +182,13 @@ const Listings = () => {
     "name": language === 'nl' ? 'Huurwoningen in Nederland' : 'Rentals in the Netherlands',
     "description": seoDescription,
     "numberOfItems": filteredListings.length,
-    "itemListElement": filteredListings.slice(0, 10).map((listing, index) => ({
+    "itemListElement": filteredListings.slice(0, 10).map((listing, index) => {
+      const safeTitle = stripHouseNumber(listing.title);
+      return {
       "@type": "ListItem",
       "position": index + 1,
       "url": `https://vhpn.nl/listings/${listing.id}`,
-      "name": listing.title,
+      "name": safeTitle,
       "item": {
         "@type": "Apartment",
         "name": listing.title,
