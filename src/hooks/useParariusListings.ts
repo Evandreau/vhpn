@@ -228,17 +228,17 @@ function mapStatus(frontStatus: string): 'available' | 'reserved' | 'rented' {
 }
 
 function generateSlug(prop: ParariusProperty): string {
+  // Privacy: never include house number in slug
   const parts = [
     prop.street,
-    prop.number,
     prop.city,
   ].filter(Boolean).join(' ');
   return parts.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 function generateTitle(prop: ParariusProperty): string {
-  if (prop.title) return prop.title;
-  return `${prop.street} ${prop.number}${prop.addition ? ` ${prop.addition}` : ''}, ${prop.city}`;
+  // Privacy: never include house number or addition in title
+  return `${prop.street}, ${prop.city}`;
 }
 
 function mapEnergyLabel(label: string): Listing['energyLabel'] {
@@ -274,7 +274,7 @@ function transformProperty(prop: ParariusProperty): Listing {
     availableType: availability.type,
     availableFromDate: availability.date,
     beds: parseInt(String(prop.bedrooms || '0')) || 0,
-    baths: parseInt(String(prop.bathrooms || '0')) || 0,
+    baths: parseInt(String(prop.bathrooms ?? '0'), 10),
     sqm: parseInt(prop.surface || prop.surface_living || '0') || 0,
     furnished: mapFurnished(prop.interior),
     priceMonthly: parseFloat(String(prop.price || '0')) || 0,

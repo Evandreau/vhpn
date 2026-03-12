@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Listing } from "@/data/listings";
+import { stripHouseNumber } from "@/lib/address";
 
 interface SEOProps {
   title: string;
@@ -74,10 +75,12 @@ export const generateListingSchema = (listing: Listing, language: 'nl' | 'en') =
     ? 'https://schema.org/InStock' 
     : 'https://schema.org/PreOrder';
   
+  const safeTitle = stripHouseNumber(listing.title);
+
   return {
     "@context": "https://schema.org",
     "@type": "Apartment",
-    "name": listing.title,
+    "name": safeTitle,
     "description": listing.descriptionShort,
     "url": `https://vhpn.nl/listings/${listing.id}`,
     "image": listing.images,

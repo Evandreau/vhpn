@@ -5,6 +5,7 @@ import { Listing } from "@/data/listings";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { stripHouseNumber } from "@/lib/address";
 import ImageSlider from "./ImageSlider";
 
 interface ListingCardProps {
@@ -57,6 +58,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
 
   // Show first 4 images in card slider
   const cardImages = listing.images.slice(0, 4);
+  const displayTitle = stripHouseNumber(listing.title);
 
   return (
     <motion.article
@@ -65,7 +67,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       className={cn("group", className)}
-      aria-label={`${listing.title} - ${formatPrice(listing.priceMonthly)} per month`}
+      aria-label={`${displayTitle} - ${formatPrice(listing.priceMonthly)} per month`}
     >
       <div className="block">
         {/* Image Slider - fixed aspect ratio for stable layout */}
@@ -118,7 +120,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
           {/* Title */}
           <h3 className="font-display text-lg font-medium text-foreground line-clamp-1 group-hover:text-accent transition-colors">
             <Link to={`/listings/${listing.id}`}>
-              {listing.title}
+              {displayTitle}
             </Link>
           </h3>
 
@@ -139,7 +141,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
           <Link 
             to={`/listings/${listing.id}`}
             className="inline-flex items-center gap-1 font-body text-sm font-medium text-accent hover:text-accent/80 transition-colors group/link"
-            aria-label={`${t('listings.readMore')} about ${listing.title}`}
+            aria-label={`${t('listings.readMore')} about ${displayTitle}`}
           >
             {t('listings.readMore')}
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" aria-hidden="true" />

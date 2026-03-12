@@ -2,7 +2,6 @@ import { Bed, Bath, Square, Calendar, Euro, Clock, Home, MapPin, Zap, Car, Trees
 import { Listing } from "@/data/listings";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { format, parseISO } from "date-fns";
-import { nl, enUS } from "date-fns/locale";
 
 interface KeyFactsBlockProps {
   listing: Listing;
@@ -20,10 +19,14 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     }).format(price);
   };
 
-  const formatDate = (dateString: string) => {
-    return format(parseISO(dateString), "d MMMM yyyy", { 
-      locale: language === 'nl' ? nl : enUS 
-    });
+  const formatDateCompact = (dateString: string) => {
+    try {
+      const parsed = parseISO(dateString);
+      if (isNaN(parsed.getTime())) return dateString;
+      return format(parsed, "dd/MM/yyyy");
+    } catch {
+      return dateString;
+    }
   };
 
   const getOutdoorSpaceLabel = (type?: string) => {
@@ -51,16 +54,9 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     return labels[type]?.[language] || type;
   };
 
-  const getAvailabilityText = () => {
-    if (listing.availableType === 'immediately') {
-      return t('listings.availableNow');
-    }
-    return formatDate(listing.availableFromDate || '');
-  };
-
   const facts: { icon: typeof MapPin; label: string; value: string; ariaLabel: string }[] = [];
 
-  // Property type first if available
+  // Property type
   if (listing.propertyType) {
     facts.push({
       icon: Building,
@@ -80,8 +76,8 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     {
       icon: Euro,
       label: language === 'nl' ? 'Huurprijs' : 'Rental Price',
-      value: `${formatPrice(listing.priceMonthly)}${t('listings.perMonth')}`,
-      ariaLabel: `${language === 'nl' ? 'Huurprijs' : 'Rental Price'}: ${formatPrice(listing.priceMonthly)} per month`
+      value: formatPrice(listing.priceMonthly),
+      ariaLabel: `${language === 'nl' ? 'Huurprijs' : 'Rental Price'}: ${formatPrice(listing.priceMonthly)}`
     },
     {
       icon: Bed,
@@ -113,13 +109,27 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
       icon: Calendar,
       label: language === 'nl' ? 'Beschikbaarheid' : 'Availability',
       value: listing.availableType === 'immediately' 
-        ? (language === 'nl' ? 'Direct' : 'Immediately')
-        : getAvailabilityText(),
-      ariaLabel: `${language === 'nl' ? 'Beschikbaarheid' : 'Availability'}: ${getAvailabilityText()}`
+        ? (language === 'nl' ? 'Per direct' : 'Immediately')
+        : formatDateCompact(listing.availableFromDate || ''),
+      ariaLabel: `${language === 'nl' ? 'Beschikbaarheid' : 'Availability'}: ${
+        listing.availableType === 'immediately' 
+          ? 'Immediately' 
+          : formatDateCompact(listing.availableFromDate || '')
+      }`
     },
   );
 
-  // Add optional facts
+  // Service costs - only show when known and > 0
+  if (listing.serviceCostsMonthly && listing.serviceCostsMonthly > 0) {
+    facts.push({
+      icon: Euro,
+      label: language === 'nl' ? 'Servicekosten' : 'Service Costs',
+      value: formatPrice(listing.serviceCostsMonthly),
+      ariaLabel: `${language === 'nl' ? 'Servicekosten' : 'Service Costs'}: ${formatPrice(listing.serviceCostsMonthly)}`
+    });
+  }
+
+  // Energy label
   if (listing.energyLabel) {
     facts.push({
       icon: Zap,
@@ -129,15 +139,7 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     });
   }
 
-  if (listing.serviceCostsMonthly) {
-    facts.push({
-      icon: Euro,
-      label: language === 'nl' ? 'Servicekosten' : 'Service Costs',
-      value: `${formatPrice(listing.serviceCostsMonthly)}${t('listings.perMonth')}`,
-      ariaLabel: `${language === 'nl' ? 'Servicekosten' : 'Service Costs'}: ${formatPrice(listing.serviceCostsMonthly)} per month`
-    });
-  }
-
+  // Outdoor space
   if (listing.outdoorSpace && listing.outdoorSpaceType) {
     facts.push({
       icon: Trees,
@@ -147,6 +149,7 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     });
   }
 
+  // Parking
   if (listing.parking) {
     facts.push({
       icon: Car,
@@ -156,6 +159,7 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     });
   }
 
+  // Min rental period
   if (listing.minRentalPeriodMonths) {
     facts.push({
       icon: Clock,
@@ -165,6 +169,7 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     });
   }
 
+  // Deposit
   if (listing.deposit) {
     facts.push({
       icon: Euro,

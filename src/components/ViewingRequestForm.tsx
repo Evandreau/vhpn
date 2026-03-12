@@ -1,18 +1,29 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ViewingRequestFormProps {
   listingTitle: string;
+  listingId?: string;
 }
 
-const ViewingRequestForm = ({ listingTitle }: ViewingRequestFormProps) => {
+const DAYS = [
+  { value: 'ma', nl: 'Ma', en: 'Mon' },
+  { value: 'di', nl: 'Di', en: 'Tue' },
+  { value: 'wo', nl: 'Wo', en: 'Wed' },
+  { value: 'do', nl: 'Do', en: 'Thu' },
+  { value: 'vr', nl: 'Vr', en: 'Fri' },
+];
+
+const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps) => {
   const { toast } = useToast();
   const { t, language } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,22 +31,45 @@ const ViewingRequestForm = ({ listingTitle }: ViewingRequestFormProps) => {
     name: "",
     email: "",
     phone: "",
-    message: "",
-    preferredDate1: "",
-    preferredDate2: "",
-    preferredDate3: "",
-    timeSlot1: "",
-    timeSlot2: "",
-    timeSlot3: "",
+    availableDays: [] as string[],
+    timeSlot: "",
+    rentalStartDate: "",
+    rentalPeriod: "",
     grossMonthlyIncome: "",
     partnerGrossMonthlyIncome: "",
+    message: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validate = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.name.trim()) newErrors.name = t('form.required');
+    if (!formData.email.trim()) newErrors.email = t('form.required');
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = t('form.invalidEmail');
+    if (!formData.phone.trim()) newErrors.phone = t('form.required');
+    if (formData.availableDays.length === 0) newErrors.availableDays = language === 'nl' ? 'Selecteer minimaal 1 dag' : 'Select at least 1 day';
+    if (!formData.timeSlot) newErrors.timeSlot = t('form.required');
+    if (!formData.grossMonthlyIncome) newErrors.grossMonthlyIncome = t('form.required');
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleDayToggle = (day: string) => {
+    setFormData(prev => ({
+      ...prev,
+      availableDays: prev.availableDays.includes(day)
+        ? prev.availableDays.filter(d => d !== day)
+        : [...prev.availableDays, day],
+    }));
+    if (errors.availableDays) setErrors(prev => ({ ...prev, availableDays: '' }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    if (!validate()) return;
 
-    // Simulate form submission
+    setIsSubmitting(true);
+    // Simulate form submission (will be replaced with actual email/API call)
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     toast({
@@ -47,16 +81,15 @@ const ViewingRequestForm = ({ listingTitle }: ViewingRequestFormProps) => {
       name: "",
       email: "",
       phone: "",
-      message: "",
-      preferredDate1: "",
-      preferredDate2: "",
-      preferredDate3: "",
-      timeSlot1: "",
-      timeSlot2: "",
-      timeSlot3: "",
+      availableDays: [],
+      timeSlot: "",
+      rentalStartDate: "",
+      rentalPeriod: "",
       grossMonthlyIncome: "",
       partnerGrossMonthlyIncome: "",
+      message: "",
     });
+    setErrors({});
     setIsSubmitting(false);
   };
 
@@ -79,172 +112,147 @@ const ViewingRequestForm = ({ listingTitle }: ViewingRequestFormProps) => {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name" className="font-body text-sm">
-            {t('form.name')} *
-          </Label>
+        {/* Name */}
+        <div className="space-y-1.5">
+          <Label htmlFor="vr-name" className="font-body text-sm">{t('form.name')} *</Label>
           <Input
-            id="name"
+            id="vr-name"
             type="text"
-            required
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e) => { setFormData({ ...formData, name: e.target.value }); if (errors.name) setErrors(p => ({ ...p, name: '' })); }}
             className="h-11 font-body text-sm border-border bg-background rounded-sm"
             placeholder={language === 'nl' ? 'Uw volledige naam' : 'Your full name'}
           />
+          {errors.name && <p className="font-body text-xs text-destructive">{errors.name}</p>}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email" className="font-body text-sm">
-            {t('form.email')} *
-          </Label>
+        {/* Email */}
+        <div className="space-y-1.5">
+          <Label htmlFor="vr-email" className="font-body text-sm">{t('form.email')} *</Label>
           <Input
-            id="email"
+            id="vr-email"
             type="email"
-            required
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={(e) => { setFormData({ ...formData, email: e.target.value }); if (errors.email) setErrors(p => ({ ...p, email: '' })); }}
             className="h-11 font-body text-sm border-border bg-background rounded-sm"
             placeholder="your@email.com"
           />
+          {errors.email && <p className="font-body text-xs text-destructive">{errors.email}</p>}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phone" className="font-body text-sm">
-            {t('form.phone')} *
-          </Label>
+        {/* Phone */}
+        <div className="space-y-1.5">
+          <Label htmlFor="vr-phone" className="font-body text-sm">{t('form.phone')} *</Label>
           <Input
-            id="phone"
+            id="vr-phone"
             type="tel"
-            required
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={(e) => { setFormData({ ...formData, phone: e.target.value }); if (errors.phone) setErrors(p => ({ ...p, phone: '' })); }}
             className="h-11 font-body text-sm border-border bg-background rounded-sm"
             placeholder="+31 6 1234 5678"
           />
+          {errors.phone && <p className="font-body text-xs text-destructive">{errors.phone}</p>}
         </div>
 
-        {/* Viewing dates section */}
-        <div className="space-y-3 pt-2 border-t border-border">
-          <p className="font-body text-sm text-foreground pt-2">
-            {language === 'nl' ? 'Selecteer tot 3 voorkeursdata:' : 'Select up to 3 preferred dates:'}
+        {/* Available days */}
+        <div className="space-y-2 pt-2 border-t border-border">
+          <Label className="font-body text-sm pt-1 block">
+            {language === 'nl' ? 'Welke dagen ben je beschikbaar?' : 'Which days are you available?'} *
+          </Label>
+          <div className="flex flex-wrap gap-3">
+            {DAYS.map(day => (
+              <label key={day.value} className="flex items-center gap-1.5 cursor-pointer">
+                <Checkbox
+                  checked={formData.availableDays.includes(day.value)}
+                  onCheckedChange={() => handleDayToggle(day.value)}
+                />
+                <span className="font-body text-sm text-foreground">{language === 'nl' ? day.nl : day.en}</span>
+              </label>
+            ))}
+          </div>
+          {errors.availableDays && <p className="font-body text-xs text-destructive">{errors.availableDays}</p>}
+        </div>
+
+        {/* Time slot */}
+        <div className="space-y-1.5">
+          <Label className="font-body text-sm">
+            {language === 'nl' ? 'Welk dagdeel?' : 'What time of day?'} *
+          </Label>
+          <Select value={formData.timeSlot} onValueChange={(v) => { setFormData({ ...formData, timeSlot: v }); if (errors.timeSlot) setErrors(p => ({ ...p, timeSlot: '' })); }}>
+            <SelectTrigger className="h-11 font-body text-sm border-border bg-background rounded-sm">
+              <SelectValue placeholder={language === 'nl' ? 'Selecteer dagdeel' : 'Select time'} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="morning">{language === 'nl' ? "'s Morgens (9:00-12:00)" : 'Morning (9:00-12:00)'}</SelectItem>
+              <SelectItem value="afternoon">{language === 'nl' ? "'s Middags (12:00-17:00)" : 'Afternoon (12:00-17:00)'}</SelectItem>
+            </SelectContent>
+          </Select>
+          {errors.timeSlot && <p className="font-body text-xs text-destructive">{errors.timeSlot}</p>}
+          <p className="font-body text-xs text-muted-foreground">
+            {language === 'nl' ? 'De makelaar probeert je voorkeur mee te nemen.' : 'The agent will try to accommodate your preference.'}
           </p>
-          
-          {/* Date 1 */}
-          <div className="space-y-2">
-            <Label className="font-body text-xs text-muted-foreground">
-              {t('form.preferredDate1')} *
-            </Label>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                <Input
-                  type="date"
-                  required
-                  value={formData.preferredDate1}
-                  onChange={(e) => setFormData({ ...formData, preferredDate1: e.target.value })}
-                  className="h-11 pl-10 font-body text-sm border-border bg-background rounded-sm"
-                />
-              </div>
-              <select
-                value={formData.timeSlot1}
-                onChange={(e) => setFormData({ ...formData, timeSlot1: e.target.value })}
-                required
-                className="h-11 rounded-sm border border-border bg-background px-3 font-body text-sm"
-              >
-                <option value="">{t('form.timeSlot')}</option>
-                <option value="morning">{t('form.morning')}</option>
-                <option value="afternoon">{t('form.afternoon')}</option>
-                <option value="evening">{t('form.evening')}</option>
-              </select>
-            </div>
-          </div>
+        </div>
 
-          {/* Date 2 */}
-          <div className="space-y-2">
-            <Label className="font-body text-xs text-muted-foreground">
-              {t('form.preferredDate2')}
-            </Label>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                <Input
-                  type="date"
-                  value={formData.preferredDate2}
-                  onChange={(e) => setFormData({ ...formData, preferredDate2: e.target.value })}
-                  className="h-11 pl-10 font-body text-sm border-border bg-background rounded-sm"
-                />
-              </div>
-              <select
-                value={formData.timeSlot2}
-                onChange={(e) => setFormData({ ...formData, timeSlot2: e.target.value })}
-                className="h-11 rounded-sm border border-border bg-background px-3 font-body text-sm"
-              >
-                <option value="">{t('form.timeSlot')}</option>
-                <option value="morning">{t('form.morning')}</option>
-                <option value="afternoon">{t('form.afternoon')}</option>
-                <option value="evening">{t('form.evening')}</option>
-              </select>
-            </div>
-          </div>
+        {/* Rental start date */}
+        <div className="space-y-1.5">
+          <Label htmlFor="vr-start" className="font-body text-sm">
+            {language === 'nl' ? 'Huuringangsdatum' : 'Rental start date'}
+          </Label>
+          <Input
+            id="vr-start"
+            type="date"
+            value={formData.rentalStartDate}
+            onChange={(e) => setFormData({ ...formData, rentalStartDate: e.target.value })}
+            className="h-11 font-body text-sm border-border bg-background rounded-sm"
+          />
+        </div>
 
-          {/* Date 3 */}
-          <div className="space-y-2">
-            <Label className="font-body text-xs text-muted-foreground">
-              {t('form.preferredDate3')}
-            </Label>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                <Input
-                  type="date"
-                  value={formData.preferredDate3}
-                  onChange={(e) => setFormData({ ...formData, preferredDate3: e.target.value })}
-                  className="h-11 pl-10 font-body text-sm border-border bg-background rounded-sm"
-                />
-              </div>
-              <select
-                value={formData.timeSlot3}
-                onChange={(e) => setFormData({ ...formData, timeSlot3: e.target.value })}
-                className="h-11 rounded-sm border border-border bg-background px-3 font-body text-sm"
-              >
-                <option value="">{t('form.timeSlot')}</option>
-                <option value="morning">{t('form.morning')}</option>
-                <option value="afternoon">{t('form.afternoon')}</option>
-                <option value="evening">{t('form.evening')}</option>
-              </select>
-            </div>
-          </div>
+        {/* Rental period */}
+        <div className="space-y-1.5">
+          <Label className="font-body text-sm">{t('form.rentalPeriod')}</Label>
+          <Select value={formData.rentalPeriod} onValueChange={(v) => setFormData({ ...formData, rentalPeriod: v })}>
+            <SelectTrigger className="h-11 font-body text-sm border-border bg-background rounded-sm">
+              <SelectValue placeholder={language === 'nl' ? 'Selecteer periode' : 'Select period'} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="6">{t('form.rentalPeriod6')}</SelectItem>
+              <SelectItem value="12">{t('form.rentalPeriod12')}</SelectItem>
+              <SelectItem value="24">{t('form.rentalPeriod24')}</SelectItem>
+              <SelectItem value="indefinite">{t('form.rentalPeriodIndefinite')}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Income section */}
         <div className="space-y-3 pt-2 border-t border-border">
-          <p className="font-body text-sm text-foreground pt-2">
-            {language === 'nl' ? 'Inkomensgegevens:' : 'Income details:'}
+          <p className="font-body text-sm text-foreground pt-1">
+            {language === 'nl' ? 'Inkomensgegevens' : 'Income details'}
           </p>
           
-          <div className="space-y-2">
-            <Label htmlFor="grossMonthlyIncome" className="font-body text-sm">
+          <div className="space-y-1.5">
+            <Label htmlFor="vr-income" className="font-body text-sm">
               {t('form.grossMonthlyIncome')} *
             </Label>
             <Input
-              id="grossMonthlyIncome"
+              id="vr-income"
               type="number"
-              required
+              min="0"
               value={formData.grossMonthlyIncome}
-              onChange={(e) => setFormData({ ...formData, grossMonthlyIncome: e.target.value })}
+              onChange={(e) => { setFormData({ ...formData, grossMonthlyIncome: e.target.value }); if (errors.grossMonthlyIncome) setErrors(p => ({ ...p, grossMonthlyIncome: '' })); }}
               className="h-11 font-body text-sm border-border bg-background rounded-sm"
               placeholder="€"
             />
+            {errors.grossMonthlyIncome && <p className="font-body text-xs text-destructive">{errors.grossMonthlyIncome}</p>}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="partnerGrossMonthlyIncome" className="font-body text-sm">
+          <div className="space-y-1.5">
+            <Label htmlFor="vr-partner-income" className="font-body text-sm">
               {t('form.partnerGrossMonthlyIncome')}
             </Label>
             <Input
-              id="partnerGrossMonthlyIncome"
+              id="vr-partner-income"
               type="number"
+              min="0"
               value={formData.partnerGrossMonthlyIncome}
               onChange={(e) => setFormData({ ...formData, partnerGrossMonthlyIncome: e.target.value })}
               className="h-11 font-body text-sm border-border bg-background rounded-sm"
@@ -253,15 +261,14 @@ const ViewingRequestForm = ({ listingTitle }: ViewingRequestFormProps) => {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="message" className="font-body text-sm">
-            {t('form.message')}
-          </Label>
+        {/* Message */}
+        <div className="space-y-1.5">
+          <Label htmlFor="vr-message" className="font-body text-sm">{t('form.message')}</Label>
           <Textarea
-            id="message"
+            id="vr-message"
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className="min-h-[100px] font-body text-sm border-border bg-background rounded-sm resize-none"
+            className="min-h-[80px] font-body text-sm border-border bg-background rounded-sm resize-none"
             placeholder={language === 'nl' 
               ? 'Vertel ons iets over uzelf en uw wensen...'
               : 'Tell us a bit about yourself and your rental needs...'
@@ -283,6 +290,10 @@ const ViewingRequestForm = ({ listingTitle }: ViewingRequestFormProps) => {
             </>
           )}
         </Button>
+
+        <p className="font-body text-xs text-muted-foreground text-center">
+          {t('form.privacy')} <a href="/privacy" className="underline">{t('form.privacyPolicy')}</a>
+        </p>
       </form>
     </motion.div>
   );

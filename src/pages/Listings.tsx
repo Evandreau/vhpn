@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Listing } from "@/data/listings";
+import { stripHouseNumber } from "@/lib/address";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
@@ -181,14 +182,16 @@ const Listings = () => {
     "name": language === 'nl' ? 'Huurwoningen in Nederland' : 'Rentals in the Netherlands',
     "description": seoDescription,
     "numberOfItems": filteredListings.length,
-    "itemListElement": filteredListings.slice(0, 10).map((listing, index) => ({
+    "itemListElement": filteredListings.slice(0, 10).map((listing, index) => {
+      const safeTitle = stripHouseNumber(listing.title);
+      return {
       "@type": "ListItem",
       "position": index + 1,
       "url": `https://vhpn.nl/listings/${listing.id}`,
-      "name": listing.title,
+      "name": safeTitle,
       "item": {
         "@type": "Apartment",
-        "name": listing.title,
+        "name": safeTitle,
         "description": listing.descriptionShort,
         "address": {
           "@type": "PostalAddress",
@@ -202,7 +205,8 @@ const Listings = () => {
           "priceCurrency": "EUR"
         }
       }
-    }))
+    };
+    })
   };
 
   return (
