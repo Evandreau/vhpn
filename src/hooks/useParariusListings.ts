@@ -274,7 +274,7 @@ function transformProperty(prop: ParariusProperty): Listing {
     availableType: availability.type,
     availableFromDate: availability.date,
     beds: parseInt(String(prop.bedrooms || '0')) || 0,
-    baths: parseInt(String(prop.bathrooms || '0')) || 0,
+    baths: parseInt(String(prop.bathrooms ?? '0'), 10),
     sqm: parseInt(prop.surface || prop.surface_living || '0') || 0,
     furnished: mapFurnished(prop.interior),
     priceMonthly: parseFloat(String(prop.price || '0')) || 0,

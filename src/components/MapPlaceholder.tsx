@@ -1,46 +1,45 @@
-import { MapPin } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MapPlaceholderProps {
   city: string;
   neighborhood: string;
+  latitude?: number;
+  longitude?: number;
+  addressDisclosure?: 'exact' | 'approx';
 }
 
-const MapPlaceholder = ({ city, neighborhood }: MapPlaceholderProps) => {
+const MapPlaceholder = ({ city, neighborhood, latitude, longitude, addressDisclosure = 'approx' }: MapPlaceholderProps) => {
+  const { language } = useLanguage();
+  
+  // Use provided coordinates or fallback to city-level
+  const lat = latitude || 52.37;
+  const lng = longitude || 4.89;
+  // Lower zoom for approximate, higher for exact
+  const zoom = addressDisclosure === 'exact' ? 15 : 13;
+
+  const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.02},${lat - 0.01},${lng + 0.02},${lat + 0.01}&layer=mapnik&marker=${lat},${lng}`;
+
   return (
     <div className="relative aspect-video bg-secondary rounded-sm overflow-hidden">
-      {/* Placeholder pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
-      </div>
-
-      {/* Location marker */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-foreground text-background mb-3">
-            <MapPin className="h-5 w-5" />
-          </div>
-          <p className="font-display text-lg font-medium text-foreground">
-            {neighborhood}
-          </p>
-          <p className="font-body text-sm text-muted-foreground">
-            {city}, Netherlands
+      <iframe
+        title={`${language === 'nl' ? 'Kaart van' : 'Map of'} ${neighborhood}, ${city}`}
+        src={mapSrc}
+        className="w-full h-full border-0"
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        allowFullScreen={false}
+      />
+      
+      {/* Privacy note for approximate locations */}
+      {addressDisclosure === 'approx' && (
+        <div className="absolute bottom-0 left-0 right-0 bg-background/90 backdrop-blur-sm px-4 py-2">
+          <p className="font-body text-xs text-muted-foreground text-center">
+            {language === 'nl'
+              ? 'Geschatte locatie — exact adres na bevestiging bezichtiging'
+              : 'Approximate location — exact address provided after viewing is confirmed'}
           </p>
         </div>
-      </div>
-
-      {/* Note */}
-      <div className="absolute bottom-4 left-4 right-4">
-        <p className="font-body text-xs text-muted-foreground text-center">
-          Exact location provided after viewing is confirmed
-        </p>
-      </div>
+      )}
     </div>
   );
 };
