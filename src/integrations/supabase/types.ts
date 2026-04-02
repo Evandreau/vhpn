@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          form_type: string
+          gross_income: number | null
+          id: string
+          listing_id: string | null
+          listing_url: string | null
+          message: string | null
+          name: string
+          partner_income: number | null
+          phone: string | null
+          preferred_days: string | null
+          preferred_timeslot: string | null
+          rental_period: string | null
+          rental_start_date: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          form_type?: string
+          gross_income?: number | null
+          id?: string
+          listing_id?: string | null
+          listing_url?: string | null
+          message?: string | null
+          name: string
+          partner_income?: number | null
+          phone?: string | null
+          preferred_days?: string | null
+          preferred_timeslot?: string | null
+          rental_period?: string | null
+          rental_start_date?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          form_type?: string
+          gross_income?: number | null
+          id?: string
+          listing_id?: string | null
+          listing_url?: string | null
+          message?: string | null
+          name?: string
+          partner_income?: number | null
+          phone?: string | null
+          preferred_days?: string | null
+          preferred_timeslot?: string | null
+          rental_period?: string | null
+          rental_start_date?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
