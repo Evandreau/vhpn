@@ -70,13 +70,37 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
     if (!validate()) return;
 
     setIsSubmitting(true);
-    // Simulate form submission (will be replaced with actual email/API call)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const { error } = await supabase.from('contact_submissions').insert({
+        form_type: 'viewing',
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        listing_id: listingId || null,
+        listing_url: window.location.href,
+        preferred_days: formData.availableDays.join(', '),
+        preferred_timeslot: formData.timeSlot,
+        rental_start_date: formData.rentalStartDate || null,
+        rental_period: formData.rentalPeriod || null,
+        gross_income: formData.grossMonthlyIncome ? Number(formData.grossMonthlyIncome) : null,
+        partner_income: formData.partnerGrossMonthlyIncome ? Number(formData.partnerGrossMonthlyIncome) : null,
+        message: formData.message || null,
+      });
+      if (error) throw error;
 
-    toast({
-      title: t('form.success'),
-      description: t('form.successMessage'),
-    });
+      toast({
+        title: t('form.success'),
+        description: t('form.successMessage'),
+      });
+    } catch (err) {
+      toast({
+        title: language === 'nl' ? 'Er ging iets mis' : 'Something went wrong',
+        description: language === 'nl' ? 'Probeer het later opnieuw.' : 'Please try again later.',
+        variant: 'destructive',
+      });
+      setIsSubmitting(false);
+      return;
+    }
 
     setFormData({
       name: "",

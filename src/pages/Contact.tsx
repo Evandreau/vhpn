@@ -33,12 +33,28 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast({
-      title: t('form.success'),
-      description: t('form.successMessage'),
-    });
-    setIsSubmitted(true);
+    try {
+      const { error } = await supabase.from('contact_submissions').insert({
+        form_type: 'contact',
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        message: formData.message,
+      });
+      if (error) throw error;
+
+      toast({
+        title: t('form.success'),
+        description: t('form.successMessage'),
+      });
+      setIsSubmitted(true);
+    } catch (err) {
+      toast({
+        title: language === 'nl' ? 'Er ging iets mis' : 'Something went wrong',
+        description: language === 'nl' ? 'Probeer het later opnieuw.' : 'Please try again later.',
+        variant: 'destructive',
+      });
+    }
     setIsSubmitting(false);
   };
 
