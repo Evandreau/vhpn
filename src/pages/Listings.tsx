@@ -350,6 +350,10 @@ const Listings = () => {
                     onSubmit={handleLeadSubmit}
                     className="bg-background p-6 rounded-lg shadow-sm text-left space-y-4"
                   >
+                    <input type="text" name="company_website" value={leadHoneypot}
+                      onChange={(e) => setLeadHoneypot(e.target.value)}
+                      autoComplete="off" tabIndex={-1} aria-hidden="true"
+                      style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }} />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input
                         placeholder={t('form.name')}
@@ -394,10 +398,10 @@ const Listings = () => {
                     </div>
                     <div className="flex gap-3 justify-end">
                       <Button type="button" variant="ghost" onClick={() => setShowLeadForm(false)}>
-                        Cancel
+                        {language === 'nl' ? 'Annuleren' : 'Cancel'}
                       </Button>
-                      <Button type="submit" className="rounded-full">
-                        {t('form.submit')}
+                      <Button type="submit" disabled={isSubmittingLead} className="rounded-full">
+                        {isSubmittingLead ? t('form.sending') : t('form.submit')}
                       </Button>
                     </div>
                   </motion.form>
