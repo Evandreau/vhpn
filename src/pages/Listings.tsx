@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useParariusListings } from "@/hooks/useParariusListings";
+import { supabase } from "@/integrations/supabase/client";
 
 
 const ITEMS_PER_PAGE = 9;
@@ -42,6 +43,8 @@ const Listings = () => {
   });
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showLeadForm, setShowLeadForm] = useState(false);
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
+  const [leadHoneypot, setLeadHoneypot] = useState('');
   const [leadForm, setLeadForm] = useState({
     name: '',
     email: '',
@@ -152,14 +155,36 @@ const Listings = () => {
     setVisibleCount((prev) => prev + ITEMS_PER_PAGE);
   };
 
-  const handleLeadSubmit = (e: React.FormEvent) => {
+  const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: t('form.success'),
-      description: t('form.successMessage'),
-    });
-    setShowLeadForm(false);
-    setLeadForm({ name: '', email: '', phone: '', budget: '', moveInDate: '', preferredArea: '' });
+    if (leadHoneypot) return;
+    setIsSubmittingLead(true);
+    try {
+      const message = [
+        leadForm.budget && `${t('form.budget')}: ${leadForm.budget}`,
+        leadForm.moveInDate && `${t('form.moveInDate')}: ${leadForm.moveInDate}`,
+        leadForm.preferredArea && `${t('form.preferredArea')}: ${leadForm.preferredArea}`,
+      ].filter(Boolean).join('\n');
+      const { error } = await supabase.from('contact_submissions').insert({
+        form_type: 'search_help',
+        name: leadForm.name,
+        email: leadForm.email,
+        phone: leadForm.phone || null,
+        message: message || null,
+        rental_start_date: leadForm.moveInDate || null,
+      });
+      if (error) throw error;
+      toast({ title: t('form.success'), description: t('form.successMessage') });
+      setShowLeadForm(false);
+      setLeadForm({ name: '', email: '', phone: '', budget: '', moveInDate: '', preferredArea: '' });
+    } catch {
+      toast({
+        title: language === 'nl' ? 'Er ging iets mis' : 'Something went wrong',
+        description: language === 'nl' ? 'Probeer het later opnieuw.' : 'Please try again later.',
+        variant: 'destructive',
+      });
+    }
+    setIsSubmittingLead(false);
   };
 
   const seoTitle = language === 'nl' 
