@@ -19,6 +19,7 @@ const Contact = () => {
   const { language, t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -32,14 +33,24 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (honeypot) return;
     setIsSubmitting(true);
     try {
+      const extra = [
+        formData.preferredArea && `${t('form.preferredArea')}: ${formData.preferredArea}`,
+        formData.budget && `${t('form.budget')}: ${formData.budget}`,
+        formData.moveInDate && `${t('form.moveInDate')}: ${formData.moveInDate}`,
+        formData.rentalPeriod && `${t('form.rentalPeriod')}: ${formData.rentalPeriod}`,
+      ].filter(Boolean).join('\n');
+      const fullMessage = extra ? `${formData.message}\n\n---\n${extra}` : formData.message;
       const { error } = await supabase.from('contact_submissions').insert({
         form_type: 'contact',
         name: formData.name,
         email: formData.email,
         phone: formData.phone || null,
-        message: formData.message,
+        message: fullMessage,
+        rental_start_date: formData.moveInDate || null,
+        rental_period: formData.rentalPeriod || null,
       });
       if (error) throw error;
 
@@ -234,6 +245,10 @@ const Contact = () => {
                         {language === 'nl' ? 'Stuur een bericht' : 'Send a message'}
                       </h2>
                       <form onSubmit={handleSubmit} className="space-y-5">
+                        <input type="text" name="company_website" value={honeypot}
+                          onChange={(e) => setHoneypot(e.target.value)}
+                          autoComplete="off" tabIndex={-1} aria-hidden="true"
+                          style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }} />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="name" className="font-body text-sm">{t('form.name')} *</Label>

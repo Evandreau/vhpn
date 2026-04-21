@@ -18,8 +18,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.viewRentals': 'Bekijk aanbod',
     
     // Hero
-    'hero.title': 'We match the right people',
-    'hero.titleAccent': 'with the right properties.',
+    'hero.title': 'Wij koppelen de juiste mensen',
+    'hero.titleAccent': 'aan de juiste woningen.',
     'hero.subtitle': 'Premium huurwoningen in de Randstad.',
     'hero.cta': 'Bekijk aanbod',
     'hero.searchPlaceholder': 'Zoek op stad of wijk...',

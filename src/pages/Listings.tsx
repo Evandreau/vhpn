@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useParariusListings } from "@/hooks/useParariusListings";
+import { supabase } from "@/integrations/supabase/client";
 
 
 const ITEMS_PER_PAGE = 9;
@@ -42,6 +43,8 @@ const Listings = () => {
   });
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showLeadForm, setShowLeadForm] = useState(false);
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
+  const [leadHoneypot, setLeadHoneypot] = useState('');
   const [leadForm, setLeadForm] = useState({
     name: '',
     email: '',
@@ -152,14 +155,36 @@ const Listings = () => {
     setVisibleCount((prev) => prev + ITEMS_PER_PAGE);
   };
 
-  const handleLeadSubmit = (e: React.FormEvent) => {
+  const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: t('form.success'),
-      description: t('form.successMessage'),
-    });
-    setShowLeadForm(false);
-    setLeadForm({ name: '', email: '', phone: '', budget: '', moveInDate: '', preferredArea: '' });
+    if (leadHoneypot) return;
+    setIsSubmittingLead(true);
+    try {
+      const message = [
+        leadForm.budget && `${t('form.budget')}: ${leadForm.budget}`,
+        leadForm.moveInDate && `${t('form.moveInDate')}: ${leadForm.moveInDate}`,
+        leadForm.preferredArea && `${t('form.preferredArea')}: ${leadForm.preferredArea}`,
+      ].filter(Boolean).join('\n');
+      const { error } = await supabase.from('contact_submissions').insert({
+        form_type: 'search_help',
+        name: leadForm.name,
+        email: leadForm.email,
+        phone: leadForm.phone || null,
+        message: message || null,
+        rental_start_date: leadForm.moveInDate || null,
+      });
+      if (error) throw error;
+      toast({ title: t('form.success'), description: t('form.successMessage') });
+      setShowLeadForm(false);
+      setLeadForm({ name: '', email: '', phone: '', budget: '', moveInDate: '', preferredArea: '' });
+    } catch {
+      toast({
+        title: language === 'nl' ? 'Er ging iets mis' : 'Something went wrong',
+        description: language === 'nl' ? 'Probeer het later opnieuw.' : 'Please try again later.',
+        variant: 'destructive',
+      });
+    }
+    setIsSubmittingLead(false);
   };
 
   const seoTitle = language === 'nl' 
@@ -325,6 +350,10 @@ const Listings = () => {
                     onSubmit={handleLeadSubmit}
                     className="bg-background p-6 rounded-lg shadow-sm text-left space-y-4"
                   >
+                    <input type="text" name="company_website" value={leadHoneypot}
+                      onChange={(e) => setLeadHoneypot(e.target.value)}
+                      autoComplete="off" tabIndex={-1} aria-hidden="true"
+                      style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }} />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input
                         placeholder={t('form.name')}
@@ -369,10 +398,10 @@ const Listings = () => {
                     </div>
                     <div className="flex gap-3 justify-end">
                       <Button type="button" variant="ghost" onClick={() => setShowLeadForm(false)}>
-                        Cancel
+                        {language === 'nl' ? 'Annuleren' : 'Cancel'}
                       </Button>
-                      <Button type="submit" className="rounded-full">
-                        {t('form.submit')}
+                      <Button type="submit" disabled={isSubmittingLead} className="rounded-full">
+                        {isSubmittingLead ? t('form.sending') : t('form.submit')}
                       </Button>
                     </div>
                   </motion.form>
