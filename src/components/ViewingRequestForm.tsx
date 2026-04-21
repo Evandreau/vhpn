@@ -28,6 +28,7 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
   const { toast } = useToast();
   const { t, language } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -67,6 +68,7 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (honeypot) return;
     if (!validate()) return;
 
     setIsSubmitting(true);
@@ -137,6 +139,10 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <input type="text" name="company_website" value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          autoComplete="off" tabIndex={-1} aria-hidden="true"
+          style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }} />
         {/* Name */}
         <div className="space-y-1.5">
           <Label htmlFor="vr-name" className="font-body text-sm">{t('form.name')} *</Label>

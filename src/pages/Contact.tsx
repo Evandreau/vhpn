@@ -245,6 +245,10 @@ const Contact = () => {
                         {language === 'nl' ? 'Stuur een bericht' : 'Send a message'}
                       </h2>
                       <form onSubmit={handleSubmit} className="space-y-5">
+                        <input type="text" name="company_website" value={honeypot}
+                          onChange={(e) => setHoneypot(e.target.value)}
+                          autoComplete="off" tabIndex={-1} aria-hidden="true"
+                          style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }} />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="name" className="font-body text-sm">{t('form.name')} *</Label>
