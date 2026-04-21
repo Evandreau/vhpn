@@ -407,6 +407,9 @@ const ListingDetail = () => {
 
                       <TabsContent value="interest">
                         <form onSubmit={handleInterestSubmit} className="space-y-4">
+                          <input type="text" name="company_website" value={interestHoneypot}
+                            onChange={(e) => setInterestHoneypot(e.target.value)}
+                            autoComplete="off" tabIndex={-1} aria-hidden="true" style={honeypotStyle} />
                           <Input placeholder={t('form.name')} value={interestForm.name}
                             onChange={(e) => setInterestForm({ ...interestForm, name: e.target.value })} required className="rounded-sm" />
                           <Input type="email" placeholder={t('form.email')} value={interestForm.email}
@@ -415,7 +418,9 @@ const ListingDetail = () => {
                             onChange={(e) => setInterestForm({ ...interestForm, phone: e.target.value })} className="rounded-sm" />
                           <Textarea placeholder={t('form.message')} value={interestForm.message}
                             onChange={(e) => setInterestForm({ ...interestForm, message: e.target.value })} rows={3} className="rounded-sm resize-none" />
-                          <Button type="submit" className="w-full rounded-full">{t('form.submit')}</Button>
+                          <Button type="submit" disabled={isSubmittingInterest} className="w-full rounded-full">
+                            {isSubmittingInterest ? t('form.sending') : t('form.submit')}
+                          </Button>
                           <p className="font-body text-xs text-muted-foreground text-center">
                             {t('form.privacy')} <a href="/privacy" className="underline">{t('form.privacyPolicy')}</a>
                           </p>
@@ -424,6 +429,9 @@ const ListingDetail = () => {
 
                       <TabsContent value="viewing">
                         <form onSubmit={handleViewingSubmit} className="space-y-3">
+                          <input type="text" name="company_website" value={viewingHoneypot}
+                            onChange={(e) => setViewingHoneypot(e.target.value)}
+                            autoComplete="off" tabIndex={-1} aria-hidden="true" style={honeypotStyle} />
                           <div className="space-y-1">
                             <Input placeholder={t('form.name')} value={viewingForm.name}
                               onChange={(e) => { setViewingForm({ ...viewingForm, name: e.target.value }); if (viewingErrors.name) setViewingErrors(p => ({ ...p, name: '' })); }}
@@ -512,7 +520,9 @@ const ListingDetail = () => {
                               className="rounded-sm" />
                           </div>
 
-                          <Button type="submit" className="w-full rounded-full">{t('form.requestViewing')}</Button>
+                          <Button type="submit" disabled={isSubmittingViewing} className="w-full rounded-full">
+                            {isSubmittingViewing ? t('form.sending') : t('form.requestViewing')}
+                          </Button>
                           <p className="font-body text-xs text-muted-foreground text-center">
                             {t('form.privacy')} <a href="/privacy" className="underline">{t('form.privacyPolicy')}</a>
                           </p>
