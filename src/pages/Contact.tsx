@@ -19,6 +19,7 @@ const Contact = () => {
   const { language, t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -32,14 +33,24 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (honeypot) return;
     setIsSubmitting(true);
     try {
+      const extra = [
+        formData.preferredArea && `${t('form.preferredArea')}: ${formData.preferredArea}`,
+        formData.budget && `${t('form.budget')}: ${formData.budget}`,
+        formData.moveInDate && `${t('form.moveInDate')}: ${formData.moveInDate}`,
+        formData.rentalPeriod && `${t('form.rentalPeriod')}: ${formData.rentalPeriod}`,
+      ].filter(Boolean).join('\n');
+      const fullMessage = extra ? `${formData.message}\n\n---\n${extra}` : formData.message;
       const { error } = await supabase.from('contact_submissions').insert({
         form_type: 'contact',
         name: formData.name,
         email: formData.email,
         phone: formData.phone || null,
-        message: formData.message,
+        message: fullMessage,
+        rental_start_date: formData.moveInDate || null,
+        rental_period: formData.rentalPeriod || null,
       });
       if (error) throw error;
 
