@@ -26,6 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
 import { useParariusListings } from "@/hooks/useParariusListings";
 import { stripHouseNumber } from "@/lib/address";
+import { supabase } from "@/integrations/supabase/client";
 
 const DAYS = [
   { value: 'ma', nl: 'Ma', en: 'Mon' },
@@ -46,6 +47,10 @@ const ListingDetail = () => {
   
   const [activeTab, setActiveTab] = useState("interest");
   const [interestForm, setInterestForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [interestHoneypot, setInterestHoneypot] = useState('');
+  const [viewingHoneypot, setViewingHoneypot] = useState('');
+  const [isSubmittingInterest, setIsSubmittingInterest] = useState(false);
+  const [isSubmittingViewing, setIsSubmittingViewing] = useState(false);
   const [viewingForm, setViewingForm] = useState({
     name: '', email: '', phone: '',
     availableDays: [] as string[],
@@ -135,10 +140,31 @@ const ListingDetail = () => {
   // Privacy: strip house number from title for display
   const displayTitle = stripHouseNumber(listing.title);
 
-  const handleInterestSubmit = (e: React.FormEvent) => {
+  const handleInterestSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({ title: t('form.success'), description: t('form.successMessage') });
-    setInterestForm({ name: '', email: '', phone: '', message: '' });
+    if (interestHoneypot) return;
+    setIsSubmittingInterest(true);
+    try {
+      const { error } = await supabase.from('contact_submissions').insert({
+        form_type: 'listing_interest',
+        name: interestForm.name,
+        email: interestForm.email,
+        phone: interestForm.phone || null,
+        message: interestForm.message || null,
+        listing_id: listing.id,
+        listing_url: window.location.href,
+      });
+      if (error) throw error;
+      toast({ title: t('form.success'), description: t('form.successMessage') });
+      setInterestForm({ name: '', email: '', phone: '', message: '' });
+    } catch {
+      toast({
+        title: language === 'nl' ? 'Er ging iets mis' : 'Something went wrong',
+        description: language === 'nl' ? 'Probeer het later opnieuw.' : 'Please try again later.',
+        variant: 'destructive',
+      });
+    }
+    setIsSubmittingInterest(false);
   };
 
   const handleViewingDayToggle = (day: string) => {
@@ -151,8 +177,9 @@ const ListingDetail = () => {
     if (viewingErrors.availableDays) setViewingErrors(p => ({ ...p, availableDays: '' }));
   };
 
-  const handleViewingSubmit = (e: React.FormEvent) => {
+  const handleViewingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (viewingHoneypot) return;
     const newErrors: Record<string, string> = {};
     if (!viewingForm.name.trim()) newErrors.name = t('form.required');
     if (!viewingForm.email.trim()) newErrors.email = t('form.required');
@@ -163,15 +190,44 @@ const ListingDetail = () => {
     if (!viewingForm.grossMonthlyIncome) newErrors.grossMonthlyIncome = t('form.required');
     setViewingErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
-    
-    toast({ title: t('form.success'), description: t('form.successMessage') });
-    setViewingForm({
-      name: '', email: '', phone: '',
-      availableDays: [], timeSlot: '',
-      rentalStartDate: '', rentalPeriod: '',
-      grossMonthlyIncome: '', partnerGrossMonthlyIncome: '',
-    });
-    setViewingErrors({});
+
+    setIsSubmittingViewing(true);
+    try {
+      const { error } = await supabase.from('contact_submissions').insert({
+        form_type: 'viewing',
+        name: viewingForm.name,
+        email: viewingForm.email,
+        phone: viewingForm.phone,
+        listing_id: listing.id,
+        listing_url: window.location.href,
+        preferred_days: viewingForm.availableDays.join(', '),
+        preferred_timeslot: viewingForm.timeSlot,
+        rental_start_date: viewingForm.rentalStartDate || null,
+        rental_period: viewingForm.rentalPeriod || null,
+        gross_income: viewingForm.grossMonthlyIncome ? Number(viewingForm.grossMonthlyIncome) : null,
+        partner_income: viewingForm.partnerGrossMonthlyIncome ? Number(viewingForm.partnerGrossMonthlyIncome) : null,
+      });
+      if (error) throw error;
+      toast({ title: t('form.success'), description: t('form.successMessage') });
+      setViewingForm({
+        name: '', email: '', phone: '',
+        availableDays: [], timeSlot: '',
+        rentalStartDate: '', rentalPeriod: '',
+        grossMonthlyIncome: '', partnerGrossMonthlyIncome: '',
+      });
+      setViewingErrors({});
+    } catch {
+      toast({
+        title: language === 'nl' ? 'Er ging iets mis' : 'Something went wrong',
+        description: language === 'nl' ? 'Probeer het later opnieuw.' : 'Please try again later.',
+        variant: 'destructive',
+      });
+    }
+    setIsSubmittingViewing(false);
+  };
+
+  const honeypotStyle: React.CSSProperties = {
+    position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0,
   };
 
   const quickSpecs = [
