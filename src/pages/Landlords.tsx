@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 
@@ -16,15 +17,47 @@ const Landlords = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
   const [formType, setFormType] = useState<'contact' | 'property'>('contact');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', message: '',
     propertyType: '', city: '', bedrooms: '', expectedRent: '', availableDate: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({ title: t('form.success'), description: t('form.successMessage') });
-    setFormData({ name: '', email: '', phone: '', message: '', propertyType: '', city: '', bedrooms: '', expectedRent: '', availableDate: '' });
+    if (honeypot) return; // bot detected
+    setIsSubmitting(true);
+    try {
+      const messageParts = [formData.message];
+      if (formType === 'property') {
+        messageParts.push(
+          `--- ${language === 'nl' ? 'Woningdetails' : 'Property details'} ---`,
+          `Type: ${formData.propertyType}`,
+          `${language === 'nl' ? 'Stad' : 'City'}: ${formData.city}`,
+          `${language === 'nl' ? 'Slaapkamers' : 'Bedrooms'}: ${formData.bedrooms}`,
+          `${language === 'nl' ? 'Verwachte huur' : 'Expected rent'}: ${formData.expectedRent}`,
+          `${language === 'nl' ? 'Beschikbaar' : 'Available'}: ${formData.availableDate}`,
+        );
+      }
+      const { error } = await supabase.from('contact_submissions').insert({
+        form_type: formType === 'property' ? 'landlord_property' : 'landlord_contact',
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        message: messageParts.filter(Boolean).join('\n'),
+      });
+      if (error) throw error;
+      toast({ title: t('form.success'), description: t('form.successMessage') });
+      setFormData({ name: '', email: '', phone: '', message: '', propertyType: '', city: '', bedrooms: '', expectedRent: '', availableDate: '' });
+    } catch {
+      toast({
+        title: language === 'nl' ? 'Er ging iets mis' : 'Something went wrong',
+        description: language === 'nl' ? 'Probeer het later opnieuw.' : 'Please try again later.',
+        variant: 'destructive',
+      });
+    }
+    setIsSubmitting(false);
   };
 
   const benefits = language === 'nl' 
@@ -120,6 +153,17 @@ const Landlords = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Honeypot — hidden from humans, traps bots */}
+                <input
+                  type="text"
+                  name="company_website"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  autoComplete="off"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }}
+                />
                 <Input placeholder={t('form.name')} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required className="rounded-sm" />
                 <Input type="email" placeholder={t('form.email')} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required className="rounded-sm" />
                 <Input placeholder={t('form.phone')} value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="rounded-sm" />
@@ -142,7 +186,9 @@ const Landlords = () => {
                 )}
                 
                 <Textarea placeholder={t('form.message')} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} rows={4} className="rounded-sm resize-none" />
-                <Button type="submit" className="w-full rounded-full">{t('form.submit')} <ArrowRight className="h-4 w-4 ml-2" /></Button>
+                <Button type="submit" disabled={isSubmitting} className="w-full rounded-full">
+                  {isSubmitting ? t('form.sending') : <>{t('form.submit')} <ArrowRight className="h-4 w-4 ml-2" /></>}
+                </Button>
                 <p className="font-body text-xs text-muted-foreground text-center">{t('form.privacy')} <a href="/privacy" className="underline">{t('form.privacyPolicy')}</a></p>
               </form>
             </div>
