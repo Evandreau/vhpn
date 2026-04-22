@@ -78,6 +78,7 @@ const ListingCard = ({ listing, index = 0, className }: ListingCardProps) => {
               aspectRatio="video"
               showArrows={true}
               showDots={true}
+              linkTo={`/listings/${listing.id}`}
             />
             
             {/* Featured Badge */}
