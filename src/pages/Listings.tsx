@@ -37,9 +37,8 @@ const Listings = () => {
     parking: false,
     petFriendly: false,
     outdoorSpace: false,
-    studentsAllowed: false,
     homeSharingAllowed: false,
-    sort: "newest",
+    sort: "price-low",
   });
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showLeadForm, setShowLeadForm] = useState(false);
@@ -120,9 +119,6 @@ const Listings = () => {
     }
     if (filters.outdoorSpace) {
       result = result.filter((l) => l.outdoorSpace);
-    }
-    if (filters.studentsAllowed) {
-      result = result.filter((l) => l.studentsAllowed);
     }
     if (filters.homeSharingAllowed) {
       result = result.filter((l) => l.homeSharingAllowed);

@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,8 @@ interface ImageSliderProps {
   showDots?: boolean;
   showArrows?: boolean;
   aspectRatio?: "video" | "square" | "wide";
+  /** Optional URL navigated to when the center area of the image is clicked. */
+  linkTo?: string;
 }
 
 const ImageSlider = ({
@@ -20,7 +23,11 @@ const ImageSlider = ({
   showDots = true,
   showArrows = true,
   aspectRatio = "video",
+  linkTo,
 }: ImageSliderProps) => {
+  const navigate = useNavigate();
+  const imageWrapperRef = useRef<HTMLDivElement | null>(null);
+  const dragStartX = useRef<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
@@ -65,9 +72,28 @@ const ImageSlider = ({
     wide: "aspect-[16/10]",
   };
 
+  const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!imageWrapperRef.current) return;
+    const rect = imageWrapperRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const ratio = x / rect.width;
+    // Left 25%: previous image. Right 25%: next image. Middle 50%: open listing.
+    if (ratio < 0.25) {
+      paginate(-1);
+    } else if (ratio > 0.75) {
+      paginate(1);
+    } else if (linkTo) {
+      navigate(linkTo);
+    }
+  };
+
   return (
     <div className={cn("relative overflow-hidden group", className)}>
-      <div className={cn("relative w-full", aspectRatioClass[aspectRatio])}>
+      <div
+        ref={imageWrapperRef}
+        className={cn("relative w-full", aspectRatioClass[aspectRatio], linkTo && "cursor-pointer")}
+        onClick={handleImageClick}
+      >
         <AnimatePresence initial={false} custom={direction} mode="popLayout">
           <motion.img
             key={currentIndex}
@@ -85,6 +111,9 @@ const ImageSlider = ({
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={1}
+            onDragStart={(_, info) => {
+              dragStartX.current = info.point.x;
+            }}
             onDragEnd={(_, { offset, velocity }) => {
               const swipe = swipePower(offset.x, velocity.x);
               if (swipe < -swipeConfidenceThreshold) {
@@ -92,8 +121,17 @@ const ImageSlider = ({
               } else if (swipe > swipeConfidenceThreshold) {
                 paginate(-1);
               }
+              // Suppress click that follows a drag
+              if (Math.abs(offset.x) > 5) {
+                const suppress = (ev: MouseEvent) => {
+                  ev.stopPropagation();
+                  ev.preventDefault();
+                };
+                window.addEventListener("click", suppress, { capture: true, once: true });
+              }
             }}
-            className="absolute inset-0 w-full h-full object-cover cursor-grab active:cursor-grabbing"
+            className="absolute inset-0 w-full h-full object-cover select-none cursor-grab active:cursor-grabbing"
+            draggable={false}
           />
         </AnimatePresence>
       </div>
