@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,8 @@ interface ImageSliderProps {
   showDots?: boolean;
   showArrows?: boolean;
   aspectRatio?: "video" | "square" | "wide";
+  /** Optional URL navigated to when the center area of the image is clicked. */
+  linkTo?: string;
 }
 
 const ImageSlider = ({
@@ -20,7 +23,11 @@ const ImageSlider = ({
   showDots = true,
   showArrows = true,
   aspectRatio = "video",
+  linkTo,
 }: ImageSliderProps) => {
+  const navigate = useNavigate();
+  const imageWrapperRef = useRef<HTMLDivElement | null>(null);
+  const dragStartX = useRef<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
