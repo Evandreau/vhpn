@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 interface ViewingRequestFormProps {
   listingTitle: string;
@@ -27,6 +28,7 @@ const DAYS = [
 const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps) => {
   const { toast } = useToast();
   const { t, language } = useLanguage();
+  const { executeRecaptcha, verifyToken } = useRecaptcha();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [honeypot, setHoneypot] = useState('');
   const [formData, setFormData] = useState({
