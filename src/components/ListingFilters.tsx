@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, SlidersHorizontal, X, PawPrint, Car, Trees, GraduationCap, Users } from "lucide-react";
+import { Search, SlidersHorizontal, X, PawPrint, Car, Trees, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,10 +28,21 @@ export interface FilterState {
   parking: boolean;
   petFriendly: boolean;
   outdoorSpace: boolean;
-  studentsAllowed: boolean;
   homeSharingAllowed: boolean;
   sort: string;
 }
+
+// Predefined budget ranges (min, max). Empty string means open-ended.
+const BUDGET_RANGES: { value: string; label: string; min: string; max: string }[] = [
+  { value: "0-1000", label: "€ 0 – € 1.000", min: "0", max: "1000" },
+  { value: "1000-1250", label: "€ 1.000 – € 1.250", min: "1000", max: "1250" },
+  { value: "1250-1500", label: "€ 1.250 – € 1.500", min: "1250", max: "1500" },
+  { value: "1500-1750", label: "€ 1.500 – € 1.750", min: "1500", max: "1750" },
+  { value: "1750-2000", label: "€ 1.750 – € 2.000", min: "1750", max: "2000" },
+  { value: "2000-2500", label: "€ 2.000 – € 2.500", min: "2000", max: "2500" },
+  { value: "2500-3000", label: "€ 2.500 – € 3.000", min: "2500", max: "3000" },
+  { value: "3000+", label: "€ 3.000+", min: "3000", max: "" },
+];
 
 interface ListingFiltersProps {
   filters: FilterState;
@@ -62,24 +73,39 @@ const ListingFilters = ({ filters, onFilterChange, resultsCount }: ListingFilter
       parking: false,
       petFriendly: false,
       outdoorSpace: false,
-      studentsAllowed: false,
       homeSharingAllowed: false,
-      sort: "newest",
+      sort: "price-low",
     });
+  };
+
+  // Derive current budget select value from minPrice/maxPrice
+  const budgetValue =
+    BUDGET_RANGES.find(
+      (r) => r.min === (filters.minPrice || "") && r.max === (filters.maxPrice || "")
+    )?.value ?? "all";
+
+  const handleBudgetChange = (value: string) => {
+    if (value === "all") {
+      onFilterChange({ ...filters, minPrice: "", maxPrice: "" });
+      return;
+    }
+    const range = BUDGET_RANGES.find((r) => r.value === value);
+    if (range) {
+      onFilterChange({ ...filters, minPrice: range.min, maxPrice: range.max });
+    }
   };
 
   const hasActiveFilters = filters.search || filters.city || filters.district ||
     filters.interiorType || filters.minSqm || filters.minPrice || 
     filters.maxPrice || filters.beds || filters.furnished !== null || 
     filters.parking || filters.petFriendly || filters.outdoorSpace || 
-    filters.studentsAllowed || filters.homeSharingAllowed;
+    filters.homeSharingAllowed;
 
   const chipFilters = [
     { key: 'furnished', label: t('filters.furnished'), icon: null, active: filters.furnished === true },
     { key: 'parking', label: t('filters.parking'), icon: Car, active: filters.parking },
     { key: 'petFriendly', label: t('filters.petFriendly'), icon: PawPrint, active: filters.petFriendly },
     { key: 'outdoorSpace', label: t('filters.outdoorSpace'), icon: Trees, active: filters.outdoorSpace },
-    { key: 'studentsAllowed', label: t('filters.studentsAllowed'), icon: GraduationCap, active: filters.studentsAllowed },
     { key: 'homeSharingAllowed', label: t('filters.homeSharingAllowed'), icon: Users, active: filters.homeSharingAllowed },
   ];
 
@@ -195,9 +221,9 @@ const ListingFilters = ({ filters, onFilterChange, resultsCount }: ListingFilter
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-background border-border">
-                <SelectItem value="newest">{t('filters.newest')}</SelectItem>
                 <SelectItem value="price-low">{t('filters.priceLowHigh')}</SelectItem>
                 <SelectItem value="price-high">{t('filters.priceHighLow')}</SelectItem>
+                <SelectItem value="newest">{t('filters.newest')}</SelectItem>
                 <SelectItem value="sqm">{t('filters.sizeLargest')}</SelectItem>
               </SelectContent>
             </Select>
