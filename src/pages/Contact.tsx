@@ -11,12 +11,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 
 const Contact = () => {
   const { toast } = useToast();
   const { language, t } = useLanguage();
+  const { executeRecaptcha, verifyToken } = useRecaptcha();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [honeypot, setHoneypot] = useState('');
@@ -36,6 +38,18 @@ const Contact = () => {
     if (honeypot) return;
     setIsSubmitting(true);
     try {
+      // Captcha (server-side verified)
+      const token = await executeRecaptcha("contact");
+      const captchaOk = await verifyToken(token, "contact");
+      if (!captchaOk) {
+        toast({
+          title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed',
+          description: t('form.captchaFailed'),
+          variant: 'destructive',
+        });
+        setIsSubmitting(false);
+        return;
+      }
       const extra = [
         formData.preferredArea && `${t('form.preferredArea')}: ${formData.preferredArea}`,
         formData.budget && `${t('form.budget')}: ${formData.budget}`,

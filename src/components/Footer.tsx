@@ -120,6 +120,17 @@ const Footer = () => {
               </a>
             </div>
           </div>
+          <p className="font-body text-xs text-muted-foreground/70 text-center md:text-left mt-6">
+            {language === 'nl' ? 'Deze site wordt beschermd door reCAPTCHA. Het ' : 'This site is protected by reCAPTCHA. The Google '}
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">
+              {language === 'nl' ? 'privacybeleid' : 'Privacy Policy'}
+            </a>
+            {language === 'nl' ? ' en de ' : ' and '}
+            <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">
+              {language === 'nl' ? 'servicevoorwaarden' : 'Terms of Service'}
+            </a>
+            {language === 'nl' ? ' van Google zijn van toepassing.' : ' apply.'}
+          </p>
         </div>
       </div>
     </footer>

@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 interface ViewingRequestFormProps {
   listingTitle: string;
@@ -27,6 +28,7 @@ const DAYS = [
 const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps) => {
   const { toast } = useToast();
   const { t, language } = useLanguage();
+  const { executeRecaptcha, verifyToken } = useRecaptcha();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [honeypot, setHoneypot] = useState('');
   const [formData, setFormData] = useState({
@@ -72,6 +74,19 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
 
     setIsSubmitting(true);
     try {
+      // Captcha (server-side verified)
+      const token = await executeRecaptcha("viewing_request");
+      const captchaOk = await verifyToken(token, "viewing_request");
+      if (!captchaOk) {
+        toast({
+          title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed',
+          description: t('form.captchaFailed'),
+          variant: 'destructive',
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       const { error } = await supabase.from('contact_submissions').insert({
         form_type: 'viewing',
         name: formData.name,
