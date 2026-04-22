@@ -377,21 +377,19 @@ const ListingFilters = ({ filters, onFilterChange, resultsCount }: ListingFilter
                 </SelectContent>
               </Select>
 
-              <Input
-                type="number"
-                placeholder={t('filters.priceMin')}
-                value={filters.minPrice}
-                onChange={(e) => updateFilter("minPrice", e.target.value)}
-                className="h-10 font-body text-sm border-border rounded-sm"
-              />
-
-              <Input
-                type="number"
-                placeholder={t('filters.priceMax')}
-                value={filters.maxPrice}
-                onChange={(e) => updateFilter("maxPrice", e.target.value)}
-                className="h-10 font-body text-sm border-border rounded-sm"
-              />
+              <div className="col-span-2">
+                <Select value={budgetValue} onValueChange={handleBudgetChange}>
+                  <SelectTrigger className="h-10 font-body text-sm border-border rounded-sm">
+                    <SelectValue placeholder={t('filters.budget')} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border-border">
+                    <SelectItem value="all">{t('filters.anyBudget')}</SelectItem>
+                    {BUDGET_RANGES.map((r) => (
+                      <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
               <div className="col-span-2 flex items-center justify-between">
                 <Select value={filters.sort} onValueChange={(v) => updateFilter("sort", v)}>
@@ -399,9 +397,9 @@ const ListingFilters = ({ filters, onFilterChange, resultsCount }: ListingFilter
                     <SelectValue placeholder={t('filters.sortBy')} />
                   </SelectTrigger>
                   <SelectContent className="bg-background border-border">
-                    <SelectItem value="newest">{t('filters.newest')}</SelectItem>
                     <SelectItem value="price-low">{t('filters.priceLowHigh')}</SelectItem>
                     <SelectItem value="price-high">{t('filters.priceHighLow')}</SelectItem>
+                    <SelectItem value="newest">{t('filters.newest')}</SelectItem>
                     <SelectItem value="sqm">{t('filters.sizeLargest')}</SelectItem>
                   </SelectContent>
                 </Select>
