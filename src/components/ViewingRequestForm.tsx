@@ -74,6 +74,19 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
 
     setIsSubmitting(true);
     try {
+      // Captcha (server-side verified)
+      const token = await executeRecaptcha("viewing_request");
+      const captchaOk = await verifyToken(token, "viewing_request");
+      if (!captchaOk) {
+        toast({
+          title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed',
+          description: t('form.captchaFailed'),
+          variant: 'destructive',
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       const { error } = await supabase.from('contact_submissions').insert({
         form_type: 'viewing',
         name: formData.name,
