@@ -1,6 +1,10 @@
 // Server-side verification of a reCAPTCHA v3 token.
 // Returns { success, score, action } or { success: false, error }.
-import { corsHeaders } from "@supabase/supabase-js/cors";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
 
 const MIN_SCORE = 0.5;
 
