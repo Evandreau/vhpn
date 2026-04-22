@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide Google reCAPTCHA v3 badge (disclosure shown in footer instead) */
+.grecaptcha-badge { visibility: hidden !important; }
+
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap');
 
 /* CANCAN-Inspired Minimal Rental Design System */
