@@ -37,9 +37,8 @@ const Listings = () => {
     parking: false,
     petFriendly: false,
     outdoorSpace: false,
-    studentsAllowed: false,
     homeSharingAllowed: false,
-    sort: "newest",
+    sort: "price-low",
   });
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showLeadForm, setShowLeadForm] = useState(false);
