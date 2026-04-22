@@ -120,9 +120,6 @@ const Listings = () => {
     if (filters.outdoorSpace) {
       result = result.filter((l) => l.outdoorSpace);
     }
-    if (filters.studentsAllowed) {
-      result = result.filter((l) => l.studentsAllowed);
-    }
     if (filters.homeSharingAllowed) {
       result = result.filter((l) => l.homeSharingAllowed);
     }
