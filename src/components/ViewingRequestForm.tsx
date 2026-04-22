@@ -51,7 +51,6 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
     if (!formData.phone.trim()) newErrors.phone = t('form.required');
     if (formData.availableDays.length === 0) newErrors.availableDays = language === 'nl' ? 'Selecteer minimaal 1 dag' : 'Select at least 1 day';
     if (!formData.timeSlot) newErrors.timeSlot = t('form.required');
-    if (!formData.grossMonthlyIncome) newErrors.grossMonthlyIncome = t('form.required');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -227,7 +226,7 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
         {/* Rental start date */}
         <div className="space-y-1.5">
           <Label htmlFor="vr-start" className="font-body text-sm">
-            {language === 'nl' ? 'Huuringangsdatum' : 'Rental start date'}
+            {language === 'nl' ? 'Gewenste huuringangsdatum' : 'Desired rental start date'}
           </Label>
           <Input
             id="vr-start"
@@ -236,6 +235,11 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
             onChange={(e) => setFormData({ ...formData, rentalStartDate: e.target.value })}
             className="h-11 font-body text-sm border-border bg-background rounded-sm"
           />
+          <p className="font-body text-xs text-muted-foreground">
+            {language === 'nl'
+              ? 'De datum waarop u de woning wilt gaan huren.'
+              : 'The date you would like the tenancy to start.'}
+          </p>
         </div>
 
         {/* Rental period */}
@@ -262,18 +266,17 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
           
           <div className="space-y-1.5">
             <Label htmlFor="vr-income" className="font-body text-sm">
-              {t('form.grossMonthlyIncome')} *
+              {t('form.grossMonthlyIncome')}
             </Label>
             <Input
               id="vr-income"
               type="number"
               min="0"
               value={formData.grossMonthlyIncome}
-              onChange={(e) => { setFormData({ ...formData, grossMonthlyIncome: e.target.value }); if (errors.grossMonthlyIncome) setErrors(p => ({ ...p, grossMonthlyIncome: '' })); }}
+              onChange={(e) => setFormData({ ...formData, grossMonthlyIncome: e.target.value })}
               className="h-11 font-body text-sm border-border bg-background rounded-sm"
               placeholder="€"
             />
-            {errors.grossMonthlyIncome && <p className="font-body text-xs text-destructive">{errors.grossMonthlyIncome}</p>}
           </div>
 
           <div className="space-y-1.5">
