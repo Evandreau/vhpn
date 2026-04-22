@@ -140,24 +140,18 @@ const ListingFilters = ({ filters, onFilterChange, resultsCount }: ListingFilter
               </SelectContent>
             </Select>
 
-            {/* Price Range */}
-            <div className="flex items-center gap-2">
-              <Input
-                type="number"
-                placeholder={t('filters.priceMin')}
-                value={filters.minPrice}
-                onChange={(e) => updateFilter("minPrice", e.target.value)}
-                className="w-28 h-10 font-body text-sm border-border rounded-sm"
-              />
-              <span className="text-muted-foreground">–</span>
-              <Input
-                type="number"
-                placeholder={t('filters.priceMax')}
-                value={filters.maxPrice}
-                onChange={(e) => updateFilter("maxPrice", e.target.value)}
-                className="w-28 h-10 font-body text-sm border-border rounded-sm"
-              />
-            </div>
+            {/* Budget */}
+            <Select value={budgetValue} onValueChange={handleBudgetChange}>
+              <SelectTrigger className="w-44 h-10 font-body text-sm border-border rounded-sm">
+                <SelectValue placeholder={t('filters.budget')} />
+              </SelectTrigger>
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="all">{t('filters.anyBudget')}</SelectItem>
+                {BUDGET_RANGES.map((r) => (
+                  <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             {/* Beds */}
             <Select value={filters.beds} onValueChange={(v) => updateFilter("beds", v)}>
