@@ -10,12 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 
 const Landlords = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const { executeRecaptcha, verifyToken } = useRecaptcha();
   const [formType, setFormType] = useState<'contact' | 'property'>('contact');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [honeypot, setHoneypot] = useState('');
@@ -29,6 +31,19 @@ const Landlords = () => {
     if (honeypot) return; // bot detected
     setIsSubmitting(true);
     try {
+      // Captcha (server-side verified)
+      const action = formType === 'property' ? 'landlord_property' : 'landlord_contact';
+      const token = await executeRecaptcha(action);
+      const captchaOk = await verifyToken(token, action);
+      if (!captchaOk) {
+        toast({
+          title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed',
+          description: t('form.captchaFailed'),
+          variant: 'destructive',
+        });
+        setIsSubmitting(false);
+        return;
+      }
       const messageParts = [formData.message];
       if (formType === 'property') {
         messageParts.push(

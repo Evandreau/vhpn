@@ -17,6 +17,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useParariusListings } from "@/hooks/useParariusListings";
 import { supabase } from "@/integrations/supabase/client";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 
 const ITEMS_PER_PAGE = 9;
@@ -24,6 +25,7 @@ const ITEMS_PER_PAGE = 9;
 const Listings = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const { executeRecaptcha, verifyToken } = useRecaptcha();
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     city: "",
@@ -156,6 +158,18 @@ const Listings = () => {
     if (leadHoneypot) return;
     setIsSubmittingLead(true);
     try {
+      // Captcha (server-side verified)
+      const token = await executeRecaptcha("search_help");
+      const captchaOk = await verifyToken(token, "search_help");
+      if (!captchaOk) {
+        toast({
+          title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed',
+          description: t('form.captchaFailed'),
+          variant: 'destructive',
+        });
+        setIsSubmittingLead(false);
+        return;
+      }
       const message = [
         leadForm.budget && `${t('form.budget')}: ${leadForm.budget}`,
         leadForm.moveInDate && `${t('form.moveInDate')}: ${leadForm.moveInDate}`,
