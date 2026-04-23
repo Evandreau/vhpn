@@ -1,0 +1,9 @@
+# Bescherm gevoelige bestanden in /api
+<FilesMatch "^(config\.php|config\.example\.php|_bootstrap\.php)$">
+    Require all denied
+</FilesMatch>
+
+# Sta alleen .php bestanden direct toe; alles anders 404
+<FilesMatch "\.(env|ini|log|bak|swp|md)$">
+    Require all denied
+</FilesMatch>

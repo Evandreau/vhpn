@@ -1,0 +1,59 @@
+# ============================================================================
+# VHPN — Apache configuratie voor Hostnet shared hosting
+# ============================================================================
+
+# 1) HTTPS afdwingen (Hostnet pakket moet SSL certificaat geactiveerd hebben)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect www -> apex (vhpn.nl). Verwijder als u juist www. wilt.
+    RewriteCond %{HTTP_HOST} ^www\.vhpn\.nl$ [NC]
+    RewriteRule ^(.*)$ https://vhpn.nl/$1 [L,R=301]
+
+    # HTTP -> HTTPS
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # 2) Echte bestanden en mappen direct serveren (incl. /api/*.php)
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # 3) /api/* nooit naar SPA fallback sturen
+    RewriteRule ^api/ - [L]
+
+    # 4) Alle andere routes -> SPA (index.html), zodat React Router werkt
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+# ----- Security headers ------------------------------------------------------
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# ----- Compressie ------------------------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# ----- Cache: gehashte assets lang, HTML kort --------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# Verberg dotfiles
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
