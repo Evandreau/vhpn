@@ -1,9 +1,11 @@
 <?php
 /**
  * Gemeenschappelijke bootstrap voor alle /api endpoints.
- * - Laadt config.php (of .example als fallback voor onboarding)
- * - Stelt CORS in
- * - Biedt JSON helpers en een eenvoudige rate limiter
+ * - Laadt config.php
+ * - Stelt CORS in (alleen wanneer Origin header aanwezig is — same-origin
+ *   requests vanuit vhpn.nl zelf hebben géén Origin header en mogen niet
+ *   worden geblokkeerd)
+ * - Biedt JSON helpers, sanitatie en een eenvoudige rate limiter
  */
 
 declare(strict_types=1);
@@ -22,15 +24,18 @@ if (!file_exists($configPath)) {
 $CONFIG = require $configPath;
 
 // ---- CORS ------------------------------------------------------------------
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+// Same-origin (frontend en /api/* op hetzelfde domein) vereist GEEN CORS
+// headers; browsers sturen dan geen Origin mee. We zetten headers daarom
+// alléén wanneer de request een Origin heeft EN die in allowed_origins zit.
+$origin  = $_SERVER['HTTP_ORIGIN'] ?? '';
 $allowed = $CONFIG['allowed_origins'] ?? [];
 if ($origin !== '' && in_array($origin, $allowed, true)) {
     header('Access-Control-Allow-Origin: ' . $origin);
     header('Vary: Origin');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Max-Age: 600');
 }
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Max-Age: 600');
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
     http_response_code(204);
@@ -53,10 +58,6 @@ function read_json_body(): array {
 }
 
 // ---- Rate limiter (eenvoudig, file-based) ---------------------------------
-/**
- * Max $maxHits per $windowSeconds per IP+bucket. Beschermt tegen brute force
- * en spam zonder externe dependencies.
- */
 function rate_limit(string $bucket, int $maxHits = 10, int $windowSeconds = 60): bool {
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
     $dir = sys_get_temp_dir() . '/vhpn_rl';
@@ -86,7 +87,6 @@ function rate_limit(string $bucket, int $maxHits = 10, int $windowSeconds = 60):
 function clean_str($v, int $maxLen = 1000): string {
     if (!is_string($v)) return '';
     $v = trim($v);
-    // Strip CR/LF uit headers (header injection bescherming)
     $v = str_replace(["\r", "\n"], ' ', $v);
     if (mb_strlen($v) > $maxLen) $v = mb_substr($v, 0, $maxLen);
     return $v;
