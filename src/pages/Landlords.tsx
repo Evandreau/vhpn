@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { apiContact } from "@/lib/apiClient";
 import { useRecaptcha } from "@/hooks/useRecaptcha";
 import SEO, { generateBreadcrumbSchema } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
@@ -55,14 +55,16 @@ const Landlords = () => {
           `${language === 'nl' ? 'Beschikbaar' : 'Available'}: ${formData.availableDate}`,
         );
       }
-      const { error } = await supabase.from('contact_submissions').insert({
+      await apiContact({
         form_type: formType === 'property' ? 'landlord_property' : 'landlord_contact',
         name: formData.name,
         email: formData.email,
         phone: formData.phone || null,
         message: messageParts.filter(Boolean).join('\n'),
+        company_website: honeypot,
+        captcha_token: token,
+        captcha_action: action,
       });
-      if (error) throw error;
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setFormData({ name: '', email: '', phone: '', message: '', propertyType: '', city: '', bedrooms: '', expectedRent: '', availableDate: '' });
     } catch {

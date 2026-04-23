@@ -1,0 +1,156 @@
+<?php
+/**
+ * Verstuurt formulierinzendingen per e-mail naar info@vhpn.nl.
+ *
+ * Body: {
+ *   form_type: 'contact'|'viewing'|'landlord_contact'|'landlord_property'|'search_help',
+ *   name: string, email: string, phone?: string,
+ *   message?: string,
+ *   listing_id?: string, listing_url?: string,
+ *   preferred_days?: string, preferred_timeslot?: string,
+ *   rental_start_date?: string, rental_period?: string,
+ *   gross_income?: number, partner_income?: number,
+ *   captcha_token?: string, captcha_action?: string
+ * }
+ *
+ * Captcha wordt server-side geverifieerd voordat er gemaild wordt.
+ */
+require __DIR__ . '/_bootstrap.php';
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    json_response(['success' => false, 'error' => 'Method not allowed'], 405);
+}
+
+if (!rate_limit('contact', 10, 600)) {
+    json_response(['success' => false, 'error' => 'Too many submissions, try again later'], 429);
+}
+
+$body = read_json_body();
+
+// ---- Honeypot --------------------------------------------------------------
+if (!empty($body['company_website'])) {
+    // Stilletjes succesvol responden — bot weet niet dat hij gefaald heeft.
+    json_response(['success' => true]);
+}
+
+// ---- Captcha ---------------------------------------------------------------
+$captchaToken  = clean_str($body['captcha_token'] ?? '', 4000);
+$captchaAction = clean_str($body['captcha_action'] ?? '', 64);
+if ($captchaToken !== '') {
+    $secret = (string) ($CONFIG['recaptcha_secret_key'] ?? '');
+    if ($secret !== '' && $secret !== 'VUL_HIER_DE_RECAPTCHA_SECRET_IN') {
+        $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => http_build_query([
+                'secret'   => $secret,
+                'response' => $captchaToken,
+                'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+            ]),
+            CURLOPT_TIMEOUT        => 10,
+        ]);
+        $cResp = curl_exec($ch);
+        curl_close($ch);
+        $cData = is_string($cResp) ? json_decode($cResp, true) : null;
+        $cScore = is_array($cData) && isset($cData['score']) ? (float) $cData['score'] : 0.0;
+        $cAct   = is_array($cData) && isset($cData['action']) ? (string) $cData['action'] : '';
+        $minScore = (float) ($CONFIG['recaptcha_min_score'] ?? 0.5);
+        $ok = is_array($cData) && !empty($cData['success']) && $cScore >= $minScore
+              && ($captchaAction === '' || $cAct === '' || $cAct === $captchaAction);
+        if (!$ok) {
+            json_response(['success' => false, 'error' => 'Captcha verification failed'], 400);
+        }
+    }
+}
+
+// ---- Velden valideren ------------------------------------------------------
+$formType = clean_str($body['form_type'] ?? 'contact', 32);
+$name     = clean_str($body['name'] ?? '', 200);
+$email    = clean_email($body['email'] ?? '');
+$phone    = clean_str($body['phone'] ?? '', 50);
+$message  = clean_multiline($body['message'] ?? '', 5000);
+
+if ($name === '' || $email === '') {
+    json_response(['success' => false, 'error' => 'Name and email are required'], 400);
+}
+
+$listingId       = clean_str($body['listing_id'] ?? '', 64);
+$listingUrl      = clean_str($body['listing_url'] ?? '', 500);
+$preferredDays   = clean_str($body['preferred_days'] ?? '', 200);
+$preferredSlot   = clean_str($body['preferred_timeslot'] ?? '', 64);
+$rentalStartDate = clean_str($body['rental_start_date'] ?? '', 32);
+$rentalPeriod    = clean_str($body['rental_period'] ?? '', 32);
+$preferredArea   = clean_str($body['preferred_area'] ?? '', 100);
+$budget          = clean_str($body['budget'] ?? '', 100);
+$moveInDate      = clean_str($body['move_in_date'] ?? '', 32);
+$grossIncome     = isset($body['gross_income']) && is_numeric($body['gross_income'])
+                    ? (float) $body['gross_income'] : null;
+$partnerIncome   = isset($body['partner_income']) && is_numeric($body['partner_income'])
+                    ? (float) $body['partner_income'] : null;
+
+// ---- E-mail samenstellen ---------------------------------------------------
+$subjectMap = [
+    'contact'           => 'Contactformulier',
+    'viewing'           => 'Bezichtigingsverzoek',
+    'landlord_contact'  => 'Verhuurder — contact',
+    'landlord_property' => 'Verhuurder — woning aanmelden',
+    'search_help'       => 'Lead — zoekhulp',
+];
+$subjectLabel = $subjectMap[$formType] ?? 'Formulierinzending';
+$subject = "[VHPN] $subjectLabel — $name";
+
+$lines = [];
+$lines[] = "Type: $subjectLabel ($formType)";
+$lines[] = "Naam: $name";
+$lines[] = "E-mail: $email";
+if ($phone !== '')           $lines[] = "Telefoon: $phone";
+if ($preferredArea !== '')   $lines[] = "Voorkeursgebied: $preferredArea";
+if ($budget !== '')          $lines[] = "Budget: $budget";
+if ($moveInDate !== '')      $lines[] = "Gewenste startdatum: $moveInDate";
+if ($rentalStartDate !== '') $lines[] = "Huuringangsdatum: $rentalStartDate";
+if ($rentalPeriod !== '')    $lines[] = "Huurperiode: $rentalPeriod";
+if ($preferredDays !== '')   $lines[] = "Beschikbare dagen: $preferredDays";
+if ($preferredSlot !== '')   $lines[] = "Dagdeel: $preferredSlot";
+if ($grossIncome !== null)   $lines[] = "Bruto inkomen p/m: € " . number_format($grossIncome, 0, ',', '.');
+if ($partnerIncome !== null) $lines[] = "Partner inkomen p/m: € " . number_format($partnerIncome, 0, ',', '.');
+if ($listingId !== '')       $lines[] = "Listing ID: $listingId";
+if ($listingUrl !== '')      $lines[] = "Listing URL: $listingUrl";
+if ($message !== '')         $lines[] = "\nBericht:\n$message";
+$lines[] = "\n---";
+$lines[] = "IP: " . ($_SERVER['REMOTE_ADDR'] ?? '');
+$lines[] = "User agent: " . substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 200);
+$lines[] = "Tijd: " . date('Y-m-d H:i:s');
+
+$bodyText = implode("\n", $lines);
+
+$to       = (string) ($CONFIG['mail_to'] ?? 'info@vhpn.nl');
+$fromMail = (string) ($CONFIG['mail_from'] ?? 'noreply@vhpn.nl');
+$fromName = (string) ($CONFIG['mail_from_name'] ?? 'VHPN Website');
+
+// MIME-encode subject voor UTF-8
+$encSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+$encFrom    = '=?UTF-8?B?' . base64_encode($fromName) . '?= <' . $fromMail . '>';
+
+$headers   = [];
+$headers[] = 'From: ' . $encFrom;
+$headers[] = 'Reply-To: ' . $email;
+$headers[] = 'MIME-Version: 1.0';
+$headers[] = 'Content-Type: text/plain; charset=UTF-8';
+$headers[] = 'Content-Transfer-Encoding: 8bit';
+$headers[] = 'X-Mailer: VHPN/PHP';
+
+$ok = @mail(
+    $to,
+    $encSubject,
+    $bodyText,
+    implode("\r\n", $headers),
+    '-f' . $fromMail
+);
+
+if (!$ok) {
+    error_log("VHPN mail() failed for $email -> $to");
+    json_response(['success' => false, 'error' => 'Mail delivery failed'], 500);
+}
+
+json_response(['success' => true]);

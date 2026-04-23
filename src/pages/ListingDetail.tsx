@@ -26,7 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
 import { useParariusListings } from "@/hooks/useParariusListings";
 import { stripHouseNumber } from "@/lib/address";
-import { supabase } from "@/integrations/supabase/client";
+import { apiContact } from "@/lib/apiClient";
 
 const DAYS = [
   { value: 'ma', nl: 'Ma', en: 'Mon' },
@@ -145,16 +145,16 @@ const ListingDetail = () => {
     if (interestHoneypot) return;
     setIsSubmittingInterest(true);
     try {
-      const { error } = await supabase.from('contact_submissions').insert({
-        form_type: 'listing_interest',
+      await apiContact({
+        form_type: 'contact',
         name: interestForm.name,
         email: interestForm.email,
         phone: interestForm.phone || null,
         message: interestForm.message || null,
         listing_id: listing.id,
         listing_url: window.location.href,
+        company_website: interestHoneypot,
       });
-      if (error) throw error;
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setInterestForm({ name: '', email: '', phone: '', message: '' });
     } catch {
@@ -193,7 +193,7 @@ const ListingDetail = () => {
 
     setIsSubmittingViewing(true);
     try {
-      const { error } = await supabase.from('contact_submissions').insert({
+      await apiContact({
         form_type: 'viewing',
         name: viewingForm.name,
         email: viewingForm.email,
@@ -206,8 +206,8 @@ const ListingDetail = () => {
         rental_period: viewingForm.rentalPeriod || null,
         gross_income: viewingForm.grossMonthlyIncome ? Number(viewingForm.grossMonthlyIncome) : null,
         partner_income: viewingForm.partnerGrossMonthlyIncome ? Number(viewingForm.partnerGrossMonthlyIncome) : null,
+        company_website: viewingHoneypot,
       });
-      if (error) throw error;
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setViewingForm({
         name: '', email: '', phone: '',

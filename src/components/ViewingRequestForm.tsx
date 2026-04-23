@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { apiContact } from "@/lib/apiClient";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -87,7 +87,7 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
         return;
       }
 
-      const { error } = await supabase.from('contact_submissions').insert({
+      await apiContact({
         form_type: 'viewing',
         name: formData.name,
         email: formData.email,
@@ -101,8 +101,10 @@ const ViewingRequestForm = ({ listingTitle, listingId }: ViewingRequestFormProps
         gross_income: formData.grossMonthlyIncome ? Number(formData.grossMonthlyIncome) : null,
         partner_income: formData.partnerGrossMonthlyIncome ? Number(formData.partnerGrossMonthlyIncome) : null,
         message: formData.message || null,
+        company_website: honeypot,
+        captcha_token: token,
+        captcha_action: 'viewing_request',
       });
-      if (error) throw error;
 
       toast({
         title: t('form.success'),

@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useParariusListings } from "@/hooks/useParariusListings";
-import { supabase } from "@/integrations/supabase/client";
+import { apiContact } from "@/lib/apiClient";
 import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 
@@ -175,15 +175,20 @@ const Listings = () => {
         leadForm.moveInDate && `${t('form.moveInDate')}: ${leadForm.moveInDate}`,
         leadForm.preferredArea && `${t('form.preferredArea')}: ${leadForm.preferredArea}`,
       ].filter(Boolean).join('\n');
-      const { error } = await supabase.from('contact_submissions').insert({
+      await apiContact({
         form_type: 'search_help',
         name: leadForm.name,
         email: leadForm.email,
         phone: leadForm.phone || null,
         message: message || null,
+        budget: leadForm.budget || null,
+        preferred_area: leadForm.preferredArea || null,
+        move_in_date: leadForm.moveInDate || null,
         rental_start_date: leadForm.moveInDate || null,
+        company_website: leadHoneypot,
+        captcha_token: token,
+        captcha_action: 'search_help',
       });
-      if (error) throw error;
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setShowLeadForm(false);
       setLeadForm({ name: '', email: '', phone: '', budget: '', moveInDate: '', preferredArea: '' });

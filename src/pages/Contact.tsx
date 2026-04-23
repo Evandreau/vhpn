@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Clock, CheckCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { apiContact } from "@/lib/apiClient";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
@@ -57,16 +57,21 @@ const Contact = () => {
         formData.rentalPeriod && `${t('form.rentalPeriod')}: ${formData.rentalPeriod}`,
       ].filter(Boolean).join('\n');
       const fullMessage = extra ? `${formData.message}\n\n---\n${extra}` : formData.message;
-      const { error } = await supabase.from('contact_submissions').insert({
+      await apiContact({
         form_type: 'contact',
         name: formData.name,
         email: formData.email,
         phone: formData.phone || null,
         message: fullMessage,
+        preferred_area: formData.preferredArea || null,
+        budget: formData.budget || null,
+        move_in_date: formData.moveInDate || null,
         rental_start_date: formData.moveInDate || null,
         rental_period: formData.rentalPeriod || null,
+        company_website: honeypot,
+        captcha_token: token,
+        captcha_action: 'contact',
       });
-      if (error) throw error;
 
       toast({
         title: t('form.success'),
