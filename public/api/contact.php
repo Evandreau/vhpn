@@ -2,16 +2,9 @@
 /**
  * Verstuurt formulierinzendingen per e-mail naar info@vhpn.nl.
  *
- * Body: {
- *   form_type: 'contact'|'viewing'|'landlord_contact'|'landlord_property'|'search_help',
- *   name: string, email: string, phone?: string,
- *   message?: string,
- *   listing_id?: string, listing_url?: string,
- *   preferred_days?: string, preferred_timeslot?: string,
- *   rental_start_date?: string, rental_period?: string,
- *   gross_income?: number, partner_income?: number,
- *   captcha_token?: string, captcha_action?: string
- * }
+ * Verzending kan via twee transports (zie config.php):
+ *   - mail_transport = 'mail' (default) → standaard PHP mail() van Hostnet
+ *   - mail_transport = 'smtp'           → SMTP via Hostnet mailbox
  *
  * Captcha wordt server-side geverifieerd voordat er gemaild wordt.
  */
@@ -29,7 +22,6 @@ $body = read_json_body();
 
 // ---- Honeypot --------------------------------------------------------------
 if (!empty($body['company_website'])) {
-    // Stilletjes succesvol responden — bot weet niet dat hij gefaald heeft.
     json_response(['success' => true]);
 }
 
@@ -124,33 +116,142 @@ $lines[] = "Tijd: " . date('Y-m-d H:i:s');
 
 $bodyText = implode("\n", $lines);
 
-$to       = (string) ($CONFIG['mail_to'] ?? 'info@vhpn.nl');
-$fromMail = (string) ($CONFIG['mail_from'] ?? 'noreply@vhpn.nl');
-$fromName = (string) ($CONFIG['mail_from_name'] ?? 'VHPN Website');
+$to        = (string) ($CONFIG['mail_to'] ?? 'info@vhpn.nl');
+$fromMail  = (string) ($CONFIG['mail_from'] ?? 'noreply@vhpn.nl');
+$fromName  = (string) ($CONFIG['mail_from_name'] ?? 'VHPN Website');
+$transport = strtolower((string) ($CONFIG['mail_transport'] ?? 'mail'));
 
-// MIME-encode subject voor UTF-8
-$encSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
-$encFrom    = '=?UTF-8?B?' . base64_encode($fromName) . '?= <' . $fromMail . '>';
+$ok = false;
+$errMsg = '';
 
-$headers   = [];
-$headers[] = 'From: ' . $encFrom;
-$headers[] = 'Reply-To: ' . $email;
-$headers[] = 'MIME-Version: 1.0';
-$headers[] = 'Content-Type: text/plain; charset=UTF-8';
-$headers[] = 'Content-Transfer-Encoding: 8bit';
-$headers[] = 'X-Mailer: VHPN/PHP';
-
-$ok = @mail(
-    $to,
-    $encSubject,
-    $bodyText,
-    implode("\r\n", $headers),
-    '-f' . $fromMail
-);
+if ($transport === 'smtp') {
+    $ok = send_via_smtp($CONFIG, $to, $subject, $bodyText, $fromMail, $fromName, $email, $errMsg);
+} else {
+    $ok = send_via_mail($to, $subject, $bodyText, $fromMail, $fromName, $email, $errMsg);
+}
 
 if (!$ok) {
-    error_log("VHPN mail() failed for $email -> $to");
+    error_log("VHPN mail ($transport) failed for $email -> $to: $errMsg");
     json_response(['success' => false, 'error' => 'Mail delivery failed'], 500);
 }
 
 json_response(['success' => true]);
+
+// ---------------------------------------------------------------------------
+// Transports
+// ---------------------------------------------------------------------------
+
+function send_via_mail(string $to, string $subject, string $bodyText, string $fromMail, string $fromName, string $replyTo, string &$errMsg): bool {
+    $encSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    $encFrom    = '=?UTF-8?B?' . base64_encode($fromName) . '?= <' . $fromMail . '>';
+
+    $headers   = [];
+    $headers[] = 'From: ' . $encFrom;
+    $headers[] = 'Reply-To: ' . $replyTo;
+    $headers[] = 'MIME-Version: 1.0';
+    $headers[] = 'Content-Type: text/plain; charset=UTF-8';
+    $headers[] = 'Content-Transfer-Encoding: 8bit';
+    $headers[] = 'X-Mailer: VHPN/PHP';
+
+    $ok = @mail($to, $encSubject, $bodyText, implode("\r\n", $headers), '-f' . $fromMail);
+    if (!$ok) $errMsg = 'mail() returned false';
+    return (bool) $ok;
+}
+
+/**
+ * Eenvoudige SMTP client (geen externe afhankelijkheden).
+ * Ondersteunt SSL (smtps, port 465) en STARTTLS (port 587) en LOGIN auth.
+ *
+ * Vereist in config.php:
+ *   smtp_host, smtp_port, smtp_user, smtp_password
+ *   smtp_encryption: 'ssl' | 'tls' | 'none'  (default 'ssl')
+ */
+function send_via_smtp(array $cfg, string $to, string $subject, string $bodyText, string $fromMail, string $fromName, string $replyTo, string &$errMsg): bool {
+    $host = (string) ($cfg['smtp_host'] ?? '');
+    $port = (int)    ($cfg['smtp_port'] ?? 465);
+    $user = (string) ($cfg['smtp_user'] ?? $fromMail);
+    $pass = (string) ($cfg['smtp_password'] ?? '');
+    $enc  = strtolower((string) ($cfg['smtp_encryption'] ?? 'ssl'));
+
+    if ($host === '' || $pass === '') {
+        $errMsg = 'SMTP not configured';
+        return false;
+    }
+
+    $remote = ($enc === 'ssl' ? 'ssl://' : 'tcp://') . $host . ':' . $port;
+    $errno = 0; $errstr = '';
+    $sock = @stream_socket_client($remote, $errno, $errstr, 15);
+    if (!$sock) {
+        $errMsg = "SMTP connect: $errstr ($errno)";
+        return false;
+    }
+    stream_set_timeout($sock, 15);
+
+    $expect = function (string $code) use ($sock, &$errMsg): bool {
+        $resp = '';
+        while (($line = fgets($sock, 515)) !== false) {
+            $resp .= $line;
+            if (isset($line[3]) && $line[3] === ' ') break;
+        }
+        if (strpos($resp, $code) !== 0) {
+            $errMsg = 'SMTP unexpected: ' . trim($resp);
+            return false;
+        }
+        return true;
+    };
+    $send = function (string $cmd) use ($sock) {
+        fwrite($sock, $cmd . "\r\n");
+    };
+
+    if (!$expect('220')) { fclose($sock); return false; }
+    $send('EHLO vhpn.nl');
+    if (!$expect('250')) { fclose($sock); return false; }
+
+    if ($enc === 'tls') {
+        $send('STARTTLS');
+        if (!$expect('220')) { fclose($sock); return false; }
+        if (!@stream_socket_enable_crypto($sock, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+            $errMsg = 'STARTTLS failed';
+            fclose($sock); return false;
+        }
+        $send('EHLO vhpn.nl');
+        if (!$expect('250')) { fclose($sock); return false; }
+    }
+
+    $send('AUTH LOGIN');
+    if (!$expect('334')) { fclose($sock); return false; }
+    $send(base64_encode($user));
+    if (!$expect('334')) { fclose($sock); return false; }
+    $send(base64_encode($pass));
+    if (!$expect('235')) { fclose($sock); return false; }
+
+    $send('MAIL FROM:<' . $fromMail . '>');
+    if (!$expect('250')) { fclose($sock); return false; }
+    $send('RCPT TO:<' . $to . '>');
+    if (!$expect('250')) { fclose($sock); return false; }
+    $send('DATA');
+    if (!$expect('354')) { fclose($sock); return false; }
+
+    $encSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    $encFrom    = '=?UTF-8?B?' . base64_encode($fromName) . '?= <' . $fromMail . '>';
+    $headers = [
+        'Date: ' . date('r'),
+        'From: ' . $encFrom,
+        'To: ' . $to,
+        'Reply-To: ' . $replyTo,
+        'Subject: ' . $encSubject,
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
+        'X-Mailer: VHPN/PHP-SMTP',
+    ];
+    // Dot-stuffing: regels die met '.' beginnen krijgen extra '.'
+    $safeBody = preg_replace('/^\./m', '..', $bodyText);
+    $payload  = implode("\r\n", $headers) . "\r\n\r\n" . $safeBody . "\r\n.";
+    $send($payload);
+    if (!$expect('250')) { fclose($sock); return false; }
+
+    $send('QUIT');
+    fclose($sock);
+    return true;
+}

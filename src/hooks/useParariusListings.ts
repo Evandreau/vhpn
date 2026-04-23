@@ -17,8 +17,8 @@ interface ParariusProperty {
   division: string;
   title: string | null;
   street: string;
-  number: string;
-  addition: string;
+  // number + addition zijn server-side al gestript voor privacy en
+  // komen niet meer voor in de payload. Bewust niet in deze interface.
   zipcode: string;
   district: string;
   city: string;
@@ -228,16 +228,21 @@ function mapStatus(frontStatus: string): 'available' | 'reserved' | 'rented' {
 }
 
 function generateSlug(prop: ParariusProperty): string {
-  // Privacy: never include house number in slug
-  const parts = [
-    prop.street,
-    prop.city,
-  ].filter(Boolean).join(' ');
+  // Privacy: never include house number in slug. Server strips number/addition;
+  // when a property is confidential, street is also empty -> slug falls back to
+  // district + city.
+  const parts = [prop.street || prop.district, prop.city]
+    .filter(Boolean)
+    .join(' ');
   return parts.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 function generateTitle(prop: ParariusProperty): string {
-  // Privacy: never include house number or addition in title
+  // Privacy: never include house number or addition. For confidential
+  // listings street is empty server-side; fall back to district + city.
+  if (!prop.street) {
+    return prop.district ? `${prop.district}, ${prop.city}` : prop.city;
+  }
   return `${prop.street}, ${prop.city}`;
 }
 
