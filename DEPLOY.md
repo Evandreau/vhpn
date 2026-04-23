@@ -59,15 +59,41 @@ https://www.google.com/recaptcha/admin.
 
 - `https://vhpn.nl/` toont de homepage
 - `https://vhpn.nl/listings` laadt live aanbod uit Pararius
+- `https://vhpn.nl/listings` na refresh: geen 404 (SPA fallback werkt)
 - `https://vhpn.nl/api/recaptcha-config.php` geeft `{"siteKey":"..."}`
 - Test elk formulier: e-mail moet aankomen op `info@vhpn.nl`
 - `https://vhpn.nl/api/config.php` moet **403/404** geven (mag NIET zichtbaar)
+- Response van `/api/pararius.php` bevat **geen** `number`, `addition` of
+  PC6-zipcode meer (alleen PC4). Header `X-VHPN-Cache: HIT|MISS|STALE`
+  laat zien dat de server-side cache werkt.
 
 ## Privacy
 
-Huisnummers worden centraal gestript in `src/lib/address.ts` en in de
-Pararius transformer (`src/hooks/useParariusListings.ts`). Ze komen
-nergens in de UI, URL-slug of SEO-metadata terecht.
+Huisnummer en toevoeging worden in **drie lagen** gestript:
+
+1. Server-side in `public/api/pararius.php` — `number`, `addition`,
+   `housenumber`, `house_number`, `number_addition` worden uit elke
+   property verwijderd vóórdat de JSON naar de browser gaat. `zipcode`
+   wordt teruggebracht tot PC4.
+2. Bij vertrouwelijke woningen (`vertrouwelijk=1` / `confidential=1`)
+   worden óók `street`, `lat` en `lng` leeggemaakt — alleen district +
+   city blijven over.
+3. Frontend (`src/lib/address.ts`, `useParariusListings.ts`) gebruikt
+   alleen straat + stad voor titel, slug en SEO/JSON-LD.
+
+## Mail transport
+
+Default = PHP `mail()` van Hostnet. Voor betere deliverability kunt u in
+`api/config.php` `mail_transport` op `'smtp'` zetten en de `smtp_*`
+velden vullen met de Hostnet mailbox (smtp.hostnet.nl, poort 465 SSL).
+Geen codewijziging nodig.
+
+## Pararius caching
+
+`api/pararius.php` cachet de Pararius response file-based in
+`sys_get_temp_dir()` met TTL `pararius_cache_ttl` (default 600 s). Bij
+een Pararius timeout of 5xx wordt automatisch de laatst opgeslagen
+cache geserveerd (`X-VHPN-Cache: STALE`).
 
 ## Lokaal testen van de PHP API
 
