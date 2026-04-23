@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { apiPararius } from "@/lib/apiClient";
 import { Listing, InteriorType, District } from "@/data/listings";
 
 interface ParariusPhoto {
@@ -302,11 +302,10 @@ function transformProperty(prop: ParariusProperty): Listing {
 }
 
 async function fetchParariusProperties(lang: string): Promise<Listing[]> {
-  const { data, error } = await supabase.functions.invoke('pararius-properties', {
-    body: { action: 'getproperties', lang: lang === 'nl' ? 'nl' : 'en' },
-  });
-
-  if (error) {
+  let data: { success: boolean; rawResponse: string };
+  try {
+    data = await apiPararius({ action: 'getproperties', lang: lang === 'nl' ? 'nl' : 'en' });
+  } catch (error) {
     console.error('Error fetching Pararius properties:', error);
     throw error;
   }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { apiRecaptchaConfig, apiRecaptchaVerify } from "@/lib/apiClient";
 
 declare global {
   interface Window {
@@ -15,12 +15,14 @@ let scriptLoadPromise: Promise<void> | null = null;
 
 const fetchSiteKey = async (): Promise<string> => {
   if (cachedSiteKey) return cachedSiteKey;
-  const { data, error } = await supabase.functions.invoke("get-recaptcha-config");
-  if (error || !data?.siteKey) {
+  try {
+    const data = await apiRecaptchaConfig();
+    if (!data?.siteKey) throw new Error("No site key");
+    cachedSiteKey = data.siteKey;
+    return cachedSiteKey;
+  } catch (err) {
     throw new Error("Failed to load captcha configuration");
   }
-  cachedSiteKey = data.siteKey as string;
-  return cachedSiteKey;
 };
 
 const loadScript = (siteKey: string): Promise<void> => {
@@ -52,12 +54,10 @@ const loadScript = (siteKey: string): Promise<void> => {
 };
 
 /**
- * React hook for Google reCAPTCHA v3.
- *
- * Loads the script on demand (once per page) and exposes:
- * - `ready`: true when the widget is loaded and an action can be executed
- * - `executeRecaptcha(action)`: returns a token to submit to the server
- * - `verifyToken(token, action)`: server-side verification via edge function
+ * React hook voor Google reCAPTCHA v3.
+ * - `ready`: true zodra het widget bruikbaar is
+ * - `executeRecaptcha(action)`: levert een token om aan de server te geven
+ * - `verifyToken(token, action)`: server-side verificatie via /api/recaptcha-verify.php
  */
 export const useRecaptcha = () => {
   const [ready, setReady] = useState(false);
@@ -72,7 +72,6 @@ export const useRecaptcha = () => {
         siteKeyRef.current = key;
         await loadScript(key);
         if (cancelled) return;
-        // grecaptcha.ready resolves once the widget is actually usable
         await new Promise<void>((resolve) => {
           if (window.grecaptcha) window.grecaptcha.ready(() => resolve());
           else resolve();
@@ -97,14 +96,13 @@ export const useRecaptcha = () => {
 
   const verifyToken = useCallback(
     async (token: string, action: string): Promise<boolean> => {
-      const { data, error } = await supabase.functions.invoke("verify-recaptcha", {
-        body: { token, action },
-      });
-      if (error) {
-        console.error("Captcha verify error", error);
+      try {
+        const data = await apiRecaptchaVerify(token, action);
+        return Boolean(data?.success);
+      } catch (err) {
+        console.error("Captcha verify error", err);
         return false;
       }
-      return Boolean(data?.success);
     },
     [],
   );
