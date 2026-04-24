@@ -146,13 +146,17 @@ if (is_array($decoded) && isset($decoded['result']['properties']) && is_array($d
             }
         }
 
-        // Altijd verwijderen: huisnummer en toevoeging
+        // Altijd verwijderen: huisnummer, toevoeging EN postcode (ook PC4).
         unset(
             $prop['number'],
             $prop['addition'],
             $prop['housenumber'],
             $prop['house_number'],
-            $prop['number_addition']
+            $prop['number_addition'],
+            $prop['zipcode'],
+            $prop['zip_code'],
+            $prop['postal_code'],
+            $prop['postcode']
         );
 
         // Postcode terugbrengen tot PC4 (alleen cijfers)
