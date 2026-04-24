@@ -25,7 +25,12 @@
  */
 require __DIR__ . '/_bootstrap.php';
 
-if (!rate_limit('pararius', 60, 60)) {
+// Pararius proxy: caching doet het zware werk; rate limit is anti-abuse.
+// 60 requests / 5 min / IP is ruim voor legit listings-verkeer.
+$rlWindow = 300;
+$rlMax    = 60;
+if (!rate_limit('pararius', $rlMax, $rlWindow)) {
+    header('Retry-After: ' . $rlWindow);
     json_response(['error' => 'Too many requests'], 429);
 }
 
