@@ -25,34 +25,37 @@ if (!empty($body['company_website'])) {
     json_response(['success' => true]);
 }
 
-// ---- Captcha ---------------------------------------------------------------
+// ---- Captcha (verplicht zodra recaptcha_secret_key is geconfigureerd) ------
 $captchaToken  = clean_str($body['captcha_token'] ?? '', 4000);
 $captchaAction = clean_str($body['captcha_action'] ?? '', 64);
-if ($captchaToken !== '') {
-    $secret = (string) ($CONFIG['recaptcha_secret_key'] ?? '');
-    if ($secret !== '' && $secret !== 'VUL_HIER_DE_RECAPTCHA_SECRET_IN') {
-        $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => http_build_query([
-                'secret'   => $secret,
-                'response' => $captchaToken,
-                'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
-            ]),
-            CURLOPT_TIMEOUT        => 10,
-        ]);
-        $cResp = curl_exec($ch);
-        curl_close($ch);
-        $cData = is_string($cResp) ? json_decode($cResp, true) : null;
-        $cScore = is_array($cData) && isset($cData['score']) ? (float) $cData['score'] : 0.0;
-        $cAct   = is_array($cData) && isset($cData['action']) ? (string) $cData['action'] : '';
-        $minScore = (float) ($CONFIG['recaptcha_min_score'] ?? 0.5);
-        $ok = is_array($cData) && !empty($cData['success']) && $cScore >= $minScore
-              && ($captchaAction === '' || $cAct === '' || $cAct === $captchaAction);
-        if (!$ok) {
-            json_response(['success' => false, 'error' => 'Captcha verification failed'], 400);
-        }
+$secret = (string) ($CONFIG['recaptcha_secret_key'] ?? '');
+$captchaConfigured = ($secret !== '' && $secret !== 'VUL_HIER_DE_RECAPTCHA_SECRET_IN');
+
+if ($captchaConfigured) {
+    if ($captchaToken === '') {
+        json_response(['success' => false, 'error' => 'Captcha token missing'], 400);
+    }
+    $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => http_build_query([
+            'secret'   => $secret,
+            'response' => $captchaToken,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+        ]),
+        CURLOPT_TIMEOUT        => 10,
+    ]);
+    $cResp = curl_exec($ch);
+    curl_close($ch);
+    $cData = is_string($cResp) ? json_decode($cResp, true) : null;
+    $cScore = is_array($cData) && isset($cData['score']) ? (float) $cData['score'] : 0.0;
+    $cAct   = is_array($cData) && isset($cData['action']) ? (string) $cData['action'] : '';
+    $minScore = (float) ($CONFIG['recaptcha_min_score'] ?? 0.5);
+    $ok = is_array($cData) && !empty($cData['success']) && $cScore >= $minScore
+          && ($captchaAction === '' || $cAct === '' || $cAct === $captchaAction);
+    if (!$ok) {
+        json_response(['success' => false, 'error' => 'Captcha verification failed'], 400);
     }
 }
 
