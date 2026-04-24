@@ -221,8 +221,22 @@ function send_via_smtp(array $cfg, string $to, string $subject, string $bodyText
     if ($enc === 'tls') {
         $send('STARTTLS');
         if (!$expect('220')) { fclose($sock); return false; }
-        if (!@stream_socket_enable_crypto($sock, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-            $errMsg = 'STARTTLS failed';
+        // Best-available TLS: TLS 1.3 + 1.2 + 1.1 (op oudere PHP builds vallen
+        // onbekende constants gewoon weg via defined()-check).
+        $cryptoMethod = 0;
+        foreach ([
+            'STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT',
+            'STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT',
+            'STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT',
+        ] as $c) {
+            if (defined($c)) $cryptoMethod |= constant($c);
+        }
+        if ($cryptoMethod === 0) {
+            $cryptoMethod = STREAM_CRYPTO_METHOD_TLS_CLIENT;
+        }
+        if (!@stream_socket_enable_crypto($sock, true, $cryptoMethod)) {
+            $errMsg = 'STARTTLS crypto handshake failed (host=' . $host . ':' . $port . ')';
+            error_log('VHPN SMTP ' . $errMsg);
             fclose($sock); return false;
         }
         $send('EHLO vhpn.nl');
