@@ -129,6 +129,14 @@ $errMsg = '';
 
 if ($transport === 'smtp') {
     $ok = send_via_smtp($CONFIG, $to, $subject, $bodyText, $fromMail, $fromName, $email, $errMsg);
+    if (!$ok) {
+        // Praktische fallback: SMTP faalt (vaak TLS handshake) -> probeer mail()
+        error_log("VHPN SMTP failed, falling back to mail(): $errMsg");
+        $smtpErr = $errMsg;
+        $errMsg = '';
+        $ok = send_via_mail($to, $subject, $bodyText, $fromMail, $fromName, $email, $errMsg);
+        if (!$ok) $errMsg = "SMTP: $smtpErr | mail(): $errMsg";
+    }
 } else {
     $ok = send_via_mail($to, $subject, $bodyText, $fromMail, $fromName, $email, $errMsg);
 }
