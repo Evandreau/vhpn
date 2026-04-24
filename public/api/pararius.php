@@ -8,8 +8,8 @@
  * Belangrijke privacygaranties (zie ook src/lib/address.ts):
  *  - `number` en `addition` worden uit elke property verwijderd voordat de
  *    response naar de browser gaat.
- *  - `zipcode` wordt afgekapt tot het 4-cijferige PC4 deel (geen letters),
- *    omdat een volledige PC6 één huisnummer kan onthullen.
+ *  - `zipcode` wordt volledig verwijderd (ook PC4 kan in combinatie met
+ *    straat te specifiek zijn). Frontend toont alleen city/district.
  *  - Wanneer een property als vertrouwelijk gemarkeerd is (vertrouwelijk=1
  *    of confidential=1), worden óók straat, lat/lng en exact adres
  *    verwijderd; alleen district + city blijven over.
@@ -25,7 +25,12 @@
  */
 require __DIR__ . '/_bootstrap.php';
 
-if (!rate_limit('pararius', 60, 60)) {
+// Pararius proxy: caching doet het zware werk; rate limit is anti-abuse.
+// 60 requests / 5 min / IP is ruim voor legit listings-verkeer.
+$rlWindow = 300;
+$rlMax    = 60;
+if (!rate_limit('pararius', $rlMax, $rlWindow)) {
+    header('Retry-After: ' . $rlWindow);
     json_response(['error' => 'Too many requests'], 429);
 }
 
@@ -141,23 +146,19 @@ if (is_array($decoded) && isset($decoded['result']['properties']) && is_array($d
             }
         }
 
-        // Altijd verwijderen: huisnummer en toevoeging
+        // Altijd verwijderen: huisnummer, toevoeging EN postcode (ook PC4).
         unset(
             $prop['number'],
             $prop['addition'],
             $prop['housenumber'],
             $prop['house_number'],
-            $prop['number_addition']
+            $prop['number_addition'],
+            $prop['zipcode'],
+            $prop['zip_code'],
+            $prop['postal_code'],
+            $prop['postcode']
         );
 
-        // Postcode terugbrengen tot PC4 (alleen cijfers)
-        if (isset($prop['zipcode']) && is_string($prop['zipcode'])) {
-            if (preg_match('/^\s*(\d{4})/', $prop['zipcode'], $m)) {
-                $prop['zipcode'] = $m[1];
-            } else {
-                $prop['zipcode'] = '';
-            }
-        }
 
         // Vertrouwelijk: ook straat + exacte coördinaten verbergen
         if ($isConfidential) {

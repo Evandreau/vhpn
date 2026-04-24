@@ -25,34 +25,37 @@ if (!empty($body['company_website'])) {
     json_response(['success' => true]);
 }
 
-// ---- Captcha ---------------------------------------------------------------
+// ---- Captcha (verplicht zodra recaptcha_secret_key is geconfigureerd) ------
 $captchaToken  = clean_str($body['captcha_token'] ?? '', 4000);
 $captchaAction = clean_str($body['captcha_action'] ?? '', 64);
-if ($captchaToken !== '') {
-    $secret = (string) ($CONFIG['recaptcha_secret_key'] ?? '');
-    if ($secret !== '' && $secret !== 'VUL_HIER_DE_RECAPTCHA_SECRET_IN') {
-        $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => http_build_query([
-                'secret'   => $secret,
-                'response' => $captchaToken,
-                'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
-            ]),
-            CURLOPT_TIMEOUT        => 10,
-        ]);
-        $cResp = curl_exec($ch);
-        curl_close($ch);
-        $cData = is_string($cResp) ? json_decode($cResp, true) : null;
-        $cScore = is_array($cData) && isset($cData['score']) ? (float) $cData['score'] : 0.0;
-        $cAct   = is_array($cData) && isset($cData['action']) ? (string) $cData['action'] : '';
-        $minScore = (float) ($CONFIG['recaptcha_min_score'] ?? 0.5);
-        $ok = is_array($cData) && !empty($cData['success']) && $cScore >= $minScore
-              && ($captchaAction === '' || $cAct === '' || $cAct === $captchaAction);
-        if (!$ok) {
-            json_response(['success' => false, 'error' => 'Captcha verification failed'], 400);
-        }
+$secret = (string) ($CONFIG['recaptcha_secret_key'] ?? '');
+$captchaConfigured = ($secret !== '' && $secret !== 'VUL_HIER_DE_RECAPTCHA_SECRET_IN');
+
+if ($captchaConfigured) {
+    if ($captchaToken === '') {
+        json_response(['success' => false, 'error' => 'Captcha token missing'], 400);
+    }
+    $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => http_build_query([
+            'secret'   => $secret,
+            'response' => $captchaToken,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+        ]),
+        CURLOPT_TIMEOUT        => 10,
+    ]);
+    $cResp = curl_exec($ch);
+    curl_close($ch);
+    $cData = is_string($cResp) ? json_decode($cResp, true) : null;
+    $cScore = is_array($cData) && isset($cData['score']) ? (float) $cData['score'] : 0.0;
+    $cAct   = is_array($cData) && isset($cData['action']) ? (string) $cData['action'] : '';
+    $minScore = (float) ($CONFIG['recaptcha_min_score'] ?? 0.5);
+    $ok = is_array($cData) && !empty($cData['success']) && $cScore >= $minScore
+          && ($captchaAction === '' || $cAct === '' || $cAct === $captchaAction);
+    if (!$ok) {
+        json_response(['success' => false, 'error' => 'Captcha verification failed'], 400);
     }
 }
 
@@ -126,6 +129,14 @@ $errMsg = '';
 
 if ($transport === 'smtp') {
     $ok = send_via_smtp($CONFIG, $to, $subject, $bodyText, $fromMail, $fromName, $email, $errMsg);
+    if (!$ok) {
+        // Praktische fallback: SMTP faalt (vaak TLS handshake) -> probeer mail()
+        error_log("VHPN SMTP failed, falling back to mail(): $errMsg");
+        $smtpErr = $errMsg;
+        $errMsg = '';
+        $ok = send_via_mail($to, $subject, $bodyText, $fromMail, $fromName, $email, $errMsg);
+        if (!$ok) $errMsg = "SMTP: $smtpErr | mail(): $errMsg";
+    }
 } else {
     $ok = send_via_mail($to, $subject, $bodyText, $fromMail, $fromName, $email, $errMsg);
 }
@@ -210,8 +221,22 @@ function send_via_smtp(array $cfg, string $to, string $subject, string $bodyText
     if ($enc === 'tls') {
         $send('STARTTLS');
         if (!$expect('220')) { fclose($sock); return false; }
-        if (!@stream_socket_enable_crypto($sock, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-            $errMsg = 'STARTTLS failed';
+        // Best-available TLS: TLS 1.3 + 1.2 + 1.1 (op oudere PHP builds vallen
+        // onbekende constants gewoon weg via defined()-check).
+        $cryptoMethod = 0;
+        foreach ([
+            'STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT',
+            'STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT',
+            'STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT',
+        ] as $c) {
+            if (defined($c)) $cryptoMethod |= constant($c);
+        }
+        if ($cryptoMethod === 0) {
+            $cryptoMethod = STREAM_CRYPTO_METHOD_TLS_CLIENT;
+        }
+        if (!@stream_socket_enable_crypto($sock, true, $cryptoMethod)) {
+            $errMsg = 'STARTTLS crypto handshake failed (host=' . $host . ':' . $port . ')';
+            error_log('VHPN SMTP ' . $errMsg);
             fclose($sock); return false;
         }
         $send('EHLO vhpn.nl');
