@@ -8,8 +8,8 @@
  * Belangrijke privacygaranties (zie ook src/lib/address.ts):
  *  - `number` en `addition` worden uit elke property verwijderd voordat de
  *    response naar de browser gaat.
- *  - `zipcode` wordt afgekapt tot het 4-cijferige PC4 deel (geen letters),
- *    omdat een volledige PC6 één huisnummer kan onthullen.
+ *  - `zipcode` wordt volledig verwijderd (ook PC4 kan in combinatie met
+ *    straat te specifiek zijn). Frontend toont alleen city/district.
  *  - Wanneer een property als vertrouwelijk gemarkeerd is (vertrouwelijk=1
  *    of confidential=1), worden óók straat, lat/lng en exact adres
  *    verwijderd; alleen district + city blijven over.
