@@ -159,14 +159,6 @@ if (is_array($decoded) && isset($decoded['result']['properties']) && is_array($d
             $prop['postcode']
         );
 
-        // Postcode terugbrengen tot PC4 (alleen cijfers)
-        if (isset($prop['zipcode']) && is_string($prop['zipcode'])) {
-            if (preg_match('/^\s*(\d{4})/', $prop['zipcode'], $m)) {
-                $prop['zipcode'] = $m[1];
-            } else {
-                $prop['zipcode'] = '';
-            }
-        }
 
         // Vertrouwelijk: ook straat + exacte coördinaten verbergen
         if ($isConfidential) {
