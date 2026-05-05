@@ -204,6 +204,13 @@ const ListingDetail = () => {
 
     setIsSubmittingViewing(true);
     try {
+      const token = await executeRecaptcha("viewing_request");
+      const captchaOk = await verifyToken(token, "viewing_request");
+      if (!captchaOk) {
+        toast({ title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed', description: t('form.captchaFailed'), variant: 'destructive' });
+        setIsSubmittingViewing(false);
+        return;
+      }
       await apiContact({
         form_type: 'viewing',
         name: viewingForm.name,
@@ -218,6 +225,8 @@ const ListingDetail = () => {
         gross_income: viewingForm.grossMonthlyIncome ? Number(viewingForm.grossMonthlyIncome) : null,
         partner_income: viewingForm.partnerGrossMonthlyIncome ? Number(viewingForm.partnerGrossMonthlyIncome) : null,
         company_website: viewingHoneypot,
+        captcha_token: token,
+        captcha_action: 'viewing_request',
       });
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setViewingForm({
