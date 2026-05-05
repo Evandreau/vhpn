@@ -27,6 +27,7 @@ import { Helmet } from "react-helmet-async";
 import { useParariusListings } from "@/hooks/useParariusListings";
 import { stripHouseNumber } from "@/lib/address";
 import { apiContact } from "@/lib/apiClient";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 const DAYS = [
   { value: 'ma', nl: 'Ma', en: 'Mon' },
@@ -40,6 +41,7 @@ const ListingDetail = () => {
   const { id } = useParams();
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const { executeRecaptcha, verifyToken } = useRecaptcha();
   
   const { data: liveListings, isLoading } = useParariusListings(language);
   const listing = liveListings?.find(l => l.id === id);
@@ -145,6 +147,13 @@ const ListingDetail = () => {
     if (interestHoneypot) return;
     setIsSubmittingInterest(true);
     try {
+      const token = await executeRecaptcha("listing_interest");
+      const captchaOk = await verifyToken(token, "listing_interest");
+      if (!captchaOk) {
+        toast({ title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed', description: t('form.captchaFailed'), variant: 'destructive' });
+        setIsSubmittingInterest(false);
+        return;
+      }
       await apiContact({
         form_type: 'contact',
         name: interestForm.name,
@@ -154,6 +163,8 @@ const ListingDetail = () => {
         listing_id: listing.id,
         listing_url: window.location.href,
         company_website: interestHoneypot,
+        captcha_token: token,
+        captcha_action: 'listing_interest',
       });
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setInterestForm({ name: '', email: '', phone: '', message: '' });
@@ -193,6 +204,13 @@ const ListingDetail = () => {
 
     setIsSubmittingViewing(true);
     try {
+      const token = await executeRecaptcha("viewing_request");
+      const captchaOk = await verifyToken(token, "viewing_request");
+      if (!captchaOk) {
+        toast({ title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed', description: t('form.captchaFailed'), variant: 'destructive' });
+        setIsSubmittingViewing(false);
+        return;
+      }
       await apiContact({
         form_type: 'viewing',
         name: viewingForm.name,
@@ -207,6 +225,8 @@ const ListingDetail = () => {
         gross_income: viewingForm.grossMonthlyIncome ? Number(viewingForm.grossMonthlyIncome) : null,
         partner_income: viewingForm.partnerGrossMonthlyIncome ? Number(viewingForm.partnerGrossMonthlyIncome) : null,
         company_website: viewingHoneypot,
+        captcha_token: token,
+        captcha_action: 'viewing_request',
       });
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setViewingForm({
