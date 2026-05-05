@@ -148,12 +148,6 @@ const ListingDetail = () => {
     setIsSubmittingInterest(true);
     try {
       const token = await executeRecaptcha("listing_interest");
-      const captchaOk = await verifyToken(token, "listing_interest");
-      if (!captchaOk) {
-        toast({ title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed', description: t('form.captchaFailed'), variant: 'destructive' });
-        setIsSubmittingInterest(false);
-        return;
-      }
       await apiContact({
         form_type: 'contact',
         name: interestForm.name,
