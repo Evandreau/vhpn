@@ -199,12 +199,6 @@ const ListingDetail = () => {
     setIsSubmittingViewing(true);
     try {
       const token = await executeRecaptcha("viewing_request");
-      const captchaOk = await verifyToken(token, "viewing_request");
-      if (!captchaOk) {
-        toast({ title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed', description: t('form.captchaFailed'), variant: 'destructive' });
-        setIsSubmittingViewing(false);
-        return;
-      }
       await apiContact({
         form_type: 'viewing',
         name: viewingForm.name,
