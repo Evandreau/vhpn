@@ -27,6 +27,7 @@ import { Helmet } from "react-helmet-async";
 import { useParariusListings } from "@/hooks/useParariusListings";
 import { stripHouseNumber } from "@/lib/address";
 import { apiContact } from "@/lib/apiClient";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 const DAYS = [
   { value: 'ma', nl: 'Ma', en: 'Mon' },
