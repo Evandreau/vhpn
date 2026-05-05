@@ -41,6 +41,7 @@ const ListingDetail = () => {
   const { id } = useParams();
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const { executeRecaptcha, verifyToken } = useRecaptcha();
   
   const { data: liveListings, isLoading } = useParariusListings(language);
   const listing = liveListings?.find(l => l.id === id);
