@@ -149,6 +149,56 @@ if (!$ok) {
 json_response(['success' => true]);
 
 // ---------------------------------------------------------------------------
+// Formatters (NL)
+// ---------------------------------------------------------------------------
+
+function format_date_eu(string $value): string {
+    $ts = strtotime($value);
+    if ($ts === false) return $value;
+    return date('d-m-Y', $ts);
+}
+
+function format_rental_period(string $value): string {
+    $v = trim($value);
+    if ($v === '') return $v;
+    if (is_numeric($v)) {
+        $n = (int) $v;
+        return $n === 1 ? '1 maand' : "$n maanden";
+    }
+    return $v;
+}
+
+function format_days_nl(string $value): string {
+    $map = [
+        'mon' => 'maandag', 'ma' => 'maandag', 'monday' => 'maandag',
+        'tue' => 'dinsdag', 'di' => 'dinsdag', 'tuesday' => 'dinsdag',
+        'wed' => 'woensdag', 'wo' => 'woensdag', 'wednesday' => 'woensdag',
+        'thu' => 'donderdag', 'do' => 'donderdag', 'thursday' => 'donderdag',
+        'fri' => 'vrijdag', 'vr' => 'vrijdag', 'friday' => 'vrijdag',
+        'sat' => 'zaterdag', 'za' => 'zaterdag', 'saturday' => 'zaterdag',
+        'sun' => 'zondag', 'zo' => 'zondag', 'sunday' => 'zondag',
+    ];
+    $parts = preg_split('/\s*,\s*/', $value);
+    $out = [];
+    foreach ($parts as $p) {
+        $key = strtolower(trim($p));
+        $out[] = $map[$key] ?? $p;
+    }
+    return implode(', ', $out);
+}
+
+function format_timeslot_nl(string $value): string {
+    $map = [
+        'morning'   => 'Ochtend',
+        'afternoon' => 'Middag',
+        'evening'   => 'Avond',
+        'any'       => 'Geen voorkeur',
+    ];
+    $key = strtolower(trim($value));
+    return $map[$key] ?? $value;
+}
+
+// ---------------------------------------------------------------------------
 // Transports
 // ---------------------------------------------------------------------------
 
