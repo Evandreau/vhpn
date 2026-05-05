@@ -147,6 +147,13 @@ const ListingDetail = () => {
     if (interestHoneypot) return;
     setIsSubmittingInterest(true);
     try {
+      const token = await executeRecaptcha("listing_interest");
+      const captchaOk = await verifyToken(token, "listing_interest");
+      if (!captchaOk) {
+        toast({ title: language === 'nl' ? 'Verificatie mislukt' : 'Verification failed', description: t('form.captchaFailed'), variant: 'destructive' });
+        setIsSubmittingInterest(false);
+        return;
+      }
       await apiContact({
         form_type: 'contact',
         name: interestForm.name,
@@ -156,6 +163,8 @@ const ListingDetail = () => {
         listing_id: listing.id,
         listing_url: window.location.href,
         company_website: interestHoneypot,
+        captcha_token: token,
+        captcha_action: 'listing_interest',
       });
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setInterestForm({ name: '', email: '', phone: '', message: '' });
