@@ -289,6 +289,30 @@ const Listings = () => {
             resultsCount={filteredListings.length}
           />
 
+          {typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1' && !isLoadingLive && (() => {
+            const dbg = getParariusDebug();
+            return (
+              <div className="container mx-auto px-6 pt-6">
+                <div className="rounded-md border border-border bg-muted/40 p-4 text-xs font-mono">
+                  <div className="font-semibold mb-2">Pararius debug</div>
+                  <div>Received from API: {dbg.received}</div>
+                  <div>Rendered after filtering: {dbg.rendered}</div>
+                  <div>After UI filters: {filteredListings.length}</div>
+                  {dbg.excluded.length > 0 && (
+                    <details className="mt-2">
+                      <summary className="cursor-pointer">Excluded ({dbg.excluded.length})</summary>
+                      <ul className="mt-2 space-y-1">
+                        {dbg.excluded.map(e => (
+                          <li key={e.id}>• {e.id} — {e.title} — {e.reasons.join('; ')}</li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Listings Grid */}
           <div className="container mx-auto px-6 py-12">
             {isLoadingLive ? (
