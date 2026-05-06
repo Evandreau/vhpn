@@ -15,7 +15,7 @@ import { stripHouseNumber } from "@/lib/address";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
-import { useParariusListings } from "@/hooks/useParariusListings";
+import { useParariusListings, getParariusDebug } from "@/hooks/useParariusListings";
 import { apiContact } from "@/lib/apiClient";
 import { useRecaptcha } from "@/hooks/useRecaptcha";
 
