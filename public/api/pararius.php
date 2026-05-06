@@ -59,7 +59,7 @@ $params = array_merge([
 ], $extra);
 
 // ---------------- Cache laag ------------------------------------------------
-$cacheTtl = (int) ($CONFIG['pararius_cache_ttl'] ?? 600); // 10 min default
+$cacheTtl = (int) ($CONFIG['pararius_cache_ttl'] ?? 300); // 5 min default
 $cacheDir = sys_get_temp_dir() . '/vhpn_pararius_cache';
 if (!is_dir($cacheDir)) @mkdir($cacheDir, 0700, true);
 $cacheKeyParams = $params;
