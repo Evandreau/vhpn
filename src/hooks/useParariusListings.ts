@@ -90,15 +90,19 @@ function mapDistrict(district: string): District | undefined {
   return mapping[lower] || 'Overig';
 }
 
-function mapAvailability(aanvaarding: string, availableAt: string): { type: 'immediately' | 'fromDate'; date?: string } {
+function mapAvailability(aanvaarding: string, availableAt: string): { type: 'immediately' | 'fromDate' | 'inConsultation'; date?: string } {
   const lower = (aanvaarding || '').toLowerCase();
+  const validDate = availableAt && availableAt !== '0000-00-00' && !availableAt.startsWith('0000');
   if (lower.includes('direct') || lower.includes('immediate')) {
     return { type: 'immediately' };
   }
-  if (availableAt) {
+  if (lower.includes('overleg') || lower.includes('consultation') || lower.includes('in consultation')) {
+    return { type: 'inConsultation' };
+  }
+  if (validDate) {
     return { type: 'fromDate', date: availableAt };
   }
-  return { type: 'immediately' };
+  return { type: 'inConsultation' };
 }
 
 function hasOutdoorSpace(prop: ParariusProperty): { has: boolean; type?: 'balcony' | 'terrace' | 'garden' | 'rooftop'; sqm?: number } {
