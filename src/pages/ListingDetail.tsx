@@ -133,8 +133,9 @@ const ListingDetail = () => {
   };
 
   const getAvailabilityText = () => {
-    if (listing.availableType === 'immediately' || !listing.availableFromDate || listing.availableFromDate === '0000-00-00') {
-      return t('listings.availableNow');
+    if (listing.availableType === 'immediately') return t('listings.availableNow');
+    if (listing.availableType === 'inConsultation' || !listing.availableFromDate || listing.availableFromDate === '0000-00-00') {
+      return t('listings.availableInConsultation');
     }
     return `${t('listings.availableFrom')} ${formatDate(listing.availableFromDate)}`;
   };

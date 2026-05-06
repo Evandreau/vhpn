@@ -12,7 +12,7 @@ export interface Listing {
   interiorType: InteriorType;
   descriptionShort: string;
   descriptionLong: string;
-  availableType: 'immediately' | 'fromDate';
+  availableType: 'immediately' | 'fromDate' | 'inConsultation';
   availableFromDate?: string;
   beds: number;
   baths: number;

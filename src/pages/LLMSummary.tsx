@@ -150,7 +150,7 @@ const LLMSummary = () => {
                         <dt>Bedrooms</dt><dd>{listing.beds === 0 ? 'Studio' : listing.beds}</dd>
                         <dt>Bathrooms</dt><dd>{listing.baths}</dd>
                         <dt>Furnished</dt><dd>{listing.furnished ? 'Yes' : 'No'}</dd>
-                        <dt>Available</dt><dd>{listing.availableType === 'immediately' ? 'Now' : `From ${listing.availableFromDate}`}</dd>
+                        <dt>Available</dt><dd>{listing.availableType === 'immediately' ? 'Now' : listing.availableType === 'fromDate' ? `From ${listing.availableFromDate}` : 'In consultation'}</dd>
                         <dt>Pets allowed</dt><dd>{listing.petsAllowed ? 'Yes' : 'No'}</dd>
                       </dl>
                       <p className="text-xs text-muted-foreground mt-2">{listing.descriptionShort}</p>

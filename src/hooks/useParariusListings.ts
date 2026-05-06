@@ -90,15 +90,19 @@ function mapDistrict(district: string): District | undefined {
   return mapping[lower] || 'Overig';
 }
 
-function mapAvailability(aanvaarding: string, availableAt: string): { type: 'immediately' | 'fromDate'; date?: string } {
+function mapAvailability(aanvaarding: string, availableAt: string): { type: 'immediately' | 'fromDate' | 'inConsultation'; date?: string } {
   const lower = (aanvaarding || '').toLowerCase();
+  const validDate = availableAt && availableAt !== '0000-00-00' && !availableAt.startsWith('0000');
   if (lower.includes('direct') || lower.includes('immediate')) {
     return { type: 'immediately' };
   }
-  if (availableAt) {
+  if (lower.includes('overleg') || lower.includes('consultation') || lower.includes('in consultation')) {
+    return { type: 'inConsultation' };
+  }
+  if (validDate) {
     return { type: 'fromDate', date: availableAt };
   }
-  return { type: 'immediately' };
+  return { type: 'inConsultation' };
 }
 
 function hasOutdoorSpace(prop: ParariusProperty): { has: boolean; type?: 'balcony' | 'terrace' | 'garden' | 'rooftop'; sqm?: number } {
@@ -306,6 +310,17 @@ function transformProperty(prop: ParariusProperty): Listing {
   };
 }
 
+export interface ParariusDebugInfo {
+  received: number;
+  rendered: number;
+  excluded: { id: string; title: string; reasons: string[] }[];
+}
+
+let lastDebug: ParariusDebugInfo = { received: 0, rendered: 0, excluded: [] };
+export function getParariusDebug(): ParariusDebugInfo {
+  return lastDebug;
+}
+
 async function fetchParariusProperties(lang: string): Promise<Listing[]> {
   let data: { success: boolean; rawResponse: string };
   try {
@@ -319,7 +334,6 @@ async function fetchParariusProperties(lang: string): Promise<Listing[]> {
     throw new Error('Invalid API response');
   }
 
-  // Parse the raw JSON response
   let parsed: { result: { properties?: Record<string, ParariusProperty> } };
   try {
     parsed = typeof data.rawResponse === 'string' ? JSON.parse(data.rawResponse) : data.rawResponse;
@@ -329,13 +343,28 @@ async function fetchParariusProperties(lang: string): Promise<Listing[]> {
 
   const propsMap = parsed?.result?.properties;
   if (!propsMap) {
+    lastDebug = { received: 0, rendered: 0, excluded: [] };
     return [];
   }
 
   const properties = Object.values(propsMap);
-  return properties
-    .map(transformProperty)
-    .filter(l => l.priceMonthly > 0 && l.status !== 'rented');
+  const excluded: ParariusDebugInfo['excluded'] = [];
+  const rendered: Listing[] = [];
+
+  for (const prop of properties) {
+    const listing = transformProperty(prop);
+    const reasons: string[] = [];
+    if (!(listing.priceMonthly > 0)) reasons.push('price <= 0');
+    if (listing.status === 'rented') reasons.push(`status=rented (forrent_front_status=${prop.forrent_front_status})`);
+    if (reasons.length > 0) {
+      excluded.push({ id: listing.id, title: listing.title, reasons });
+    } else {
+      rendered.push(listing);
+    }
+  }
+
+  lastDebug = { received: properties.length, rendered: rendered.length, excluded };
+  return rendered;
 }
 
 export function useParariusListings(lang: string = 'en') {
