@@ -108,13 +108,17 @@ const KeyFactsBlock = ({ listing }: KeyFactsBlockProps) => {
     {
       icon: Calendar,
       label: language === 'nl' ? 'Beschikbaarheid' : 'Availability',
-      value: listing.availableType === 'immediately' 
+      value: listing.availableType === 'immediately'
         ? (language === 'nl' ? 'Per direct' : 'Immediately')
-        : formatDateCompact(listing.availableFromDate || ''),
+        : (listing.availableType === 'inConsultation' || !listing.availableFromDate || listing.availableFromDate === '0000-00-00')
+          ? (language === 'nl' ? 'In overleg' : 'In consultation')
+          : formatDateCompact(listing.availableFromDate || ''),
       ariaLabel: `${language === 'nl' ? 'Beschikbaarheid' : 'Availability'}: ${
-        listing.availableType === 'immediately' 
-          ? 'Immediately' 
-          : formatDateCompact(listing.availableFromDate || '')
+        listing.availableType === 'immediately'
+          ? 'Immediately'
+          : (listing.availableType === 'inConsultation' || !listing.availableFromDate || listing.availableFromDate === '0000-00-00')
+            ? 'In consultation'
+            : formatDateCompact(listing.availableFromDate || '')
       }`
     },
   );
