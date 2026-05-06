@@ -32,6 +32,7 @@ const translations: Record<Language, Record<string, string>> = {
     'listings.unfurnished': 'Ongemeubileerd',
     'listings.availableNow': 'Direct beschikbaar',
     'listings.availableFrom': 'Beschikbaar vanaf',
+    'listings.availableInConsultation': 'In overleg',
     'listings.perMonth': '/maand',
     'listings.beds': 'slaapkamers',
     'listings.bed': 'slaapkamer',
