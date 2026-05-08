@@ -84,6 +84,22 @@ $grossIncome     = isset($body['gross_income']) && is_numeric($body['gross_incom
 $partnerIncome   = isset($body['partner_income']) && is_numeric($body['partner_income'])
                     ? (float) $body['partner_income'] : null;
 
+// Listing context
+$listingAddress  = clean_str($body['listing_address'] ?? '', 200);
+$listingPrice    = isset($body['listing_price_monthly']) && is_numeric($body['listing_price_monthly'])
+                    ? (float) $body['listing_price_monthly'] : null;
+$listingService  = isset($body['listing_service_costs']) && is_numeric($body['listing_service_costs'])
+                    ? (float) $body['listing_service_costs'] : null;
+
+// Applicant context
+$pets            = isset($body['pets']) ? (bool) $body['pets'] : null;
+$petsDetails     = clean_str($body['pets_details'] ?? '', 200);
+$applicantAge    = isset($body['applicant_age']) && is_numeric($body['applicant_age'])
+                    ? (int) $body['applicant_age'] : null;
+$partnerAge      = isset($body['partner_age']) && is_numeric($body['partner_age'])
+                    ? (int) $body['partner_age'] : null;
+$availability    = clean_str($body['availability'] ?? '', 500);
+
 // ---- E-mail samenstellen ---------------------------------------------------
 $subjectMap = [
     'contact'           => 'Contactformulier',
@@ -100,17 +116,28 @@ $lines[] = "Type: $subjectLabel ($formType)";
 $lines[] = "Naam: $name";
 $lines[] = "E-mail: $email";
 if ($phone !== '')           $lines[] = "Telefoon: $phone";
+if ($listingAddress !== '')  $lines[] = "Woning: $listingAddress";
+if ($listingPrice !== null)  $lines[] = "Huurprijs: € " . number_format($listingPrice, 0, ',', '.');
+if ($listingService !== null)$lines[] = "Servicekosten: € " . number_format($listingService, 0, ',', '.');
+if ($listingId !== '')       $lines[] = "Listing ID: $listingId";
+if ($listingUrl !== '')      $lines[] = "Listing URL: $listingUrl";
+if ($pets !== null)          $lines[] = "Huisdieren: " . ($pets ? ('Ja' . ($petsDetails !== '' ? " ($petsDetails)" : '')) : 'Nee');
+if ($applicantAge !== null) {
+    $ageLine = "Leeftijd(en): $applicantAge";
+    if ($partnerAge !== null) $ageLine .= " (partner: $partnerAge)";
+    $lines[] = $ageLine;
+}
+if ($availability !== '')    $lines[] = "Beschikbaarheid: $availability";
 if ($preferredArea !== '')   $lines[] = "Voorkeursgebied: $preferredArea";
 if ($budget !== '')          $lines[] = "Budget: $budget";
 if ($moveInDate !== '')      $lines[] = "Gewenste startdatum: " . format_date_eu($moveInDate);
 if ($rentalStartDate !== '') $lines[] = "Huuringangsdatum: " . format_date_eu($rentalStartDate);
 if ($rentalPeriod !== '')    $lines[] = "Huurperiode: " . format_rental_period($rentalPeriod);
-if ($preferredDays !== '')   $lines[] = "Beschikbare dagen: " . format_days_nl($preferredDays);
-if ($preferredSlot !== '')   $lines[] = "Dagdeel: " . format_timeslot_nl($preferredSlot);
+// Legacy velden (oude formulieren zonder availability matrix)
+if ($availability === '' && $preferredDays !== '') $lines[] = "Beschikbare dagen: " . format_days_nl($preferredDays);
+if ($availability === '' && $preferredSlot !== '') $lines[] = "Dagdeel: " . format_timeslot_nl($preferredSlot);
 if ($grossIncome !== null)   $lines[] = "Bruto inkomen p/m: € " . number_format($grossIncome, 0, ',', '.');
 if ($partnerIncome !== null) $lines[] = "Partner inkomen p/m: € " . number_format($partnerIncome, 0, ',', '.');
-if ($listingId !== '')       $lines[] = "Listing ID: $listingId";
-if ($listingUrl !== '')      $lines[] = "Listing URL: $listingUrl";
 if ($message !== '')         $lines[] = "\nBericht:\n$message";
 $lines[] = "\n---";
 $lines[] = "IP: " . ($_SERVER['REMOTE_ADDR'] ?? '');

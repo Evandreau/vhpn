@@ -30,11 +30,17 @@ import { apiContact } from "@/lib/apiClient";
 import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 const DAYS = [
-  { value: 'ma', nl: 'Ma', en: 'Mon' },
-  { value: 'di', nl: 'Di', en: 'Tue' },
-  { value: 'wo', nl: 'Wo', en: 'Wed' },
-  { value: 'do', nl: 'Do', en: 'Thu' },
-  { value: 'vr', nl: 'Vr', en: 'Fri' },
+  { value: 'ma', nl: 'Ma', en: 'Mon', nlFull: 'maandag', enFull: 'Monday' },
+  { value: 'di', nl: 'Di', en: 'Tue', nlFull: 'dinsdag', enFull: 'Tuesday' },
+  { value: 'wo', nl: 'Wo', en: 'Wed', nlFull: 'woensdag', enFull: 'Wednesday' },
+  { value: 'do', nl: 'Do', en: 'Thu', nlFull: 'donderdag', enFull: 'Thursday' },
+  { value: 'vr', nl: 'Vr', en: 'Fri', nlFull: 'vrijdag', enFull: 'Friday' },
+];
+
+const SLOTS = [
+  { value: 'morning', nl: 'ochtend', en: 'morning' },
+  { value: 'afternoon', nl: 'middag', en: 'afternoon' },
+  { value: 'evening', nl: 'avond', en: 'evening' },
 ];
 
 const ListingDetail = () => {
@@ -55,12 +61,15 @@ const ListingDetail = () => {
   const [isSubmittingViewing, setIsSubmittingViewing] = useState(false);
   const [viewingForm, setViewingForm] = useState({
     name: '', email: '', phone: '',
-    availableDays: [] as string[],
-    timeSlot: '',
+    availability: {} as Record<string, string[]>, // { ma: ['morning','afternoon'], ... }
     rentalStartDate: '',
     rentalPeriod: '',
     grossMonthlyIncome: '',
     partnerGrossMonthlyIncome: '',
+    pets: '' as '' | 'yes' | 'no',
+    petsDetails: '',
+    applicantAge: '',
+    partnerAge: '',
   });
   const [viewingErrors, setViewingErrors] = useState<Record<string, string>>({});
 
@@ -173,14 +182,28 @@ const ListingDetail = () => {
     setIsSubmittingInterest(false);
   };
 
-  const handleViewingDayToggle = (day: string) => {
-    setViewingForm(prev => ({
-      ...prev,
-      availableDays: prev.availableDays.includes(day)
-        ? prev.availableDays.filter(d => d !== day)
-        : [...prev.availableDays, day],
-    }));
-    if (viewingErrors.availableDays) setViewingErrors(p => ({ ...p, availableDays: '' }));
+  const handleAvailabilityToggle = (day: string, slot: string) => {
+    setViewingForm(prev => {
+      const cur = prev.availability[day] || [];
+      const next = cur.includes(slot) ? cur.filter(s => s !== slot) : [...cur, slot];
+      const updated = { ...prev.availability };
+      if (next.length === 0) delete updated[day];
+      else updated[day] = next;
+      return { ...prev, availability: updated };
+    });
+    if (viewingErrors.availability) setViewingErrors(p => ({ ...p, availability: '' }));
+  };
+
+  const formatAvailability = (avail: Record<string, string[]>, lang: 'nl' | 'en'): string => {
+    const parts: string[] = [];
+    for (const day of DAYS) {
+      const slots = avail[day.value];
+      if (!slots || slots.length === 0) continue;
+      const dayLabel = lang === 'nl' ? day.nlFull : day.enFull;
+      const slotLabels = SLOTS.filter(s => slots.includes(s.value)).map(s => lang === 'nl' ? s.nl : s.en);
+      parts.push(`${dayLabel} (${slotLabels.join(' + ')})`);
+    }
+    return parts.join(', ');
   };
 
   const handleViewingSubmit = async (e: React.FormEvent) => {
@@ -191,9 +214,12 @@ const ListingDetail = () => {
     if (!viewingForm.email.trim()) newErrors.email = t('form.required');
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(viewingForm.email)) newErrors.email = t('form.invalidEmail');
     if (!viewingForm.phone.trim()) newErrors.phone = t('form.required');
-    if (viewingForm.availableDays.length === 0) newErrors.availableDays = language === 'nl' ? 'Selecteer minimaal 1 dag' : 'Select at least 1 day';
-    if (!viewingForm.timeSlot) newErrors.timeSlot = t('form.required');
+    if (Object.keys(viewingForm.availability).length === 0) {
+      newErrors.availability = language === 'nl' ? 'Selecteer minimaal 1 dagdeel' : 'Select at least 1 timeslot';
+    }
     if (!viewingForm.grossMonthlyIncome) newErrors.grossMonthlyIncome = t('form.required');
+    if (!viewingForm.applicantAge) newErrors.applicantAge = t('form.required');
+    if (!viewingForm.pets) newErrors.pets = t('form.required');
     setViewingErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
@@ -207,12 +233,18 @@ const ListingDetail = () => {
         phone: viewingForm.phone,
         listing_id: listing.id,
         listing_url: window.location.href,
-        preferred_days: viewingForm.availableDays.join(', '),
-        preferred_timeslot: viewingForm.timeSlot,
+        listing_address: `${stripHouseNumber(listing.title).split(',')[0].trim()}, ${listing.city}`,
+        listing_price_monthly: listing.priceMonthly,
+        listing_service_costs: listing.serviceCostsMonthly ?? null,
+        availability: formatAvailability(viewingForm.availability, 'nl'),
         rental_start_date: viewingForm.rentalStartDate || null,
         rental_period: viewingForm.rentalPeriod || null,
         gross_income: viewingForm.grossMonthlyIncome ? Number(viewingForm.grossMonthlyIncome) : null,
         partner_income: viewingForm.partnerGrossMonthlyIncome ? Number(viewingForm.partnerGrossMonthlyIncome) : null,
+        pets: viewingForm.pets === 'yes',
+        pets_details: viewingForm.pets === 'yes' ? viewingForm.petsDetails : null,
+        applicant_age: viewingForm.applicantAge ? Number(viewingForm.applicantAge) : null,
+        partner_age: viewingForm.partnerAge ? Number(viewingForm.partnerAge) : null,
         company_website: viewingHoneypot,
         captcha_token: token,
         captcha_action: 'viewing_request',
@@ -220,9 +252,10 @@ const ListingDetail = () => {
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setViewingForm({
         name: '', email: '', phone: '',
-        availableDays: [], timeSlot: '',
+        availability: {},
         rentalStartDate: '', rentalPeriod: '',
         grossMonthlyIncome: '', partnerGrossMonthlyIncome: '',
+        pets: '', petsDetails: '', applicantAge: '', partnerAge: '',
       });
       setViewingErrors({});
     } catch {
@@ -460,37 +493,30 @@ const ListingDetail = () => {
                             {viewingErrors.phone && <p className="font-body text-xs text-destructive">{viewingErrors.phone}</p>}
                           </div>
 
-                          {/* Available days */}
-                          <div className="space-y-1.5 pt-2 border-t border-border">
+                          {/* Availability matrix per day + timeslot */}
+                          <div className="space-y-2 pt-2 border-t border-border">
                             <p className="font-body text-xs text-muted-foreground pt-1">
-                              {language === 'nl' ? 'Beschikbare dagen *' : 'Available days *'}
+                              {language === 'nl' ? 'Beschikbaarheid (dag + dagdeel) *' : 'Availability (day + slot) *'}
                             </p>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="space-y-1.5">
                               {DAYS.map(day => (
-                                <label key={day.value} className="flex items-center gap-1 cursor-pointer">
-                                  <Checkbox checked={viewingForm.availableDays.includes(day.value)} onCheckedChange={() => handleViewingDayToggle(day.value)} />
-                                  <span className="font-body text-xs text-foreground">{language === 'nl' ? day.nl : day.en}</span>
-                                </label>
+                                <div key={day.value} className="flex items-center gap-3">
+                                  <span className="font-body text-xs text-foreground w-8 shrink-0">{language === 'nl' ? day.nl : day.en}</span>
+                                  <div className="flex flex-wrap gap-3">
+                                    {SLOTS.map(slot => {
+                                      const checked = (viewingForm.availability[day.value] || []).includes(slot.value);
+                                      return (
+                                        <label key={slot.value} className="flex items-center gap-1 cursor-pointer">
+                                          <Checkbox checked={checked} onCheckedChange={() => handleAvailabilityToggle(day.value, slot.value)} />
+                                          <span className="font-body text-xs text-foreground capitalize">{language === 'nl' ? slot.nl : slot.en}</span>
+                                        </label>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
                               ))}
                             </div>
-                            {viewingErrors.availableDays && <p className="font-body text-xs text-destructive">{viewingErrors.availableDays}</p>}
-                          </div>
-
-                          {/* Time slot */}
-                          <div className="space-y-1">
-                            <Select value={viewingForm.timeSlot} onValueChange={(v) => { setViewingForm({ ...viewingForm, timeSlot: v }); if (viewingErrors.timeSlot) setViewingErrors(p => ({ ...p, timeSlot: '' })); }}>
-                              <SelectTrigger className="h-9 font-body text-xs border-border bg-background rounded-sm">
-                                <SelectValue placeholder={language === 'nl' ? 'Dagdeel *' : 'Time of day *'} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="morning">{language === 'nl' ? "'s Morgens" : 'Morning'}</SelectItem>
-                                <SelectItem value="afternoon">{language === 'nl' ? "'s Middags" : 'Afternoon'}</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            {viewingErrors.timeSlot && <p className="font-body text-xs text-destructive">{viewingErrors.timeSlot}</p>}
-                            <p className="font-body text-[10px] text-muted-foreground">
-                              {language === 'nl' ? 'De makelaar probeert je voorkeur mee te nemen.' : 'The agent will try to accommodate your preference.'}
-                            </p>
+                            {viewingErrors.availability && <p className="font-body text-xs text-destructive">{viewingErrors.availability}</p>}
                           </div>
 
                           {/* Rental start + period */}
@@ -527,6 +553,52 @@ const ListingDetail = () => {
                               value={viewingForm.partnerGrossMonthlyIncome}
                               onChange={(e) => setViewingForm({ ...viewingForm, partnerGrossMonthlyIncome: e.target.value })}
                               className="rounded-sm" />
+                          </div>
+
+                          {/* Ages */}
+                          <div className="space-y-2 pt-2 border-t border-border">
+                            <p className="font-body text-xs text-muted-foreground pt-1">
+                              {language === 'nl' ? 'Leeftijd(en)' : 'Age(s)'}
+                            </p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="space-y-1">
+                                <Input type="number" min="18" max="120" placeholder={(language === 'nl' ? 'Leeftijd' : 'Age') + ' *'}
+                                  value={viewingForm.applicantAge}
+                                  onChange={(e) => { setViewingForm({ ...viewingForm, applicantAge: e.target.value }); if (viewingErrors.applicantAge) setViewingErrors(p => ({ ...p, applicantAge: '' })); }}
+                                  className="rounded-sm" />
+                                {viewingErrors.applicantAge && <p className="font-body text-xs text-destructive">{viewingErrors.applicantAge}</p>}
+                              </div>
+                              <Input type="number" min="18" max="120" placeholder={language === 'nl' ? 'Leeftijd partner' : 'Partner age'}
+                                value={viewingForm.partnerAge}
+                                onChange={(e) => setViewingForm({ ...viewingForm, partnerAge: e.target.value })}
+                                className="rounded-sm" />
+                            </div>
+                          </div>
+
+                          {/* Pets */}
+                          <div className="space-y-2 pt-2 border-t border-border">
+                            <p className="font-body text-xs text-muted-foreground pt-1">
+                              {language === 'nl' ? 'Huisdieren *' : 'Pets *'}
+                            </p>
+                            <div className="flex gap-4">
+                              {(['no', 'yes'] as const).map(v => (
+                                <label key={v} className="flex items-center gap-1.5 cursor-pointer">
+                                  <input type="radio" name="pets" value={v} checked={viewingForm.pets === v}
+                                    onChange={() => { setViewingForm({ ...viewingForm, pets: v }); if (viewingErrors.pets) setViewingErrors(p => ({ ...p, pets: '' })); }}
+                                  />
+                                  <span className="font-body text-xs text-foreground">
+                                    {v === 'yes' ? (language === 'nl' ? 'Ja' : 'Yes') : (language === 'nl' ? 'Nee' : 'No')}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
+                            {viewingForm.pets === 'yes' && (
+                              <Input placeholder={language === 'nl' ? 'Toelichting (bijv. 1 kat)' : 'Details (e.g. 1 cat)'}
+                                value={viewingForm.petsDetails}
+                                onChange={(e) => setViewingForm({ ...viewingForm, petsDetails: e.target.value })}
+                                className="rounded-sm" />
+                            )}
+                            {viewingErrors.pets && <p className="font-body text-xs text-destructive">{viewingErrors.pets}</p>}
                           </div>
 
                           <Button type="submit" disabled={isSubmittingViewing} className="w-full rounded-full">
