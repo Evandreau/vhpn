@@ -30,11 +30,17 @@ import { apiContact } from "@/lib/apiClient";
 import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 const DAYS = [
-  { value: 'ma', nl: 'Ma', en: 'Mon' },
-  { value: 'di', nl: 'Di', en: 'Tue' },
-  { value: 'wo', nl: 'Wo', en: 'Wed' },
-  { value: 'do', nl: 'Do', en: 'Thu' },
-  { value: 'vr', nl: 'Vr', en: 'Fri' },
+  { value: 'ma', nl: 'Ma', en: 'Mon', nlFull: 'maandag', enFull: 'Monday' },
+  { value: 'di', nl: 'Di', en: 'Tue', nlFull: 'dinsdag', enFull: 'Tuesday' },
+  { value: 'wo', nl: 'Wo', en: 'Wed', nlFull: 'woensdag', enFull: 'Wednesday' },
+  { value: 'do', nl: 'Do', en: 'Thu', nlFull: 'donderdag', enFull: 'Thursday' },
+  { value: 'vr', nl: 'Vr', en: 'Fri', nlFull: 'vrijdag', enFull: 'Friday' },
+];
+
+const SLOTS = [
+  { value: 'morning', nl: 'ochtend', en: 'morning' },
+  { value: 'afternoon', nl: 'middag', en: 'afternoon' },
+  { value: 'evening', nl: 'avond', en: 'evening' },
 ];
 
 const ListingDetail = () => {
