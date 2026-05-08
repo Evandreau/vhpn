@@ -90,6 +90,16 @@ export interface ContactPayload {
   move_in_date?: string | null;
   gross_income?: number | null;
   partner_income?: number | null;
+  // listing context
+  listing_address?: string | null;
+  listing_price_monthly?: number | null;
+  listing_service_costs?: number | null;
+  // applicant context
+  pets?: boolean | null;
+  pets_details?: string | null;
+  applicant_age?: number | null;
+  partner_age?: number | null;
+  availability?: string | null; // pre-formatted "Ma (ochtend), Di (middag)"
   // anti-spam
   company_website?: string;
   captcha_token?: string;
