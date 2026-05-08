@@ -493,37 +493,30 @@ const ListingDetail = () => {
                             {viewingErrors.phone && <p className="font-body text-xs text-destructive">{viewingErrors.phone}</p>}
                           </div>
 
-                          {/* Available days */}
-                          <div className="space-y-1.5 pt-2 border-t border-border">
+                          {/* Availability matrix per day + timeslot */}
+                          <div className="space-y-2 pt-2 border-t border-border">
                             <p className="font-body text-xs text-muted-foreground pt-1">
-                              {language === 'nl' ? 'Beschikbare dagen *' : 'Available days *'}
+                              {language === 'nl' ? 'Beschikbaarheid (dag + dagdeel) *' : 'Availability (day + slot) *'}
                             </p>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="space-y-1.5">
                               {DAYS.map(day => (
-                                <label key={day.value} className="flex items-center gap-1 cursor-pointer">
-                                  <Checkbox checked={viewingForm.availableDays.includes(day.value)} onCheckedChange={() => handleViewingDayToggle(day.value)} />
-                                  <span className="font-body text-xs text-foreground">{language === 'nl' ? day.nl : day.en}</span>
-                                </label>
+                                <div key={day.value} className="flex items-center gap-3">
+                                  <span className="font-body text-xs text-foreground w-8 shrink-0">{language === 'nl' ? day.nl : day.en}</span>
+                                  <div className="flex flex-wrap gap-3">
+                                    {SLOTS.map(slot => {
+                                      const checked = (viewingForm.availability[day.value] || []).includes(slot.value);
+                                      return (
+                                        <label key={slot.value} className="flex items-center gap-1 cursor-pointer">
+                                          <Checkbox checked={checked} onCheckedChange={() => handleAvailabilityToggle(day.value, slot.value)} />
+                                          <span className="font-body text-xs text-foreground capitalize">{language === 'nl' ? slot.nl : slot.en}</span>
+                                        </label>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
                               ))}
                             </div>
-                            {viewingErrors.availableDays && <p className="font-body text-xs text-destructive">{viewingErrors.availableDays}</p>}
-                          </div>
-
-                          {/* Time slot */}
-                          <div className="space-y-1">
-                            <Select value={viewingForm.timeSlot} onValueChange={(v) => { setViewingForm({ ...viewingForm, timeSlot: v }); if (viewingErrors.timeSlot) setViewingErrors(p => ({ ...p, timeSlot: '' })); }}>
-                              <SelectTrigger className="h-9 font-body text-xs border-border bg-background rounded-sm">
-                                <SelectValue placeholder={language === 'nl' ? 'Dagdeel *' : 'Time of day *'} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="morning">{language === 'nl' ? "'s Morgens" : 'Morning'}</SelectItem>
-                                <SelectItem value="afternoon">{language === 'nl' ? "'s Middags" : 'Afternoon'}</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            {viewingErrors.timeSlot && <p className="font-body text-xs text-destructive">{viewingErrors.timeSlot}</p>}
-                            <p className="font-body text-[10px] text-muted-foreground">
-                              {language === 'nl' ? 'De makelaar probeert je voorkeur mee te nemen.' : 'The agent will try to accommodate your preference.'}
-                            </p>
+                            {viewingErrors.availability && <p className="font-body text-xs text-destructive">{viewingErrors.availability}</p>}
                           </div>
 
                           {/* Rental start + period */}
