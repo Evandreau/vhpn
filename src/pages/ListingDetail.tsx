@@ -61,12 +61,15 @@ const ListingDetail = () => {
   const [isSubmittingViewing, setIsSubmittingViewing] = useState(false);
   const [viewingForm, setViewingForm] = useState({
     name: '', email: '', phone: '',
-    availableDays: [] as string[],
-    timeSlot: '',
+    availability: {} as Record<string, string[]>, // { ma: ['morning','afternoon'], ... }
     rentalStartDate: '',
     rentalPeriod: '',
     grossMonthlyIncome: '',
     partnerGrossMonthlyIncome: '',
+    pets: '' as '' | 'yes' | 'no',
+    petsDetails: '',
+    applicantAge: '',
+    partnerAge: '',
   });
   const [viewingErrors, setViewingErrors] = useState<Record<string, string>>({});
 
