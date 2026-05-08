@@ -555,6 +555,52 @@ const ListingDetail = () => {
                               className="rounded-sm" />
                           </div>
 
+                          {/* Ages */}
+                          <div className="space-y-2 pt-2 border-t border-border">
+                            <p className="font-body text-xs text-muted-foreground pt-1">
+                              {language === 'nl' ? 'Leeftijd(en)' : 'Age(s)'}
+                            </p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="space-y-1">
+                                <Input type="number" min="18" max="120" placeholder={(language === 'nl' ? 'Leeftijd' : 'Age') + ' *'}
+                                  value={viewingForm.applicantAge}
+                                  onChange={(e) => { setViewingForm({ ...viewingForm, applicantAge: e.target.value }); if (viewingErrors.applicantAge) setViewingErrors(p => ({ ...p, applicantAge: '' })); }}
+                                  className="rounded-sm" />
+                                {viewingErrors.applicantAge && <p className="font-body text-xs text-destructive">{viewingErrors.applicantAge}</p>}
+                              </div>
+                              <Input type="number" min="18" max="120" placeholder={language === 'nl' ? 'Leeftijd partner' : 'Partner age'}
+                                value={viewingForm.partnerAge}
+                                onChange={(e) => setViewingForm({ ...viewingForm, partnerAge: e.target.value })}
+                                className="rounded-sm" />
+                            </div>
+                          </div>
+
+                          {/* Pets */}
+                          <div className="space-y-2 pt-2 border-t border-border">
+                            <p className="font-body text-xs text-muted-foreground pt-1">
+                              {language === 'nl' ? 'Huisdieren *' : 'Pets *'}
+                            </p>
+                            <div className="flex gap-4">
+                              {(['no', 'yes'] as const).map(v => (
+                                <label key={v} className="flex items-center gap-1.5 cursor-pointer">
+                                  <input type="radio" name="pets" value={v} checked={viewingForm.pets === v}
+                                    onChange={() => { setViewingForm({ ...viewingForm, pets: v }); if (viewingErrors.pets) setViewingErrors(p => ({ ...p, pets: '' })); }}
+                                  />
+                                  <span className="font-body text-xs text-foreground">
+                                    {v === 'yes' ? (language === 'nl' ? 'Ja' : 'Yes') : (language === 'nl' ? 'Nee' : 'No')}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
+                            {viewingForm.pets === 'yes' && (
+                              <Input placeholder={language === 'nl' ? 'Toelichting (bijv. 1 kat)' : 'Details (e.g. 1 cat)'}
+                                value={viewingForm.petsDetails}
+                                onChange={(e) => setViewingForm({ ...viewingForm, petsDetails: e.target.value })}
+                                className="rounded-sm" />
+                            )}
+                            {viewingErrors.pets && <p className="font-body text-xs text-destructive">{viewingErrors.pets}</p>}
+                          </div>
+
                           <Button type="submit" disabled={isSubmittingViewing} className="w-full rounded-full">
                             {isSubmittingViewing ? t('form.sending') : t('form.requestViewing')}
                           </Button>
