@@ -116,17 +116,28 @@ $lines[] = "Type: $subjectLabel ($formType)";
 $lines[] = "Naam: $name";
 $lines[] = "E-mail: $email";
 if ($phone !== '')           $lines[] = "Telefoon: $phone";
+if ($listingAddress !== '')  $lines[] = "Woning: $listingAddress";
+if ($listingPrice !== null)  $lines[] = "Huurprijs: € " . number_format($listingPrice, 0, ',', '.');
+if ($listingService !== null)$lines[] = "Servicekosten: € " . number_format($listingService, 0, ',', '.');
+if ($listingId !== '')       $lines[] = "Listing ID: $listingId";
+if ($listingUrl !== '')      $lines[] = "Listing URL: $listingUrl";
+if ($pets !== null)          $lines[] = "Huisdieren: " . ($pets ? ('Ja' . ($petsDetails !== '' ? " ($petsDetails)" : '')) : 'Nee');
+if ($applicantAge !== null) {
+    $ageLine = "Leeftijd(en): $applicantAge";
+    if ($partnerAge !== null) $ageLine .= " (partner: $partnerAge)";
+    $lines[] = $ageLine;
+}
+if ($availability !== '')    $lines[] = "Beschikbaarheid: $availability";
 if ($preferredArea !== '')   $lines[] = "Voorkeursgebied: $preferredArea";
 if ($budget !== '')          $lines[] = "Budget: $budget";
 if ($moveInDate !== '')      $lines[] = "Gewenste startdatum: " . format_date_eu($moveInDate);
 if ($rentalStartDate !== '') $lines[] = "Huuringangsdatum: " . format_date_eu($rentalStartDate);
 if ($rentalPeriod !== '')    $lines[] = "Huurperiode: " . format_rental_period($rentalPeriod);
-if ($preferredDays !== '')   $lines[] = "Beschikbare dagen: " . format_days_nl($preferredDays);
-if ($preferredSlot !== '')   $lines[] = "Dagdeel: " . format_timeslot_nl($preferredSlot);
+// Legacy velden (oude formulieren zonder availability matrix)
+if ($availability === '' && $preferredDays !== '') $lines[] = "Beschikbare dagen: " . format_days_nl($preferredDays);
+if ($availability === '' && $preferredSlot !== '') $lines[] = "Dagdeel: " . format_timeslot_nl($preferredSlot);
 if ($grossIncome !== null)   $lines[] = "Bruto inkomen p/m: € " . number_format($grossIncome, 0, ',', '.');
 if ($partnerIncome !== null) $lines[] = "Partner inkomen p/m: € " . number_format($partnerIncome, 0, ',', '.');
-if ($listingId !== '')       $lines[] = "Listing ID: $listingId";
-if ($listingUrl !== '')      $lines[] = "Listing URL: $listingUrl";
 if ($message !== '')         $lines[] = "\nBericht:\n$message";
 $lines[] = "\n---";
 $lines[] = "IP: " . ($_SERVER['REMOTE_ADDR'] ?? '');
