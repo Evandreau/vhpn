@@ -182,14 +182,28 @@ const ListingDetail = () => {
     setIsSubmittingInterest(false);
   };
 
-  const handleViewingDayToggle = (day: string) => {
-    setViewingForm(prev => ({
-      ...prev,
-      availableDays: prev.availableDays.includes(day)
-        ? prev.availableDays.filter(d => d !== day)
-        : [...prev.availableDays, day],
-    }));
-    if (viewingErrors.availableDays) setViewingErrors(p => ({ ...p, availableDays: '' }));
+  const handleAvailabilityToggle = (day: string, slot: string) => {
+    setViewingForm(prev => {
+      const cur = prev.availability[day] || [];
+      const next = cur.includes(slot) ? cur.filter(s => s !== slot) : [...cur, slot];
+      const updated = { ...prev.availability };
+      if (next.length === 0) delete updated[day];
+      else updated[day] = next;
+      return { ...prev, availability: updated };
+    });
+    if (viewingErrors.availability) setViewingErrors(p => ({ ...p, availability: '' }));
+  };
+
+  const formatAvailability = (avail: Record<string, string[]>, lang: 'nl' | 'en'): string => {
+    const parts: string[] = [];
+    for (const day of DAYS) {
+      const slots = avail[day.value];
+      if (!slots || slots.length === 0) continue;
+      const dayLabel = lang === 'nl' ? day.nlFull : day.enFull;
+      const slotLabels = SLOTS.filter(s => slots.includes(s.value)).map(s => lang === 'nl' ? s.nl : s.en);
+      parts.push(`${dayLabel} (${slotLabels.join(' + ')})`);
+    }
+    return parts.join(', ');
   };
 
   const handleViewingSubmit = async (e: React.FormEvent) => {
@@ -200,9 +214,12 @@ const ListingDetail = () => {
     if (!viewingForm.email.trim()) newErrors.email = t('form.required');
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(viewingForm.email)) newErrors.email = t('form.invalidEmail');
     if (!viewingForm.phone.trim()) newErrors.phone = t('form.required');
-    if (viewingForm.availableDays.length === 0) newErrors.availableDays = language === 'nl' ? 'Selecteer minimaal 1 dag' : 'Select at least 1 day';
-    if (!viewingForm.timeSlot) newErrors.timeSlot = t('form.required');
+    if (Object.keys(viewingForm.availability).length === 0) {
+      newErrors.availability = language === 'nl' ? 'Selecteer minimaal 1 dagdeel' : 'Select at least 1 timeslot';
+    }
     if (!viewingForm.grossMonthlyIncome) newErrors.grossMonthlyIncome = t('form.required');
+    if (!viewingForm.applicantAge) newErrors.applicantAge = t('form.required');
+    if (!viewingForm.pets) newErrors.pets = t('form.required');
     setViewingErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
@@ -216,12 +233,18 @@ const ListingDetail = () => {
         phone: viewingForm.phone,
         listing_id: listing.id,
         listing_url: window.location.href,
-        preferred_days: viewingForm.availableDays.join(', '),
-        preferred_timeslot: viewingForm.timeSlot,
+        listing_address: `${stripHouseNumber(listing.title).split(',')[0].trim()}, ${listing.city}`,
+        listing_price_monthly: listing.priceMonthly,
+        listing_service_costs: listing.serviceCostsMonthly ?? null,
+        availability: formatAvailability(viewingForm.availability, 'nl'),
         rental_start_date: viewingForm.rentalStartDate || null,
         rental_period: viewingForm.rentalPeriod || null,
         gross_income: viewingForm.grossMonthlyIncome ? Number(viewingForm.grossMonthlyIncome) : null,
         partner_income: viewingForm.partnerGrossMonthlyIncome ? Number(viewingForm.partnerGrossMonthlyIncome) : null,
+        pets: viewingForm.pets === 'yes',
+        pets_details: viewingForm.pets === 'yes' ? viewingForm.petsDetails : null,
+        applicant_age: viewingForm.applicantAge ? Number(viewingForm.applicantAge) : null,
+        partner_age: viewingForm.partnerAge ? Number(viewingForm.partnerAge) : null,
         company_website: viewingHoneypot,
         captcha_token: token,
         captcha_action: 'viewing_request',
@@ -229,9 +252,10 @@ const ListingDetail = () => {
       toast({ title: t('form.success'), description: t('form.successMessage') });
       setViewingForm({
         name: '', email: '', phone: '',
-        availableDays: [], timeSlot: '',
+        availability: {},
         rentalStartDate: '', rentalPeriod: '',
         grossMonthlyIncome: '', partnerGrossMonthlyIncome: '',
+        pets: '', petsDetails: '', applicantAge: '', partnerAge: '',
       });
       setViewingErrors({});
     } catch {
