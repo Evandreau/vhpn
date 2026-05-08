@@ -84,6 +84,22 @@ $grossIncome     = isset($body['gross_income']) && is_numeric($body['gross_incom
 $partnerIncome   = isset($body['partner_income']) && is_numeric($body['partner_income'])
                     ? (float) $body['partner_income'] : null;
 
+// Listing context
+$listingAddress  = clean_str($body['listing_address'] ?? '', 200);
+$listingPrice    = isset($body['listing_price_monthly']) && is_numeric($body['listing_price_monthly'])
+                    ? (float) $body['listing_price_monthly'] : null;
+$listingService  = isset($body['listing_service_costs']) && is_numeric($body['listing_service_costs'])
+                    ? (float) $body['listing_service_costs'] : null;
+
+// Applicant context
+$pets            = isset($body['pets']) ? (bool) $body['pets'] : null;
+$petsDetails     = clean_str($body['pets_details'] ?? '', 200);
+$applicantAge    = isset($body['applicant_age']) && is_numeric($body['applicant_age'])
+                    ? (int) $body['applicant_age'] : null;
+$partnerAge      = isset($body['partner_age']) && is_numeric($body['partner_age'])
+                    ? (int) $body['partner_age'] : null;
+$availability    = clean_str($body['availability'] ?? '', 500);
+
 // ---- E-mail samenstellen ---------------------------------------------------
 $subjectMap = [
     'contact'           => 'Contactformulier',
